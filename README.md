@@ -159,37 +159,97 @@ hdfs_site_properties:
   }
 ```
 
-### Install Master
-check the master.yml
+
+### Install Hadoop Zookeeper Cluster
 ```
-- hosts: master 
+Run ansible playboo like
+
+```
+ansible-playbook -i ansible-hosts deploy-hadoop-zkcluster
+```
+- hosts: all
   remote_user: root
-  vars_files:
-   - vars/user.yml
-   - vars/var_basic.yml
-   - vars/var_master.yml
   vars:
-     add_user: true           # add user "hadoop"
-     generate_key: true       # generate the ssh key
-     open_firewall: true      # for CentOS 7.x is firewalld
-     disable_firewall: false  # disable firewalld 
-     install_hadoop: true     # install hadoop,if you just want to update the configuration, set to false
-     config_hadoop: true      # Update configuration
+     add_user: true
+     generate_key: true
+     open_firewall: true
+     disable_firewall: false
+     install_hadoop: true
+     config_hadoop: true
+     start_journalnode: true
   roles:
-    - user                    # add user and generate the ssh key
-    - fetch_public_key        # get the key and put it in your localhost
-    - authorized              # push the ssh key to the remote server 
-    - java                    # install jdk
-    - hadoop                  # install hadoop
+    - user
+    - fetch_public_key
+    - authorized
+    - java
+    - hadoop
+    - zookeeper
 
-```
-run shell like
+# The priority of starting hdfs services. It's principal to order in main.yml
+#
+#1 format_namenode : master
+#2 start_namenode : master
+#3 copy_metadata : master
+#4 bootstrap_standby : standby
+#5 start_namenode : standby
+#6 start_datanode : workers
+#7 format_zkfc : master
+#8 start_zkfc : master
+#9 start_zkfc : standby
+#10 start_yan : standby
 
-```
-ansible-playbook -i hosts/host master.yml
-```
+- hosts: master
+  remote_user: root
+  vars:
+     format_namenode: true
+     start_namenode: true
+     copy_metadata: true
+  roles:
+    - hadoop
 
-### Install Workers
+- hosts: standby
+  remote_user: root
+  vars:
+     bootstrap_standby: true
+     start_namenode: true
+  roles:
+    - hadoop
+
+- hosts: workers
+  remote_user: root
+  vars:
+     start_datanode: true
+  roles:
+    - hadoop
+
+- hosts: master
+  remote_user: root
+  vars:
+     format_zkfc: true
+     start_zkfc: true
+  roles:
+    - hadoop
+
+- hosts: standby
+  remote_user: root
+  vars:
+     start_zkfc: true
+     start_yarn: true
+  roles:
+    - hadoop
+
+- hosts: hive
+  remote_user: root
+  vars:
+     open_firewall: true
+     install_hive: true
+     config_hive: true
+     init_hive: true
+  roles:
+    - hive
+
+
+
 
 ```
 # Add Master Public Key   # get master ssh public key 
@@ -221,6 +281,10 @@ ansible-playbook -i hosts/host master.yml
     - java
     - hadoop
 
+
+
+
+
 ```
 run shell like:
 ```
@@ -229,7 +293,7 @@ master_hostname: your hadoop master hostname
 
 above two variables must be same like your real hadoop master
 
-ansible-playbook -i hosts/host workers.yml -e "master_ip=172.16.251.70 master_hostname=hadoop-master"
+ansible-playbook -i ansible-hosts deploy-hadoop-zkcluster.yml
 
 ```
 
@@ -344,3 +408,4 @@ ansible-playbook -i hosts/host hive.yml
 ### License
 
 GNU General Public License v3.0
+
