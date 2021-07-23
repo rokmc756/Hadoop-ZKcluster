@@ -1,0 +1,25 @@
+[all:vars]
+ssh_key_filename="id_rsa"
+remote_machine_username="jomoon"
+remote_machine_password="changeme"
+
+[master]
+mdw6 ansible_ssh_host=192.168.0.61 zk_id=1
+
+[standby]
+smdw6 ansible_ssh_host=192.168.0.62 zk_id=2
+
+[workers]
+sdw6-01 ansible_ssh_host=192.168.0.63 zk_id=3
+sdw6-02 ansible_ssh_host=192.168.0.64 zk_id=4
+sdw6-03 ansible_ssh_host=192.168.0.65 zk_id=5
+
+[hive]
+mdw6 ansible_ssh_host=192.168.0.61 zk_id=1
+
+[zk_servers]
+mdw6 ansible_ssh_host=192.168.0.61 zk_id=1
+smdw6 ansible_ssh_host=192.168.0.62 zk_id=2
+sdw6-01 ansible_ssh_host=192.168.0.63 zk_id=3
+sdw6-02 ansible_ssh_host=192.168.0.64 zk_id=4
+sdw6-03 ansible_ssh_host=192.168.0.65 zk_id=5

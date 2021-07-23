@@ -1,0 +1,6 @@
+---
+- name: Start HDFS
+  shell: su {{ user }} -c "hdfs namenode -bootstrapStandby"
+
+# Go to the ${HADOOP_HOME}/sbin directory of Master and start HDFS. At this point,
+# the NameNode service on Master and Standard Master and the DataNode service on all servers will be started

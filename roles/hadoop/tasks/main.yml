@@ -1,0 +1,46 @@
+---
+- name: Create Hadoop Path
+  file: 
+    path: "{{ item }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ hadoop_create_path }}"
+
+- include: redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: install_hadoop.yml
+  when: install_hadoop is defined and install_hadoop
+
+- include: config_hadoop.yml
+  when: config_hadoop is defined and config_hadoop
+
+- include: start_journalnode.yml
+  when: start_journalnode is defined and start_journalnode
+
+- include: format_namenode.yml
+  when: format_namenode is defined and format_namenode
+
+- include: copy_metadata.yml
+  when: copy_metadata is defined and copy_metadata
+
+- include: bootstrap_standby.yml
+  when: bootstrap_standby is defined and bootstrap_standby
+
+- include: start_namenode.yml
+  when: start_namenode is defined and start_namenode
+
+- include: start_datanode.yml
+  when: start_datanode is defined and start_datanode
+
+- include: format_zkfc.yml
+  when:  format_zkfc is defined and format_zkfc
+
+- include: start_zkfc.yml
+  when: start_zkfc is defined and start_zkfc
+
+- include: start_yan.yml
+  when: start_yan is defined and start_yan
