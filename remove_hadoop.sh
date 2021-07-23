@@ -2,6 +2,7 @@
 
 ssh root@mdw6 su "hadoop -c 'hadoop-daemon.sh stop zkfc'"
 ssh root@mdw6 su "hadoop -c 'stop-all.sh'"
+ssh root@test su "hadoop -c 'stop-all.sh'"
 
 for i in `echo "mdw6 smdw6 sdw6-01 sdw6-02 sdw6-03"`
 do
