@@ -1,12 +1,30 @@
-# Hadoop-ansible
-- Install Hadoop cluster with ansible
-- Now Support CentOS 7.x
-- JDK is  Openjdk-1.8
-- Hadoop is the latest version 3.2.1
-- Hive is the version 2.3.2
+# WHat is Hadoop Zookeeper Cluster
 
+# Where is Haddop Zookeeper from and how is it changed?
+
+# Supported versions of Hadoop / Hive / Zookeeper
+- CentOS 7.x
+- openjdk-1.8
+- Hadoop 3.2.1
+- Hive 2.3.8
+- zookeeper
+
+# Supported Platform and OS
+
+# Prerequiste
 ## Before Install
 Use DNS Server or update /etc/hosts for all servers
+
+# How to deploy hadoop-zkcluster?
+## Configuring variables
+- ansible-hosts
+- group_vars/all.yml
+- roles/hadoop/vars/main.yml
+- roles/hive/vars/main.yml
+- roles/zookeeper/vars/main.yml
+- roles/
+
+# Planning
 
 ## Install Hadoop
 1. Download Hadoop to any path
