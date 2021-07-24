@@ -15,7 +15,8 @@ qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']
 
 In role of haddop a few playbooks are added / modified to start hdfs services and seperate whether these are defined or not in deploly-hadoop-zookeeper.yml playbook.
 
-# Supported versions of Platform and OS ( These are only confirmed as the latest version currently and other version will be done or added soon or later )
+# Supported versions of Platform and OS
+## These are only confirmed as the latest version currently and other version will be done or added soon or later
 - CentOS 7.x
 - openjdk-1.8
 - Hadoop 3.3.1
@@ -95,7 +96,8 @@ java:
 ```
 ##
 
-## Configure varialbes such as download location, versions, install/config path, informations of postgresql databbase for Hive in role/hive/var/main.yml
+## Configure varialbes such as download location, versions, install/config path,
+## informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```
 download_path: "/Users/pivotal/Downloads"
 hive_version: "3.1.2"
