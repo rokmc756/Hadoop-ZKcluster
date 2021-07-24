@@ -16,12 +16,14 @@ qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']
 In role of haddop a few playbooks are added / modified to start hdfs services and seperate whether these are defined or not in deploly-hadoop-zookeeper.yml playbook.
 
 # Supported versions of Platform and OS
-## These are only confirmed as the latest version currently and other version will be done or added soon or later
+### These are only confirmed as the latest version currently and other version will be done or added soon or later
+```
 - CentOS 7.x
 - openjdk-1.8
 - Hadoop 3.3.1
 - Hive 3.1.2
 - ansible-zookeeper 3.7.0
+```
 
 # Prerequiste
 Use DNS Server or update /etc/hosts for all servers.
