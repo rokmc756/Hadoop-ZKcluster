@@ -142,9 +142,9 @@ select drop_all_tables();```
 ```
 ##
 ### Run to remove tables in a specific database
-```
 psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
-```
+
+##
 
 # How to run deploy-hadoop-zkcluster.yml to install / configure?
 ```
@@ -155,4 +155,5 @@ ansible-playboot -i ansible-hosts deploy-hadoop-zkcluster.yml
 
 
 ### License
+
 GNU General Public License v3.0
