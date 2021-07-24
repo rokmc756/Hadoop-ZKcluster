@@ -119,7 +119,6 @@ hive_connection_dbname: "bdrdemo"
 hive_connection_user_name: "bdrsync"
 hive_connection_password: "changeme"
 ```
-##
 
 ## The below query file is useful to remove all tables in hive database before running playboot.
 ### drop_all_tables.sql
@@ -142,9 +141,11 @@ $$ LANGUAGE plpgsql;
 
 select drop_all_tables();```
 ```
-##
+
 ### Run to remove tables in a specific database
+```
 psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
+```
 
 ##
 
@@ -157,5 +158,4 @@ ansible-playboot -i ansible-hosts deploy-hadoop-zkcluster.yml
 A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
 
 ### License
-
 GNU General Public License v3.0
