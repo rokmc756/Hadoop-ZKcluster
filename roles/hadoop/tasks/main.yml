@@ -1,6 +1,6 @@
 ---
 - name: Create Hadoop Path
-  file: 
+  file:
     path: "{{ item }}"
     owner: "{{ user }}"
     group: "{{ group }}"
@@ -44,3 +44,7 @@
 
 - include: start_yan.yml
   when: start_yan is defined and start_yan
+
+- include: start_yan_resource_manager.yml
+  when: start_yan_resource_manager is defined and start_yan_resource_manager
+

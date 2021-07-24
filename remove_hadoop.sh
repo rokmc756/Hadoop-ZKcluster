@@ -11,3 +11,4 @@ do
     ssh root@$i "killall java"
     ssh root@$i "sync; echo 3 > /proc/sys/vm/drop_caches"
 done
+

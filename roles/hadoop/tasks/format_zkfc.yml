@@ -1,9 +1,3 @@
 ---
 - name: Format the zookeeper fail over controller in Activie namenode.
   shell: su {{ user }} -c "hdfs zkfc -formatZK -force"
-
-  # ignore_errors: yes
-  # shell: |
-  # su {{ user }} -c "hdfs zkfc –formatZK -force" <<EOF
-  # y
-  # EOF

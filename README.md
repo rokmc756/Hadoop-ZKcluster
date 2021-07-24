@@ -1,411 +1,158 @@
 # WHat is Hadoop Zookeeper Cluster
+Hadoop-zkcluster is ansible playbook to deploy Hadoop / Hive and Zookeeper cluster on Baremetal, Virtual Machines and Cloud Infrastructure.
+It implements HDFS HA architecture described at the below doc[1] and you could see details about how it works.
+[1] https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
-# Where is Haddop Zookeeper from and how is it changed?
+# Where is Haddop Zookeeper from and what / how is it changed?
+Hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
+The ansible role for zookeepr is added, variables of many roles is integrated into group_vars/all.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
 
-# Supported versions of Hadoop / Hive / Zookeeper
+As the below two variables in group_vars/all.yml is added many hosts could be automatically configured conveniently.
+```
+zkservers_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
+qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
+```
+
+In role of haddop a few playbooks are added / modified to start hdfs services and seperate whether these are defined or not in deploly-hadoop-zookeeper.yml playbook.
+
+# Supported versions of Platform and OS ( These are only confirmed as the latest version currently and other version will be done or added soon or later )
 - CentOS 7.x
 - openjdk-1.8
-- Hadoop 3.2.1
-- Hive 2.3.8
-- zookeeper
-
-# Supported Platform and OS
+- Hadoop 3.3.1
+- Hive 3.1.2
+- ansible-zookeeper 3.7.0
 
 # Prerequiste
-## Before Install
-Use DNS Server or update /etc/hosts for all servers
+Use DNS Server or update /etc/hosts for all servers.
+Passworless SSH for hadoop, root for ansible hosts may help to control.
 
-# How to deploy hadoop-zkcluster?
-## Configuring variables
-- ansible-hosts
-- group_vars/all.yml
-- roles/hadoop/vars/main.yml
-- roles/hive/vars/main.yml
-- roles/zookeeper/vars/main.yml
-- roles/
+# How to configure ansible-hosts, group_vars/all deploy hadoop-zkcluster?
+## Configure hostname / ip addresses and username to run for ansible-hosts
+```
+[all:vars]
+ssh_key_filename="id_rsa"
+remote_machine_username="jomoon"
+remote_machine_password="changeme"
+
+[master] # primary namenode
+mdw6 ansible_ssh_host=192.168.0.61 zk_id=1
+
+[standby] # secondary namenode
+smdw6 ansible_ssh_host=192.168.0.62 zk_id=2
+
+[workers] # data nodes
+sdw6-01 ansible_ssh_host=192.168.0.63 zk_id=3
+sdw6-02 ansible_ssh_host=192.168.0.64 zk_id=4
+sdw6-03 ansible_ssh_host=192.168.0.65 zk_id=5
+
+[hive] # hive nodes
+mdw6 ansible_ssh_host=192.168.0.61 zk_id=1
+
+[zk_servers]
+mdw6 ansible_ssh_host=192.168.0.61 zk_id=1
+smdw6 ansible_ssh_host=192.168.0.62 zk_id=2
+sdw6-01 ansible_ssh_host=192.168.0.63 zk_id=3
+sdw6-02 ansible_ssh_host=192.168.0.64 zk_id=4
+sdw6-03 ansible_ssh_host=192.168.0.65 zk_id=5
+```
+
+## Configure user / group, hadoop / java version and location to download in groups/all.yml
+```
+user: "hadoop"
+group: "hadoop"
+
+# java version
+jvm_home: "/usr/lib/jvm"
+java_packages:
+ - "java-1.8.0-openjdk"
+ - "java-1.8.0-openjdk-devel"
+
+download_path: "/Users/pivotal/Downloads"
+hadoop_version: "3.3.1"
+```
+##
+
+## configure version / location to download & install / log_path / data_path of apache-zookeeper/java
+```
+package_download_path : "/tmp"
+zookeeper:
+  version: 3.7.0
+  installation_path: /usr/local
+  download_mirror: http://apache.rediris.es/zookeeper
+  configuration:
+    port: 2181
+    log_path: /var/log/zookeeper
+    data_dir: /var/lib/zookeeper
+    tick_time: 2000
+    init_limit: 5
+    sync_limit: 2
+    max_client_cnxns: 100
+    max_session_timeout: 180000
+  use_internal_zookeeper: 1
+java:
+  version: 1.8.0.181-7
+  installation_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.181-7.b13.el7.x86_64
+```
+##
+
+## Configure varialbes such as download location, versions, install/config path, informations of postgresql databbase for Hive in role/hive/var/main.yml
+```
+download_path: "/Users/pivotal/Downloads"
+hive_version: "3.1.2"
+hive_path: "/home/hadoop"
+hive_config_path: "/home/hadoop/apache-hive-{{hive_version}}-bin/conf"
+hive_tmp: "/home/hadoop/hive/tmp"
+~~ snip
+hive_warehouse: "/user/hive/warehouse"
+hive_scratchdir: "/user/hive/tmp"
+hive_querylog_location: "/user/hive/log"
+~~ snip
+# database
+db_type: "postgres"
+hive_connection_driver_name: "org.postgresql.Driver"
+# hive_connection_host: "172.16.251.33"
+hive_connection_host: "192.168.0.81"
+hive_connection_port: "5432"
+hive_connection_dbname: "bdrdemo"
+hive_connection_user_name: "bdrsync"
+hive_connection_password: "changeme"
+```
+##
+
+## The below query file is useful to remove all tables in hive database before running playboot.
+### drop_all_tables.sql
+```
+CREATE FUNCTION drop_all_tables() RETURNS void AS $$
+DECLARE
+    tmp VARCHAR(512);
+DECLARE names CURSOR FOR
+    select tablename from pg_tables where schemaname='public';
+BEGIN
+  FOR stmt IN names LOOP
+    tmp := 'DROP TABLE '|| quote_ident(stmt.tablename) || ' CASCADE;';
+    RAISE NOTICE 'notice: %', tmp;
+    EXECUTE 'DROP TABLE '|| quote_ident(stmt.tablename) || ' CASCADE;';
+  END LOOP;
+  RAISE NOTICE 'finished .....';
+END;
+
+$$ LANGUAGE plpgsql;
+
+select drop_all_tables();```
+```
+##
+### Run to remove tables in a specific database
+```
+psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
+```
+
+# How to run deploy-hadoop-zkcluster.yml to install / configure?
+```
+ansible-playboot -i ansible-hosts deploy-hadoop-zkcluster.yml
+```
 
 # Planning
 
-## Install Hadoop
-1. Download Hadoop to any path
-2. Update the {{ download_path }} in vars/all.yml
-```
-download_path: "/home/jomoon/Downloads" # your local path 
-hadoop_version: "3.2.1" # your hadoop version
-hadoop_path: "/home/hadoop" # default in user "hadoop" home
-hadoop_config_path: "/home/hadoop/hadoop-{{hadoop_version}}/etc/hadoop"
-hadoop_tmp: "/home/hadoop/tmp"
-hadoop_dfs_name: "/home/hadoop/dfs/name"
-hadoop_dfs_data: "/home/hadoop/dfs/data"
-
-```
-3. Use ansible template to generate the hadoop configration, so If your want to add more properties, just update the vars/var_basic.yml.default is 
-
-```
-# hadoop configration 
-hdfs_port: 9000
-core_site_properties:
-  - {
-      "name":"fs.defaultFS",
-      "value":"hdfs://{{ master_ip }}:{{ hdfs_port }}"
-  }
-  - {
-      "name":"hadoop.tmp.dir",
-      "value":"file:{{ hadoop_tmp }}"
-  }
-  - {
-    "name":"io.file.buffer.size",
-    "value":"131072"
-  }
-
-dfs_namenode_httpport: 9001
-hdfs_site_properties:
-  - {
-      "name":"dfs.namenode.secondary.http-address",
-      "value":"{{ master_hostname }}:{{ dfs_namenode_httpport }}"
-  }
-  - {
-      "name":"dfs.namenode.name.dir",
-      "value":"file:{{ hadoop_dfs_name }}"
-  }
-  - {
-      "name":"dfs.namenode.data.dir",
-      "value":"file:{{ hadoop_dfs_data }}"
-  }
-  - {
-      "name":"dfs.replication",
-      "value":"{{ groups['workers']|length }}"
-  }
-  - {
-    "name":"dfs.webhdfs.enabled",
-    "value":"true"
-  }
-
-mapred_site_properties:
- - {
-   "name": "mapreduce.framework.name",
-   "value": "yarn"
- }
- - {
-   "name": "mapreduce.admin.user.env",
-   "value": "HADOOP_MAPRED_HOME=$HADOOP_COMMON_HOME"
- }
- - {
-   "name":"yarn.app.mapreduce.am.env",
-   "value":"HADOOP_MAPRED_HOME=$HADOOP_COMMON_HOME"
- }
-
-yarn_resourcemanager_port: 8040
-yarn_resourcemanager_scheduler_port: 8030
-yarn_resourcemanager_webapp_port: 8088
-yarn_resourcemanager_tracker_port: 8025
-yarn_resourcemanager_admin_port: 8141
-
-yarn_site_properties:
-  - {
-    "name":"yarn.resourcemanager.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_port }}"
-  }
-  - {
-    "name":"yarn.resourcemanager.scheduler.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_scheduler_port }}"
-  }
-  - {
-    "name":"yarn.resourcemanager.webapp.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_webapp_port }}"
-  }
-  - {
-    "name": "yarn.resourcemanager.resource-tracker.address",
-    "value": "{{ master_hostname }}:{{ yarn_resourcemanager_tracker_port }}"
-  }
-  - {
-    "name": "yarn.resourcemanager.admin.address",
-    "value": "{{ master_hostname }}:{{ yarn_resourcemanager_admin_port }}"
-  }
-  - {
-    "name": "yarn.nodemanager.aux-services",
-    "value": "mapreduce_shuffle"
-  } 
-  - {
-    "name": "yarn.nodemanager.aux-services.mapreduce.shuffle.class",
-    "value": "org.apache.hadoop.mapred.ShuffleHandler"
-  }
-```
-
-
----
-Watch This
-```
-hdfs_site_properties:
-  - {
-      "name":"dfs.namenode.secondary.http-address",
-      "value":"{{ master_hostname }}:{{ dfs_namenode_httpport }}"
-  }
-  - {
-      "name":"dfs.namenode.name.dir",
-      "value":"file:{{ hadoop_dfs_name }}"
-  }
-  - {
-      "name":"dfs.namenode.data.dir",
-      "value":"file:{{ hadoop_dfs_data }}"
-  }
-  - {
-      "name":"dfs.replication",
-      "value":"{{ groups['workers']|length }}"  # this is  the group "workers" you define in hosts/host 
-  }
-  - {
-    "name":"dfs.webhdfs.enabled",
-    "value":"true"
-  }
-```
-
-
-### Install Hadoop Zookeeper Cluster
-```
-Run ansible playboo like
-
-```
-ansible-playbook -i ansible-hosts deploy-hadoop-zkcluster
-```
-- hosts: all
-  remote_user: root
-  vars:
-     add_user: true
-     generate_key: true
-     open_firewall: true
-     disable_firewall: false
-     install_hadoop: true
-     config_hadoop: true
-     start_journalnode: true
-  roles:
-    - user
-    - fetch_public_key
-    - authorized
-    - java
-    - hadoop
-    - zookeeper
-
-# The priority of starting hdfs services. It's principal to order in main.yml
-#
-#1 format_namenode : master
-#2 start_namenode : master
-#3 copy_metadata : master
-#4 bootstrap_standby : standby
-#5 start_namenode : standby
-#6 start_datanode : workers
-#7 format_zkfc : master
-#8 start_zkfc : master
-#9 start_zkfc : standby
-#10 start_yan : standby
-
-- hosts: master
-  remote_user: root
-  vars:
-     format_namenode: true
-     start_namenode: true
-     copy_metadata: true
-  roles:
-    - hadoop
-
-- hosts: standby
-  remote_user: root
-  vars:
-     bootstrap_standby: true
-     start_namenode: true
-  roles:
-    - hadoop
-
-- hosts: workers
-  remote_user: root
-  vars:
-     start_datanode: true
-  roles:
-    - hadoop
-
-- hosts: master
-  remote_user: root
-  vars:
-     format_zkfc: true
-     start_zkfc: true
-  roles:
-    - hadoop
-
-- hosts: standby
-  remote_user: root
-  vars:
-     start_zkfc: true
-     start_yarn: true
-  roles:
-    - hadoop
-
-- hosts: hive
-  remote_user: root
-  vars:
-     open_firewall: true
-     install_hive: true
-     config_hive: true
-     init_hive: true
-  roles:
-    - hive
-
-
-
-
-```
-# Add Master Public Key   # get master ssh public key 
-- hosts: master 
-  remote_user: root
-  vars_files:
-   - vars/user.yml
-   - vars/var_basic.yml
-   - vars/var_workers.yml
-  roles:
-    - fetch_public_key
-
-- hosts: workers 
-  remote_user: root
-  vars_files:
-   - vars/user.yml
-   - vars/var_basic.yml
-   - vars/var_workers.yml
-  vars:
-    add_user: true
-    generate_key: false # workers just use master ssh public key
-    open_firewall: false
-    disable_firewall: true  # disable firewall on workers
-    install_hadoop: true
-    config_hadoop: true
-  roles:
-    - user
-    - authorized
-    - java
-    - hadoop
-
-
-
-
-
-```
-run shell like:
-```
-master_ip:  your hadoop master ip
-master_hostname: your hadoop master hostname
-
-above two variables must be same like your real hadoop master
-
-ansible-playbook -i ansible-hosts deploy-hadoop-zkcluster.yml
-
-```
-
-### Install hive
-1. **Create database first and give right authority**
-2. check vars/var_hive.yml
-```
----
-
-# hive basic vars
-download_path: "/home/pippo/Downloads"                                 # your download path
-hive_version: "2.3.2"                                                  # your hive version
-hive_path: "/home/hadoop"
-hive_config_path: "/home/hadoop/apache-hive-{{hive_version}}-bin/conf"
-hive_tmp: "/home/hadoop/hive/tmp"                                      # your hive tmp path
-
-hive_create_path:
-  - "{{ hive_tmp }}"
-
-hive_warehouse: "/user/hive/warehouse"                                # your hdfs path
-hive_scratchdir: "/user/hive/tmp"
-hive_querylog_location: "/user/hive/log"
-
-hive_hdfs_path: 
-  - "{{ hive_warehouse }}"
-  - "{{ hive_scratchdir }}"
-  - "{{ hive_querylog_location }}"
-
-hive_logging_operation_log_location: "{{ hive_tmp }}/{{ user }}/operation_logs"
-
-# database
-db_type: "postgres"                                              # use your db_type, default is postgres
-hive_connection_driver_name: "org.postgresql.Driver"
-hive_connection_host: "172.16.251.33"
-hive_connection_port: "5432"
-hive_connection_dbname: "hive"
-hive_connection_user_name: "hive_user"
-hive_connection_password: "nfsetso12fdds9s"
-hive_connection_url: "jdbc:postgresql://{{ hive_connection_host }}:{{ hive_connection_port }}/{{hive_connection_dbname}}?ssl=false"
-# hive configration                                             # your hive site properties
-hive_site_properties:
-  - {
-      "name":"hive.metastore.warehouse.dir",
-      "value":"hdfs://{{ master_hostname }}:{{ hdfs_port }}{{ hive_warehouse }}"
-  }
-  - {
-      "name":"hive.exec.scratchdir",
-      "value":"{{ hive_scratchdir }}"
-  }
-  - {
-      "name":"hive.querylog.location",
-      "value":"{{ hive_querylog_location }}/hadoop"
-  }
-  - {
-      "name":"javax.jdo.option.ConnectionURL",
-      "value":"{{ hive_connection_url }}"
-  }
-  - {
-    "name":"javax.jdo.option.ConnectionDriverName",
-    "value":"{{ hive_connection_driver_name }}"
-  }
-  - {
-    "name":"javax.jdo.option.ConnectionUserName",
-    "value":"{{ hive_connection_user_name }}"
-  }
-  - {
-    "name":"javax.jdo.option.ConnectionPassword",
-    "value":"{{ hive_connection_password }}"
-  }
-  - {
-    "name":"hive.server2.logging.operation.log.location",
-    "value":"{{ hive_logging_operation_log_location }}"
-  }
-
-hive_server_port: 10000                                    # hive port
-hive_hwi_port: 9999
-hive_metastore_port: 9083
-
-firewall_ports:
-  - "{{ hive_server_port }}"
-  - "{{ hive_hwi_port }}"
-  - "{{ hive_metastore_port }}"
-```
-
-3. check hive.yml
-
-```
-- hosts: hive                   # in hosts/host
-  remote_user: root
-  vars_files:
-   - vars/user.yml
-   - vars/var_basic.yml
-   - vars/var_master.yml
-   - vars/var_hive.yml            # var_hive.yml
-  vars:
-     open_firewall: true           
-     install_hive: true           
-     config_hive: true
-     init_hive: true               # init hive database after install and config
-  roles:
-    - hive
-
-```
-4. run it
-
-```
-ansible-playbook -i hosts/host hive.yml
-
-```
-
 
 ### License
-
 GNU General Public License v3.0
-

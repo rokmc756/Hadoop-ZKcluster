@@ -1,5 +1,5 @@
 
-CREATE FUNCTION aaa() RETURNS void AS $$
+CREATE FUNCTION drop_all_tables() RETURNS void AS $$
 DECLARE
     tmp VARCHAR(512);
 DECLARE names CURSOR FOR 
@@ -15,5 +15,4 @@ END;
  
 $$ LANGUAGE plpgsql;
 
-select aaa();
-
+select drop_all_tables();

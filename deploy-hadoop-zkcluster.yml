@@ -69,6 +69,13 @@
   roles:
     - hadoop
 
+- hosts: workers
+  remote_user: root
+  vars:
+     start_yan_resource_manager: true
+  roles:
+    - hadoop
+
 - hosts: hive
   remote_user: root
   vars:

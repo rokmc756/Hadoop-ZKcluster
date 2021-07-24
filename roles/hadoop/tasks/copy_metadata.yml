@@ -1,4 +1,3 @@
 ---
 - name: Copy metadata to Standby master
   shell: su {{ user }} -c "scp -r /home/hadoop/dfs/data {{ standby_master_hostname }}:/home/hadoop/dfs/"
-#  shell: su - {{ user }} -c "scp -r /home/hadoop/dfs/data smdw6:/home/hadoop/dfs/"

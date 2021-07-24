@@ -1,5 +1,3 @@
 ---
-# Go to the ${HADOOP_HOME}/sbin directory of Standby Master and start YARN.
-# At this point, the ResourceManager service on Standby Master and the NodeManager service on all servers will be started
 - name: Start YARN
   shell: su {{ user }} -c "start-yarn.sh"
