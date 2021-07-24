@@ -18,16 +18,16 @@
 
 # The priority of starting hdfs services. It's principal to order in main.yml
 #
-#1 format_namenode : master
-#2 start_namenode : master
-#3 copy_metadata : master
-#4 bootstrap_standby : standby
-#5 start_namenode : standby
-#6 start_datanode : workers
-#7 format_zkfc : master
-#8 start_zkfc : master
-#9 start_zkfc : standby
-#10 start_yan : standby
+# 1 - format_namenode : master
+# 2 - start_namenode : master
+# 3 - copy_metadata : master
+# 4 - bootstrap_standby : standby
+# 5 - start_namenode : standby
+# 6 - start_datanode : workers
+# 7 - format_zkfc : master
+# 8 - start_zkfc : master
+# 9 - start_zkfc : standby
+#10 - start_yan : standby
 
 - hosts: master
   remote_user: root
