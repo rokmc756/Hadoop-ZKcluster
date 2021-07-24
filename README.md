@@ -154,7 +154,7 @@ ansible-playboot -i ansible-hosts deploy-hadoop-zkcluster.yml
 ```
 
 # Planning
-
+A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
 
 ### License
 
