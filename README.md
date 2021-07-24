@@ -3,6 +3,7 @@ Hadoop-zkcluster is ansible playbook to deploy Hadoop / Hive and Zookeeper clust
 It implements HDFS HA architecture described at the below doc[1] and you could see details about how it works.
 [1] https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
+
 # Where is Haddop Zookeeper from and what / how is it changed?
 Hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
 The ansible role for zookeepr is added, variables of many roles is integrated into group_vars/all.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
@@ -15,6 +16,7 @@ qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']
 
 In role of haddop a few playbooks are added / modified to start hdfs services and seperate whether these are defined or not in deploly-hadoop-zookeeper.yml playbook.
 
+
 # Supported versions of Platform and OS
 ### These are only confirmed as the latest version currently and other version will be done or added soon or later
 ```
@@ -25,9 +27,11 @@ In role of haddop a few playbooks are added / modified to start hdfs services an
 - ansible-zookeeper 3.7.0
 ```
 
+
 # Prerequiste
 Use DNS Server or update /etc/hosts for all servers.
 Passworless SSH for hadoop, root for ansible hosts may help to control.
+
 
 # How to configure ansible-hosts, group_vars/all deploy hadoop-zkcluster?
 ## Configure hostname / ip addresses and username to run for ansible-hosts
@@ -59,6 +63,7 @@ sdw6-02 ansible_ssh_host=192.168.0.64 zk_id=4
 sdw6-03 ansible_ssh_host=192.168.0.65 zk_id=5
 ```
 
+
 ## Configure user / group, hadoop / java version and location to download in groups/all.yml
 ```
 user: "hadoop"
@@ -73,8 +78,6 @@ java_packages:
 download_path: "/Users/pivotal/Downloads"
 hadoop_version: "3.3.1"
 ```
-##
-
 ## configure version / location to download & install / log_path / data_path of apache-zookeeper/java
 ```
 package_download_path : "/tmp"
@@ -96,8 +99,6 @@ java:
   version: 1.8.0.181-7
   installation_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.181-7.b13.el7.x86_64
 ```
-##
-
 ## Configure varialbes such as download location, versions, install/config path,
 ## informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```
@@ -121,7 +122,6 @@ hive_connection_dbname: "bdrdemo"
 hive_connection_user_name: "bdrsync"
 hive_connection_password: "changeme"
 ```
-
 ## The below query file is useful to remove all tables in hive database before running playboot.
 ### drop_all_tables.sql
 ```
@@ -144,12 +144,10 @@ $$ LANGUAGE plpgsql;
 select drop_all_tables();```
 ```
 
-### Run to remove tables in a specific database
+# Run to remove tables in a specific database
 ```
 psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
 ```
-
-##
 
 # How to run deploy-hadoop-zkcluster.yml to install / configure?
 ```
@@ -159,5 +157,5 @@ ansible-playboot -i ansible-hosts deploy-hadoop-zkcluster.yml
 # Planning
 A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
 
-### License
+# License
 GNU General Public License v3.0
