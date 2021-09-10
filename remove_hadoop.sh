@@ -1,10 +1,9 @@
 #!/bin/bash
 
-ssh root@mdw6 su "hadoop -c 'hadoop-daemon.sh stop zkfc'"
-ssh root@mdw6 su "hadoop -c 'stop-all.sh'"
-ssh root@test1 su "hadoop -c 'stop-all.sh'"
+ssh root@mdw7 su "hadoop -c 'hadoop-daemon.sh stop zkfc'"
+ssh root@mdw7 su "hadoop -c 'stop-all.sh'"
 
-for i in `echo "mdw6 smdw6 sdw6-01 sdw6-02 sdw6-03"`
+for i in `echo "mdw7 smdw7 sdw7-01 sdw7-02 sdw7-03"`
 do
     ssh root@$i "rm -rf /home/hadoop/* /tmp/*hadoop-hadoop-*.pid"
     ssh root@$i "systemctl stop zookeeper"

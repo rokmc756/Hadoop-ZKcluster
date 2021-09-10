@@ -72,16 +72,16 @@
 - hosts: workers
   remote_user: root
   vars:
-     start_yan_resource_manager: true
+     start_yan_resource_manager: false
   roles:
     - hadoop
 
-- hosts: hive
-  remote_user: root
-  vars:
-     open_firewall: true
-     install_hive: true
-     config_hive: true
-     init_hive: true
-  roles:
-    - hive
+      #- hosts: hive
+      #  remote_user: root
+      #  vars:
+      #     open_firewall: true
+      #     install_hive: true
+      #     config_hive: true
+      #     init_hive: true
+      #  roles:
+      #    - hive

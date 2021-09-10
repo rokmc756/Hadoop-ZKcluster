@@ -8,10 +8,10 @@ java_packages:
  - "java-1.8.0-openjdk"
  - "java-1.8.0-openjdk-devel"
 
-master_ip: "{{ hostvars['mdw7']['ansible_eth0']['ipv4']['address'] }}"
-master_hostname: "{{ hostvars['mdw7'].ansible_hostname }}"
-standby_master_ip: "{{ hostvars['smdw7']['ansible_eth0']['ipv4']['address'] }}"
-standby_master_hostname: "{{ hostvars['smdw7'].ansible_hostname }}"
+master_ip: "{{ hostvars['mdw6']['ansible_eth0']['ipv4']['address'] }}"
+master_hostname: "{{ hostvars['mdw6'].ansible_hostname }}"
+standby_master_ip: "{{ hostvars['smdw6']['ansible_eth0']['ipv4']['address'] }}"
+standby_master_hostname: "{{ hostvars['smdw6'].ansible_hostname }}"
 
 # download_path: "/home/pippo/Downloads"
 download_path: "/Users/pivotal/Downloads"
@@ -33,15 +33,13 @@ hadoop_create_path:
 
 # hadoop configration
 hdfs_port: 9000
-  #zkquorum_list: |
-  #{% set results = [] %}
-  #{% for host in groups['all'] %}
-  #{{ hostvars[host][ansible_hostname] }}:2181
-  #{% endfor %}
-  #{% set results = [] %}
 
 zkservers_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
 qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
+# namenode_list: "{{ master_hostname }},{{ standby_master_hostname }}"
+namenode_list: "{{ groups['master'] | map('extract', hostvars, ['ansible_hostname']) | join(',') }},{{ groups['standby'] | map('extract', hostvars, ['ansible_hostname']) | join(',') }}"
+datanode_list: "{{ groups['workers'] | map('extract', hostvars, ['ansible_hostname']) | join(',') }}"
+hadoop_cluster_name: "ha_cluster"
 
 core_site_properties:
   - {
@@ -88,28 +86,28 @@ hdfs_site_properties:
       "value":"ha-cluster"
   }
   - {
-      "name":"dfs.ha.namenodes.ha-cluster",
-      "value":"nn1,nn2"
+      "name":"dfs.ha.namenodes.{{ hadoop_cluster_name }}",
+      "value":"{{ namenode_list }}"
   }
   - {
-      "name":"dfs.namenode.rpc-address.ha-cluster.nn1",
+      "name":"dfs.namenode.rpc-address.ha-cluster.{{ master_hostname }}",
       "value":"{{ master_hostname }}:9000"
   }
   - {
-      "name":"dfs.namenode.rpc-address.ha-cluster.nn2",
+      "name":"dfs.namenode.rpc-address.ha-cluster.{{ standby_master_hostname }}",
       "value":"{{ standby_master_hostname }}:9000"
   }
   - {
-      "name":"dfs.namenode.http-address.ha-cluster.nn1",
+      "name":"dfs.namenode.http-address.ha-cluster.{{ master_hostname }}",
       "value":"{{ master_hostname }}:50070"
   }
   - {
-      "name":"dfs.namenode.http-address.ha-cluster.nn2",
+      "name":"dfs.namenode.http-address.ha-cluster.{{ standby_master_hostname }}",
       "value":"{{ standby_master_hostname }}:50070"
   }
   - {
       "name":"dfs.namenode.shared.edits.dir",
-      "value":"qjournal://{{ qjournal_list }}/ha-cluster"
+      "value":"qjournal://{{ qjournal_list }}/{{ hadoop_cluster_name }}"
   }
   - {
       "name":"dfs.journalnode.edits.dir",
@@ -179,32 +177,20 @@ yarn_site_properties:
   }
   - {
     "name":"yarn.resourcemanager.ha.rm-ids",
-    "value":"rm1,rm2,rm3"
+    "value":"rm1,rm2"
   }
+{% for datanode in groups[workers] %}
   - {
-    "name":"yarn.resourcemanager.hostname.rm1",
-    "value":"sdw7-01"
+    "name":"yarn.resourcemanager.hostname.{{ datanode }}",
+    "value":"{{ datanode }}"
   }
+{% endfor %}
+{% for datanode in groups[workers] %}
   - {
-    "name":"yarn.resourcemanager.hostname.rm2",
-    "value":"sdw7-02"
+    "name":"yarn.resourcemanager.webapp.address.{{ datanode }}",
+    "value":"{{ datanode  }}:8088"
   }
-  - {
-    "name":"yarn.resourcemanager.hostname.rm3",
-    "value":"sdw7-03"
-  }
-  - {
-    "name":"yarn.resourcemanager.webapp.address.rm1",
-    "value":"sdw7-01:8088"
-  }
-  - {
-    "name":"yarn.resourcemanager.webapp.address.rm2",
-    "value":"sdw7-02:8088"
-  }
-  - {
-    "name":"yarn.resourcemanager.webapp.address.rm3",
-    "value":"sdw7-03:8088"
-  }
+{% endfor %}
   - {
     "name":"yarn.resourcemanager.zk-address",
     "value":"{{ zkservers_list }}"
@@ -216,7 +202,7 @@ yarn_site_properties:
   - {
     "name":"yarn.resourcemanager.store.class",
     "value":"org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore"
-  }   ###
+  } # Appened here
   - {
     "name":"yarn.resourcemanager.address",
     "value":"{{ master_hostname }}:{{ yarn_resourcemanager_port }}"
@@ -252,4 +238,3 @@ firewall_ports:
   - "{{ yarn_resourcemanager_webapp_port }}"
   - "{{ yarn_resourcemanager_tracker_port }}"
   - "{{ yarn_resourcemanager_admin_port }}"
-  - "8485"
