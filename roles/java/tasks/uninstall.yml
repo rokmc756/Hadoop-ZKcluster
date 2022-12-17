@@ -1,0 +1,20 @@
+---
+- name: Uninstall OpenJDK package
+  yum: name={{ item }} state=absent
+  with_items:
+    - "{{ java_packages }}"
+
+- name: Comment JAVA_HOME variable
+  replace:
+    path: /etc/profile.d/java_home.sh
+    regexp: "^export "
+    replace: "#export "
+
+- name: Uncomment Previous variables for JAVA_HOME
+  replace:
+    path: /etc/profile.d/java_home.sh
+    regexp: "^# "
+    replace: ""
+
+- name: Set Java Home Script
+  shell: source /etc/profile.d/java_home.sh

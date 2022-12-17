@@ -1,22 +1,13 @@
 ---
-- name: Create Hadoop Path
-  file: 
-    path: "{{ item }}"
-    owner: "{{ user }}"
-    group: "{{ group }}"
-    state: directory
-    mode: 0755
-  with_items:
-    - "{{ hive_create_path }}"
+# for now fail if it's not a Red Hat based system
+- name: Check OS ( GPDB )
+  fail: msg="Not a Red Hat based system!"
+  when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS'  ansible_os_family != 'Rocky'
 
-- include: install_hive.yml
-  when: install_hive is defined and install_hive
+- name: Install Hive
+  include: install.yml
+  tags: install
 
-- include: config_hive.yml
-  when: config_hive is defined and config_hive
-
-- include: init_hive.yml
-  when: init_hive is defined and init_hive
-
-- include: redhat.yml
-  when: ansible_os_family == 'RedHat'
+- name: Uninstall Hive
+  include: uninstall.yml
+  tags: uninstall

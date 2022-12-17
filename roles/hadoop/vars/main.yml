@@ -2,20 +2,13 @@
 user: "hadoop"
 group: "hadoop"
 
-# java version
-jvm_home: "/usr/lib/jvm"
-java_packages:
- - "java-1.8.0-openjdk"
- - "java-1.8.0-openjdk-devel"
+master_ip: "{{ hostvars[groups['master'][0]]['ansible_eth0']['ipv4']['address'] }}"
+master_hostname: "{{ hostvars[groups['master'][0]].ansible_hostname }}"
+standby_master_ip: "{{ hostvars[groups['standby'][0]]['ansible_eth0']['ipv4']['address'] }}"
+standby_master_hostname: "{{ hostvars[groups['standby'][0]].ansible_hostname }}"
 
-master_ip: "{{ hostvars['mdw6']['ansible_eth0']['ipv4']['address'] }}"
-master_hostname: "{{ hostvars['mdw6'].ansible_hostname }}"
-standby_master_ip: "{{ hostvars['smdw6']['ansible_eth0']['ipv4']['address'] }}"
-standby_master_hostname: "{{ hostvars['smdw6'].ansible_hostname }}"
-
-# download_path: "/home/pippo/Downloads"
-download_path: "/Users/pivotal/Downloads"
-hadoop_version: "3.3.1"
+download_path: "/Users/moonja/Downloads"
+hadoop_version: "3.3.4"
 hadoop_path: "/home/hadoop"
 hadoop_config_path: "/home/hadoop/hadoop-{{hadoop_version}}/etc/hadoop"
 hadoop_tmp: "/home/hadoop/tmp"
@@ -33,13 +26,15 @@ hadoop_create_path:
 
 # hadoop configration
 hdfs_port: 9000
+  #zkquorum_list: |
+  #{% set results = [] %}
+  #{% for host in groups['all'] %}
+  #{{ hostvars[host][ansible_hostname] }}:2181
+  #{% endfor %}
+  #{% set results = [] %}
 
 zkservers_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
 qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
-# namenode_list: "{{ master_hostname }},{{ standby_master_hostname }}"
-namenode_list: "{{ groups['master'] | map('extract', hostvars, ['ansible_hostname']) | join(',') }},{{ groups['standby'] | map('extract', hostvars, ['ansible_hostname']) | join(',') }}"
-datanode_list: "{{ groups['workers'] | map('extract', hostvars, ['ansible_hostname']) | join(',') }}"
-hadoop_cluster_name: "ha_cluster"
 
 core_site_properties:
   - {
@@ -86,28 +81,28 @@ hdfs_site_properties:
       "value":"ha-cluster"
   }
   - {
-      "name":"dfs.ha.namenodes.{{ hadoop_cluster_name }}",
-      "value":"{{ namenode_list }}"
+      "name":"dfs.ha.namenodes.ha-cluster",
+      "value":"nn1,nn2"
   }
   - {
-      "name":"dfs.namenode.rpc-address.ha-cluster.{{ master_hostname }}",
+      "name":"dfs.namenode.rpc-address.ha-cluster.nn1",
       "value":"{{ master_hostname }}:9000"
   }
   - {
-      "name":"dfs.namenode.rpc-address.ha-cluster.{{ standby_master_hostname }}",
+      "name":"dfs.namenode.rpc-address.ha-cluster.nn2",
       "value":"{{ standby_master_hostname }}:9000"
   }
   - {
-      "name":"dfs.namenode.http-address.ha-cluster.{{ master_hostname }}",
+      "name":"dfs.namenode.http-address.ha-cluster.nn1",
       "value":"{{ master_hostname }}:50070"
   }
   - {
-      "name":"dfs.namenode.http-address.ha-cluster.{{ standby_master_hostname }}",
+      "name":"dfs.namenode.http-address.ha-cluster.nn2",
       "value":"{{ standby_master_hostname }}:50070"
   }
   - {
       "name":"dfs.namenode.shared.edits.dir",
-      "value":"qjournal://{{ qjournal_list }}/{{ hadoop_cluster_name }}"
+      "value":"qjournal://{{ qjournal_list }}/ha-cluster"
   }
   - {
       "name":"dfs.journalnode.edits.dir",
@@ -177,20 +172,32 @@ yarn_site_properties:
   }
   - {
     "name":"yarn.resourcemanager.ha.rm-ids",
-    "value":"rm1,rm2"
+    "value":"rm1,rm2,rm3"
   }
-{% for datanode in groups[workers] %}
   - {
-    "name":"yarn.resourcemanager.hostname.{{ datanode }}",
-    "value":"{{ datanode }}"
+    "name":"yarn.resourcemanager.hostname.rm1",
+    "value":"{{ hostvars[groups['workers'][0]].ansible_hostname }}"
   }
-{% endfor %}
-{% for datanode in groups[workers] %}
   - {
-    "name":"yarn.resourcemanager.webapp.address.{{ datanode }}",
-    "value":"{{ datanode  }}:8088"
+    "name":"yarn.resourcemanager.hostname.rm2",
+    "value":"{{ hostvars[groups['workers'][1]].ansible_hostname }}"
   }
-{% endfor %}
+  - {
+    "name":"yarn.resourcemanager.hostname.rm3",
+    "value":"{{ hostvars[groups['workers'][2]].ansible_hostname }}"
+  }
+  - {
+    "name":"yarn.resourcemanager.webapp.address.rm1",
+    "value":"{{ hostvars[groups['workers'][0]].ansible_hostname }}:8088"
+  }
+  - {
+    "name":"yarn.resourcemanager.webapp.address.rm2",
+    "value":"{{ hostvars[groups['workers'][1]].ansible_hostname }}:8088"
+  }
+  - {
+    "name":"yarn.resourcemanager.webapp.address.rm3",
+    "value":"{{ hostvars[groups['workers'][2]].ansible_hostname }}:8088"
+  }
   - {
     "name":"yarn.resourcemanager.zk-address",
     "value":"{{ zkservers_list }}"
@@ -202,7 +209,7 @@ yarn_site_properties:
   - {
     "name":"yarn.resourcemanager.store.class",
     "value":"org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore"
-  } # Appened here
+  }   ###
   - {
     "name":"yarn.resourcemanager.address",
     "value":"{{ master_hostname }}:{{ yarn_resourcemanager_port }}"
@@ -238,3 +245,4 @@ firewall_ports:
   - "{{ yarn_resourcemanager_webapp_port }}"
   - "{{ yarn_resourcemanager_tracker_port }}"
   - "{{ yarn_resourcemanager_admin_port }}"
+  - "8485"

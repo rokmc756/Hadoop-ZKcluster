@@ -1,0 +1,5 @@
+---
+#- name: Delete Hadoop Latest Public Key From Hadoop Master
+#  file:
+#    path: "/home/{{ user }}/.ssh/id_rsa.pub"
+#    state: absent

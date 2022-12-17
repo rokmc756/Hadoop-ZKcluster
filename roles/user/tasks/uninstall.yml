@@ -1,0 +1,15 @@
+---
+#- name: Delete Public key
+#  file:
+#    path: "/home/hadoop/.ssh/id_rsa"
+#    state: absent
+
+- name: Delete "{{ user }}"User
+  user:
+    name: "{{ user }}"
+    state: absent
+
+- name: Delete "{{ group }}" Group
+  group:
+    name: "{{ group }}"
+    state: absent

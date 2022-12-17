@@ -1,0 +1,35 @@
+---
+- name: Remove Hive configure, environment and binary
+  file:
+    path: "{{ item }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    state: absent
+  with_items:
+    - "{{ hive_config_path }}/hive-site.xml"
+    - "{{ download_path }}/apache-hive-{{ hive_version }}-bin.tar.gz"
+    - "/etc/profile.d/hive_env.sh"
+
+- name: Remove Hive Path
+  file:
+    path: "{{ item }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    state: absent
+    recurse: yes
+    mode: 0755
+  with_items:
+    - "{{ hive_create_path }}"
+    - "{{ hive_hdfs_path }}"
+
+- name: Disable ports in Firewalld
+  firewalld:
+    port: '{{item}}/tcp'
+    permanent: true
+    state: disabled
+    zone: public
+    immediate: yes
+  with_items:
+    - '{{firewall_ports}}'
+  when: ! open_firewall
+  ignore_errors: true

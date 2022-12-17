@@ -1,17 +1,14 @@
 ---
-- name: Add User
-  user: name={{user}} shell=/bin/bash append=yes
-  when: add_user
 
-- name: Check Public Key
-  shell: "ls /home/{{ user }}/.ssh|grep '.pub' |wc -l"
-  register: key_exist
-  ignore_errors: true
+# for now fail if it's not a Red Hat based system
+- name: Check OS ( GPDB )
+  fail: msg="Not a Red Hat based system!"
+  when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS'  ansible_os_family != 'Rocky'
 
-- name: Generate Public key
-  user:
-    name: "{{ user }}"
-    generate_ssh_key: yes
-    ssh_key_bits: 2048
-    ssh_key_file: .ssh/id_rsa
-  when: "key_exist.stdout == '0' and generate_key"
+- name: Add {{ user }} user
+  include: install.yml
+  tags: install
+
+- name: Remove {{ user }} user
+  include: uninstall.yml
+  tags: uninstall

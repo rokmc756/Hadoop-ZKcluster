@@ -1,0 +1,11 @@
+- hosts: all
+  remote_user: root
+  vars:
+     disable_firewall: true
+  roles:
+    - zookeeper
+    - hadoop
+    - authorized
+    - fetch_public_key
+    - user
+    - java

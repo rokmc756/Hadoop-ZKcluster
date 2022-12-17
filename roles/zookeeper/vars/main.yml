@@ -1,6 +1,6 @@
 package_download_path : "/tmp"
 zookeeper:
-  version: 3.7.0
+  version: 3.8.0
   installation_path: /usr/local
   download_mirror: http://apache.rediris.es/zookeeper
   configuration:
@@ -14,9 +14,9 @@ zookeeper:
     max_session_timeout: 180000
   use_internal_zookeeper: 1
 java:
-  version: 1.8.0.181-7
-  installation_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.181-7.b13.el7.x86_64
-  build: b13
+  version: 1.8.0.352
+  installation_path: /usr/lib/jvm/java-1.8.0-openjdk
+  build: b08
   platform: x86_64
   priority: 100
 #  download_mirror: http://download.oracle.com/otn-pub/java/jdk

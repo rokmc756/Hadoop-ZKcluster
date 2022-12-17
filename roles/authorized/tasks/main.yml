@@ -1,5 +1,14 @@
 ---
-- name: Add Hadoop Public Key
-  authorized_key:
-    user={{ user }}
-    key="{{ lookup('file', '/tmp/id_{{ master_ip }}_{{ user }}.pub') }}"
+
+# for now fail if it's not a Red Hat based system
+- name: Check OS ( GPDB )
+  fail: msg="Not a Red Hat based system!"
+  when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS'  ansible_os_family != 'Rocky'
+
+- name: Install authorized
+  include: install.yml
+  tags: install
+
+- name: Uninstall authorized
+  include: uninstall.yml
+  tags: uninstall

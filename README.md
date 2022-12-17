@@ -20,9 +20,9 @@ In role of haddop a few playbooks are added / modified to start hdfs services an
 # Supported versions of Platform and OS
 ### These are only confirmed as the latest version currently and other version will be done or added soon or later
 ```
-- CentOS 7.x
+- CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
 - openjdk-1.8
-- Hadoop 3.3.1
+- Hadoop 3.3.1 ~ 4
 - Hive 3.1.2
 - ansible-zookeeper 3.7.0
 ```
@@ -149,9 +149,14 @@ select drop_all_tables();```
 psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
 ```
 
-# How to run deploy-hadoop-zkcluster.yml to install / configure?
+# How to install and deploy hadoop cluster
 ```
-ansible-playboot -i ansible-hosts deploy-hadoop-zkcluster.yml
+make install
+```
+
+# How to undeply and uninstall hadoop cluster
+```
+make uninstall
 ```
 
 # Planning
@@ -159,3 +164,5 @@ A few variables for yarn-resource-manager, etc in group_vars/all.yml need to mod
 
 # License
 GNU General Public License v3.0
+
+https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
