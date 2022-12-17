@@ -1,5 +1,4 @@
 ---
-ansible_become_pass: "rmsidwoalfh"
 user: "hadoop"
 group: "hadoop"
 
