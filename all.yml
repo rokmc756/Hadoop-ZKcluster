@@ -1,4 +1,5 @@
 ---
+ansible_become_pass: "changeme"
 user: "hadoop"
 group: "hadoop"
 
