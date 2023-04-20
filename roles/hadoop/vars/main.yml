@@ -7,8 +7,10 @@ master_hostname: "{{ hostvars[groups['master'][0]].ansible_hostname }}"
 standby_master_ip: "{{ hostvars[groups['standby'][0]]['ansible_eth0']['ipv4']['address'] }}"
 standby_master_hostname: "{{ hostvars[groups['standby'][0]].ansible_hostname }}"
 
-download_path: "/Users/moonja/Downloads"
-hadoop_version: "3.3.4"
+# download_path: "/Users/moonja/Downloads"
+download_hadoop: false
+download_path: "/tmp"
+hadoop_version: "3.3.5"
 hadoop_path: "/home/hadoop"
 hadoop_config_path: "/home/hadoop/hadoop-{{hadoop_version}}/etc/hadoop"
 hadoop_tmp: "/home/hadoop/tmp"
@@ -56,6 +58,14 @@ core_site_properties:
   - {
     "name":"ha.zookeeper.session-timeout.ms",
     "value":"10000"
+  }
+  - {
+    "name":"hadoop.proxyuser.gpadmin.hosts",
+    "value":"*"
+  }
+  - {
+    "name":"hadoop.proxyuser.gpadmin.groups",
+    "value":"*"
   }
 
 dfs_namenode_httpport: 9001
@@ -127,6 +137,14 @@ hdfs_site_properties:
   - {
       "name":"dfs.ha.automatic-failover.enabled",
       "value":"true"
+  }
+  - {
+      "name":"dfs.client.failover.proxy.provider.ha-cluster",
+      "value":"org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider"
+  }
+  - {
+      "name":"dfs.datanode.max.xcievers",
+      "value":"4096"
   }
 
 mapred_site_properties:

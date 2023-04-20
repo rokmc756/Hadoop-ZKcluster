@@ -10,13 +10,17 @@
     zk_package_name: apache-zookeeper-{{ zookeeper.version }}-bin.tar.gz
     zk_application_path: "{{ zookeeper.installation_path }}/apache-zookeeper-{{ zookeeper.version }}-bin"
 
-- name: check zookeeper package
+- name: Check zookeeper package
   stat: path={{ package_download_path }}/{{ zk_package_name }}
   register: zk_package_exists
 
-- name: download zookeeper tar if not downloaded
+- name: Download zookeeper tar if not downloaded
   get_url: url={{ zookeeper.download_mirror }}/zookeeper-{{ zookeeper.version }}/{{ zk_package_name }} dest={{ package_download_path }}
-  when: not zk_package_exists.stat.exists
+  when: not zk_package_exists.stat.exists and zookeeper.download_zookeeper == true
+
+- name: Copy zookeeper from local directory, roles/zookeeper/files
+  copy: src={{ zk_package_name }} dest=/tmp/{{ zk_package_name }} mode=0644 owner=zookeeper group=zookeeper
+  when: not zk_package_exists.stat.exists and zookeeper.download_zookeeper == false
 
 - name: unarchive zookeeper package
   unarchive: src={{ package_download_path }}/{{ zk_package_name }} dest={{ zookeeper.installation_path }} copy=no

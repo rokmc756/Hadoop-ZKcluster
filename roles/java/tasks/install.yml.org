@@ -1,0 +1,35 @@
+---
+- name: Install OpenJDK package
+  yum: name={{ item }} state=present
+  with_items:
+    - java-1.8.0-openjdk
+    - java-1.8.0-openjdk-devel
+    - java-11-openjdk
+    - java-11-openjdk-devel
+    - java-17-openjdk
+    - java-17-openjdk-devel
+    - tar
+#    - "{{ java_packages }}"
+
+- name: Check if Java RPM Package is installed
+  package_facts:
+    manager: "auto"
+
+- name: Install Java RPM Package
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - java-17-openjdk
+    - java-17-openjdk-devel
+    - tar
+  when:
+    - hostvars[inventory_hostname].ansible_distribution_major_version|int >= 8
+    - install_oracle_java == false
+
+
+- name: Copy Java Home Script
+  template: src=java_home.sh dest=/etc/profile.d
+
+- name: Set Java Home Script
+  shell: source /etc/profile.d/java_home.sh

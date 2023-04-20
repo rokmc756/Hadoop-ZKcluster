@@ -2,6 +2,7 @@ package_download_path : "/tmp"
 zookeeper:
   version: 3.8.0
   installation_path: /usr/local
+  download_zookeeper: false
   download_mirror: http://apache.rediris.es/zookeeper
   configuration:
     port: 2181
