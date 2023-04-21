@@ -10,9 +10,9 @@
     - "{{ hadoop_create_path }}"
   tags: install
 
-- include: redhat.yml
-  when: ansible_os_family == 'RedHat' or ansible_os_family == 'CentOS' or ansible_os_family == 'Rocky'
-  tags: install
+#- include: redhat.yml
+#  when: ansible_os_family == 'RedHat' or ansible_os_family == 'CentOS' or ansible_os_family == 'Rocky'
+#  tags: install
 
 - include: install_hadoop.yml
   when: install_hadoop is defined and install_hadoop

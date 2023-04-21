@@ -19,15 +19,15 @@
   when: disable_firewall is defined and disable_firewall
   ignore_errors: true
 
-- name: Whitelist of Ip addresses
-  firewalld:
-    zone: public
-    rich_rule: "rule family=ipv4 source address={{ hostvars[item]['ansible_eth0']['ipv4']['address'] }} accept"
-    permanent: true
-    state: enabled
-  with_items:
-    - "{{ groups['all'] }}"
-  when: open_firewall is defined and open_firewall
+#- name: Whitelist of Ip addresses
+#  firewalld:
+#    zone: public
+#    rich_rule: "rule family=ipv4 source address={{ hostvars[item]['ansible_eth0']['ipv4']['address'] }} accept"
+#    permanent: true
+#    state: enabled
+#  with_items:
+#    - "{{ groups['all'] }}"
+#  when: open_firewall is defined and open_firewall
 
     #- name: Whitelist of Ip addresses
     #  firewalld:
@@ -39,5 +39,5 @@
     #    - "{{ groups['all'] }}"
     #  when: open_firewall is defined and open_firewall
 
-- name: Bounce firewalld
-  service: name=firewalld state=restarted
+#- name: Bounce firewalld
+#  service: name=firewalld state=restarted

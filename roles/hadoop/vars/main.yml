@@ -139,13 +139,34 @@ hdfs_site_properties:
       "value":"true"
   }
   - {
-      "name":"dfs.client.failover.proxy.provider.ha-cluster",
-      "value":"org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider"
+      "name":"dfs.ha.allow.stale.reads",
+      "value":"true"
   }
-  - {
-      "name":"dfs.datanode.max.xcievers",
-      "value":"4096"
-  }
+
+  # - {
+  #    "name":"dfs.datanode.max.xcievers",
+  #    "value":"4096"
+  #}
+  #- {
+  #    "name":"dfs.ha.allow.stale.reads",
+  #    "value":"true"
+  #}
+  #- {
+  #    "name":"dfs.client.use.datanode.hostname",
+  #    "value":"true"
+  #}
+  #- {
+  #    "name":"dfs.datanode.use.datanode.hostname",
+  #    "value":"true"
+  #}
+  #- {
+  #    "name":"dfs.block.size",
+  #    "value":"134217728"
+  #}
+  #- {
+  #    "name":"dfs.datatnode.address",
+  #    "value":"0.0.0.0:9000"
+  #}  # Applied first for Hadoop 2.10.2, 9000 was in 3.4.x
 
 mapred_site_properties:
  - {
@@ -253,14 +274,16 @@ yarn_site_properties:
     "value": "org.apache.hadoop.mapred.ShuffleHandler"
   }
 
-dashbord_port: 9870
-firewall_ports:
-  - "{{ dashbord_port}}"
-  - "{{ hdfs_port }}"
-  - "{{ dfs_namenode_httpport }}"
-  - "{{ yarn_resourcemanager_port }}"
-  - "{{ yarn_resourcemanager_scheduler_port }}"
-  - "{{ yarn_resourcemanager_webapp_port }}"
-  - "{{ yarn_resourcemanager_tracker_port }}"
-  - "{{ yarn_resourcemanager_admin_port }}"
-  - "8485"
+#dashbord_port: 9870
+#firewall_ports:
+#  - "{{ dashbord_port}}"
+#  - "{{ hdfs_port }}"
+#  - "{{ dfs_namenode_httpport }}"
+#  - "{{ yarn_resourcemanager_port }}"
+#  - "{{ yarn_resourcemanager_scheduler_port }}"
+#  - "{{ yarn_resourcemanager_webapp_port }}"
+#  - "{{ yarn_resourcemanager_tracker_port }}"
+#  - "{{ yarn_resourcemanager_admin_port }}"
+#  - "8485"
+#  - "50010"
+

@@ -1,0 +1,42 @@
+---
+# Hadoop 3.x
+nn_firewall_ports:
+  - 8020
+  - 8042  # Web UI for cluster and all applications
+  - 9000
+  - 9820
+  - 9870  # Dashboard
+  - 9871
+  - 9868  # Secondary NN
+  - 9869  # Secondary NN
+  - 50070
+  - 50090 # Secondary NN
+  - 50091 # Secondary NN
+  - 50470
+
+# Hadoop 3.x
+dn_firewall_ports:
+  - 1019
+  - 9864
+  - 9865
+  - 9866
+  - 9867
+  - 50010
+  - 50020
+  - 50075
+  - 50475
+
+# Hadoop 3.x
+common_firewall_ports:
+  - "2181"      # zookeeper
+  - "2888-3888" # zookeeper 
+  - "8025"      # yarn_resourcemanager_tracker_port
+  - "8040"      # yarn_resourcemanager_port
+  - "8088"      # yarn_resourcemanager_webapp_port
+  - "8141"      # yarn_resourcemanager_admin_port
+  - "8485"      # ?
+  - "9000"      # hdfs_port
+  - "9001"      # dfs_namenode_httpport
+  - "8030"      # yarn_resourcemanager_scheduler_port
+
+# https://docs.cloudera.com/HDPDocuments/HDP3/HDP-3.0.0/administration/content/hdfs-ports.html
