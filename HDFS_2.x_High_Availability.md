@@ -1,5 +1,5 @@
 ## HDFS 2.x High Availability Cluster Architecture
-This page is about HDFS 2.x High Availability Cluster Architecture and the procedure to set up an HDFS High Availability cluster. This is an important part of the Big Data course. The order in which the topics have been covered in this blog are as follows:
+This page is about HDFS 2.x High Availability Cluster Architecture and the procedure to set up an HDFS High Availability cluster. This is an important part of the Big Data course. The order in which the topics have been covered in this blog are as follows.
 
 ### HDFS HA Architecture
 * Introduction
@@ -8,10 +8,10 @@ This page is about HDFS 2.x High Availability Cluster Architecture and the proce
 * Implementation of HA (JournalNode and Shared storage)
 ## How to set up HA (Quorum Journal Nodes) in a Hadoop cluster?
 
-## Introduction:
+## Introduction
 The concept of High Availability cluster was introduced in Hadoop 2.x to solve the single point of failure problem in Hadoop 1.x. As you know from my previous blog that the HDFS Architecture follows Master/Slave Topology where NameNode acts as a master daemon and is responsible for managing other slave nodes called DataNodes. This single Master Daemon or NameNode becomes a bottleneck. Although, the introduction of Secondary NameNode did prevent us from data loss and offloading some of the burden of the NameNode but, it did not solve the availability issue of the NameNode.
 
-## NameNode Availability:
+## NameNode Availability
 If you consider the standard configuration of HDFS cluster, the NameNode becomes a single point of failure. It happens because the moment the NameNode becomes unavailable, the whole cluster becomes unavailable until someone restarts the NameNode or brings a new one.
 
 The reasons for unavailability of NameNode can be:
@@ -20,8 +20,8 @@ The reasons for unavailability of NameNode can be:
 * It may also be due to an unplanned event where the NameNode crashes because of some reasons.
 In either of the above cases, we have a downtime where we are not able to use the HDFS cluster which becomes a challenge.
 
-## HDFS HA Architecture:
-Let us understand that how HDFS HA Architecture solved this critical problem of NameNode availability:
+## HDFS HA Architecture
+Let us understand that how HDFS HA Architecture solved this critical problem of NameNode availability.
 
 The HA architecture solved this problem of NameNode availability by allowing us to have two NameNodes in an active/passive configuration. So, we have two running NameNodes at the same time in a High Availability cluster:
 
@@ -29,10 +29,9 @@ The HA architecture solved this problem of NameNode availability by allowing us 
 * Standby/Passive NameNode.
 ![alt text](https://github.com/rokmc756/hadoop-zkcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png)
 
-If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time. The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster. Therefore, with the StandbyNode, we can have automatic failover whenever a NameNode crashes (unplanned event) or we can have a graceful (manually initiated) failover during the maintenance period. 
+If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time. The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster. Therefore, with the StandbyNode, we can have automatic failover whenever a NameNode crashes (unplanned event) or we can have a graceful (manually initiated) failover during the maintenance period.
 
 There are two issues in maintaining consistency in the HDFS High Availability cluster:
-
 * Active and Standby NameNode should always be in sync with each other, i.e. They should have the same metadata. This will allow us to restore the Hadoop cluster to the same namespace state where it got crashed and therefore, will provide us to have fast failover.
 * There should be only one active NameNode at a time because two active NameNode will lead to corruption of the data. This kind of scenario is termed as a split-brain scenario where a cluster gets divided into smaller cluster, each one believing that it is the only active cluster. To avoid such scenarios fencing is done. Fencing is a process of ensuring that only one NameNode remains active at a particular time.
 
@@ -41,19 +40,19 @@ Now, you know that in HDFS HA Architecture, we have two NameNodes running at the
 
 * Using Quorum Journal Nodes
 * Shared Storage using NFS
-Let us understand these two ways of implementation taking one at a time:
 
+Let us understand these two ways of implementation taking one at a time:
 1. Using Quorum Journal Nodes:
 ![alt text](https://github.com/rokmc756/hadoop-zkcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png)
 
-* The standby NameNode and the active NameNode keep in sync with each other through a separate group of nodes or daemons -called JournalNodes. The JournalNodes follows the ring topology where the nodes are connected to each other to form a ring. The JournalNode serves the request coming to it and copies the information into other nodes in the ring.This provides fault tolerance in case of JournalNode failure. 
+* The standby NameNode and the active NameNode keep in sync with each other through a separate group of nodes or daemons -called JournalNodes. The JournalNodes follows the ring topology where the nodes are connected to each other to form a ring. The JournalNode serves the request coming to it and copies the information into other nodes in the ring.This provides fault tolerance in case of JournalNode failure.
 * The active NameNode is responsible for updating the EditLogs (metadata information) present in the JournalNodes.
 * The StandbyNode reads the changes made to the EditLogs in the JournalNode and applies it to its own namespace in a constant manner.
 * During failover, the StandbyNode makes sure that it has updated its meta data information from the JournalNodes before becoming the new Active NameNode. This makes the current namespace state synchronized with the state before failover.
 * The IP Addresses of both the NameNodes are available to all the DataNodes and they send their heartbeats and block location information to both the NameNode. This provides a fast failover (less down time) as the StandbyNode has an updated information about the block location in the cluster.
 
 ## Fencing of NameNode:
-Now, as discussed earlier, it is very important to ensure that there is only one Active NameNode at a time. So, fencing is a process to ensure this very property in a cluster. 
+Now, as discussed earlier, it is very important to ensure that there is only one Active NameNode at a time. So, fencing is a process to ensure this very property in a cluster.
 
 * The JournalNodes performs this fencing by allowing only one NameNode to be the writer at a time.
 * The Standby NameNode takes over the responsibility of writing to the JournalNodes and forbid any other NameNode to remain active.
@@ -99,5 +98,3 @@ The daemons in DataNode are:
 * Zookeeper
 * JournalNode
 * DataNode
-
-If you wish to master HDFS and Hadoop, check out the specially curated Big Data certification course by Edureka. Click on the button below to get started.
