@@ -96,8 +96,7 @@ java:
   version: 1.8.0.181-7
   installation_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.181-7.b13.el7.x86_64
 ```
-#### 4) Configure varialbes such as download location, versions, install/config path,
-* informations of postgresql databbase for Hive in role/hive/var/main.yml
+#### 4) Configure varialbes such as download location, versions, install/config path, informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```
 download_path: "/Users/pivotal/Downloads"
 hive_version: "3.1.2"
