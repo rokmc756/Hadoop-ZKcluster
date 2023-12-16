@@ -7,7 +7,7 @@ The intention of this playbook is to deploy Hadoop Cluster quickly in order to r
 
 ## Where is Haddop Zookeeper from and what / how is it changed?
 The hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
-The ansible role for zookeepr is added, variables of many roles is integrated into group_vars/all.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
+The ansible role for zookeepr is added, variables of many roles is integrated into role/hadoop/var/main.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
 
 As the below two variables in group_vars/all.yml is added many hosts could be automatically configured conveniently.
 ```
@@ -28,7 +28,7 @@ These are only confirmed as the latest version currently and other version will 
 Use DNS Server or update /etc/hosts for all servers.
 Passworless SSH for hadoop, root for ansible hosts may help to control.
 
-## How to configure ansible-hosts, group_vars/all deploy hadoop-zkcluster?
+## How to configure ansible-hosts, role/hadoop/var/main.yml to deploy hadoop-zkcluster?
 #### 1) Configure hostname / ip addresses and username to run for ansible-hosts
 ```
 $ vi ansible-hosts
@@ -195,7 +195,7 @@ $ make uninstall
 ```
 
 ## Planning
-A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
+A few variables for yarn-resource-manager, etc in role/hadoop/var/main.yml need to modify to arrange at once.
 
 ## License
 GNU General Public License v3.0
