@@ -33,7 +33,7 @@ Passworless SSH for hadoop, root for ansible hosts may help to control.
 
 
 ## How to configure ansible-hosts, group_vars/all deploy hadoop-zkcluster?
-1. Configure hostname / ip addresses and username to run for ansible-hosts
+#### 1) Configure hostname / ip addresses and username to run for ansible-hosts
 ```
 [all:vars]
 ssh_key_filename="id_rsa"
@@ -61,7 +61,7 @@ sdw6-01 ansible_ssh_host=192.168.0.63 zk_id=3
 sdw6-02 ansible_ssh_host=192.168.0.64 zk_id=4
 sdw6-03 ansible_ssh_host=192.168.0.65 zk_id=5
 ```
-### 2) Configure user / group, hadoop / java version and location to download in groups/all.yml
+#### 2) Configure user / group, hadoop / java version and location to download in groups/all.yml
 ```
 user: "hadoop"
 group: "hadoop"
@@ -75,7 +75,7 @@ java_packages:
 download_path: "/Users/pivotal/Downloads"
 hadoop_version: "3.3.1"
 ```
-### 3) configure version / location to download & install / log_path / data_path of apache-zookeeper/java
+#### 3) configure version / location to download & install / log_path / data_path of apache-zookeeper/java
 ```
 package_download_path : "/tmp"
 zookeeper:
@@ -96,7 +96,7 @@ java:
   version: 1.8.0.181-7
   installation_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.181-7.b13.el7.x86_64
 ```
-### 4) Configure varialbes such as download location, versions, install/config path,
+#### 4) Configure varialbes such as download location, versions, install/config path,
 * informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```
 download_path: "/Users/pivotal/Downloads"
@@ -119,7 +119,7 @@ hive_connection_dbname: "bdrdemo"
 hive_connection_user_name: "bdrsync"
 hive_connection_password: "changeme"
 ```
-### 5) The below query file is useful to remove all tables in hive database before running playboot.
+#### 5) The below query file is useful to remove all tables in hive database before running playboot.
 ```
 vi drop_all_tables.sql
 CREATE FUNCTION drop_all_tables() RETURNS void AS $$
@@ -163,4 +163,4 @@ A few variables for yarn-resource-manager, etc in group_vars/all.yml need to mod
 GNU General Public License v3.0
 
 ## References
-* https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
+https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
