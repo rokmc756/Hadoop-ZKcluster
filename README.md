@@ -1,7 +1,7 @@
 ## WHat is Hadoop Zookeeper Cluster
 Hadoop-zkcluster is ansible playbook to deploy Hadoop / Hive and Zookeeper cluster on Baremetal, Virtual Machines and Cloud Infrastructure.
-It implements HDFS HA architecture described at the below doc[1] and you could see details about how it works.
-* https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
+It implements HDFS HA architecture described at the below doc and you could see details about how it works.
+https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
 
 ## Where is Haddop Zookeeper from and what / how is it changed?
