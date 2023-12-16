@@ -77,7 +77,7 @@ java_packages:
 download_path: "/Users/pivotal/Downloads"
 hadoop_version: "3.3.1"
 ```
-## configure version / location to download & install / log_path / data_path of apache-zookeeper/java
+3. configure version / location to download & install / log_path / data_path of apache-zookeeper/java
 ```
 package_download_path : "/tmp"
 zookeeper:
@@ -98,8 +98,8 @@ java:
   version: 1.8.0.181-7
   installation_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.181-7.b13.el7.x86_64
 ```
-## Configure varialbes such as download location, versions, install/config path,
-## informations of postgresql databbase for Hive in role/hive/var/main.yml
+4. Configure varialbes such as download location, versions, install/config path,
+* informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```
 download_path: "/Users/pivotal/Downloads"
 hive_version: "3.1.2"
@@ -121,9 +121,9 @@ hive_connection_dbname: "bdrdemo"
 hive_connection_user_name: "bdrsync"
 hive_connection_password: "changeme"
 ```
-## The below query file is useful to remove all tables in hive database before running playboot.
-### drop_all_tables.sql
+5. The below query file is useful to remove all tables in hive database before running playboot.
 ```
+vi drop_all_tables.sql
 CREATE FUNCTION drop_all_tables() RETURNS void AS $$
 DECLARE
     tmp VARCHAR(512);
@@ -143,17 +143,17 @@ $$ LANGUAGE plpgsql;
 select drop_all_tables();```
 ```
 
-# Run to remove tables in a specific database
+## Run to remove tables in a specific database
 ```
 psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
 ```
 
-# How to install and deploy hadoop cluster
+## How to install and deploy hadoop cluster
 ```
 make install
 ```
 
-# How to undeply and uninstall hadoop cluster
+## How to undeply and uninstall hadoop cluster
 ```
 make uninstall
 ```
