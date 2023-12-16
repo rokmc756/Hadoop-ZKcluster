@@ -1,8 +1,7 @@
 ## WHat is Hadoop Zookeeper Cluster
 Hadoop-zkcluster is ansible playbook to deploy Hadoop / Hive and Zookeeper cluster on Baremetal, Virtual Machines and Cloud Infrastructure.
 It implements HDFS HA architecture described at the below doc and you could see details about how it works.
-https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
-
+* https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
 ## Where is Haddop Zookeeper from and what / how is it changed?
 Hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
@@ -13,12 +12,9 @@ As the below two variables in group_vars/all.yml is added many hosts could be au
 zkservers_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
 qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
 ```
-
 In role of haddop a few playbooks are added / modified to start hdfs services and seperate whether these are defined or not in deploly-hadoop-zookeeper.yml playbook.
 
-
 ## Supported versions of Platform and OS
-
 These are only confirmed as the latest version currently and other version will be done or added soon or later
 * CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
 * openjdk-1.8
@@ -26,15 +22,14 @@ These are only confirmed as the latest version currently and other version will 
 * Hive 3.1.2
 * ansible-zookeeper 3.7.0
 
-
 ## Prerequiste
 Use DNS Server or update /etc/hosts for all servers.
 Passworless SSH for hadoop, root for ansible hosts may help to control.
 
-
 ## How to configure ansible-hosts, group_vars/all deploy hadoop-zkcluster?
 #### 1) Configure hostname / ip addresses and username to run for ansible-hosts
 ```
+$ vi ansible-hosts
 [all:vars]
 ssh_key_filename="id_rsa"
 remote_machine_username="jomoon"
@@ -127,7 +122,6 @@ java:
 ```
 $ vi roles/hive/vars/main.yml
 ---
-
 # Hive basic vars
 download_path: "/Users/jomoon/Downloads"
 hive_version: "3.1.2"
@@ -163,7 +157,7 @@ hive_connection_url: "jdbc:postgresql://{{ hive_connection_host }}:{{ hive_conne
 ```
 #### 5) The below query file is useful to remove all tables in hive database before running playboot.
 ```
-vi drop_all_tables.sql
+$ vi drop_all_tables.sql
 CREATE FUNCTION drop_all_tables() RETURNS void AS $$
 DECLARE
     tmp VARCHAR(512);
@@ -185,17 +179,17 @@ select drop_all_tables();```
 
 ## Run to remove tables in a specific database
 ```
-psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
+$ psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
 ```
 
 ## How to install and deploy hadoop cluster
 ```
-make install
+$ make install
 ```
 
 ## How to undeply and uninstall hadoop cluster
 ```
-make uninstall
+$ make uninstall
 ```
 
 ## Planning
