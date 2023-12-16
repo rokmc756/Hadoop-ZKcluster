@@ -165,4 +165,4 @@ A few variables for yarn-resource-manager, etc in group_vars/all.yml need to mod
 GNU General Public License v3.0
 
 ## References
-1. https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
+* https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
