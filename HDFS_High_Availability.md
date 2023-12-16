@@ -27,9 +27,7 @@ The HA architecture solved this problem of NameNode availability by allowing us 
 
 * Active NameNode
 * Standby/Passive NameNode.
-~~~
-put image here
-~~~
+![alt text](https://github.com/rokmc756/hadoop-zkcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png)
 
 If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time. The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster. Therefore, with the StandbyNode, we can have automatic failover whenever a NameNode crashes (unplanned event) or we can have a graceful (manually initiated) failover during the maintenance period. 
 
@@ -46,9 +44,7 @@ Now, you know that in HDFS HA Architecture, we have two NameNodes running at the
 Let us understand these two ways of implementation taking one at a time:
 
 1. Using Quorum Journal Nodes:
-~~~
-put image here
-~~~
+![alt text](https://github.com/rokmc756/hadoop-zkcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png)
 
 * The standby NameNode and the active NameNode keep in sync with each other through a separate group of nodes or daemons -called JournalNodes. The JournalNodes follows the ring topology where the nodes are connected to each other to form a ring. The JournalNode serves the request coming to it and copies the information into other nodes in the ring.This provides fault tolerance in case of JournalNode failure. 
 * The active NameNode is responsible for updating the EditLogs (metadata information) present in the JournalNodes.
@@ -61,12 +57,10 @@ Now, as discussed earlier, it is very important to ensure that there is only one
 
 * The JournalNodes performs this fencing by allowing only one NameNode to be the writer at a time.
 * The Standby NameNode takes over the responsibility of writing to the JournalNodes and forbid any other NameNode to remain active.
-* Finally, the new Active NameNode can perform its activities safely.   
+* Finally, the new Active NameNode can perform its activities safely.
 
 2. Using Shared Storage:
-~~~
-put image here
-~~~
+![alt text](https://github.com/rokmc756/hadoop-zkcluster/blob/main/roles/hadoop/images/Shared-Storage-HDFS-HA-Architecture-Edureka-768x344.png)
 
 * The StandbyNode and the active NameNode keep in sync with each other by using a shared storage device. The active NameNode logs the record of any modification done in its namespace to an EditLog present in this shared storage. The StandbyNode reads the changes made to the EditLogs in this shared storage and applies it to its own namespace.
 * Now, in case of failover, the StandbyNode updates its metadata information using the EditLogs in the shared storage at first. Then, it takes the responsibility of the Active NameNode. This makes the current namespace state synchronized with the state before failover.
