@@ -19,12 +19,12 @@ In role of haddop a few playbooks are added / modified to start hdfs services an
 
 ## Supported versions of Platform and OS
 
-* These are only confirmed as the latest version currently and other version will be done or added soon or later
-*** CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
-*** openjdk-1.8
-*** Hadoop 3.3.1 ~ 4
-*** Hive 3.1.2
-*** ansible-zookeeper 3.7.0
+These are only confirmed as the latest version currently and other version will be done or added soon or later
+* CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
+* openjdk-1.8
+* Hadoop 3.3.1 ~ 4
+* Hive 3.1.2
+* ansible-zookeeper 3.7.0
 
 
 ## Prerequiste
@@ -32,8 +32,8 @@ Use DNS Server or update /etc/hosts for all servers.
 Passworless SSH for hadoop, root for ansible hosts may help to control.
 
 
-# How to configure ansible-hosts, group_vars/all deploy hadoop-zkcluster?
-## Configure hostname / ip addresses and username to run for ansible-hosts
+## How to configure ansible-hosts, group_vars/all deploy hadoop-zkcluster?
+1. Configure hostname / ip addresses and username to run for ansible-hosts
 ```
 [all:vars]
 ssh_key_filename="id_rsa"
@@ -63,7 +63,7 @@ sdw6-03 ansible_ssh_host=192.168.0.65 zk_id=5
 ```
 
 
-## Configure user / group, hadoop / java version and location to download in groups/all.yml
+2. Configure user / group, hadoop / java version and location to download in groups/all.yml
 ```
 user: "hadoop"
 group: "hadoop"
@@ -158,10 +158,11 @@ make install
 make uninstall
 ```
 
-# Planning
+## Planning
 A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
 
-# License
+## License
 GNU General Public License v3.0
 
-https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
+## References
+1. https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
