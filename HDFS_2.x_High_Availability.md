@@ -1,12 +1,12 @@
 ## HDFS 2.x High Availability Cluster Architecture
-In this blog, I am going to talk about HDFS 2.x High Availability Cluster Architecture and the procedure to set up an HDFS High Availability cluster. This is an important part of the Big Data course. The order in which the topics have been covered in this blog are as follows:
+This page is about HDFS 2.x High Availability Cluster Architecture and the procedure to set up an HDFS High Availability cluster. This is an important part of the Big Data course. The order in which the topics have been covered in this blog are as follows:
 
-* HDFS HA Architecture
-** Introduction
-** NameNode Availability
-** Architecture of HA
-** Implementation of HA (JournalNode and Shared storage)
-* How to set up HA (Quorum Journal Nodes) in a Hadoop cluster?
+### HDFS HA Architecture
+* Introduction
+* NameNode Availability
+* Architecture of HA
+* Implementation of HA (JournalNode and Shared storage)
+## How to set up HA (Quorum Journal Nodes) in a Hadoop cluster?
 
 ## Introduction:
 The concept of High Availability cluster was introduced in Hadoop 2.x to solve the single point of failure problem in Hadoop 1.x. As you know from my previous blog that the HDFS Architecture follows Master/Slave Topology where NameNode acts as a master daemon and is responsible for managing other slave nodes called DataNodes. This single Master Daemon or NameNode becomes a bottleneck. Although, the introduction of Secondary NameNode did prevent us from data loss and offloading some of the burden of the NameNode but, it did not solve the availability issue of the NameNode.
