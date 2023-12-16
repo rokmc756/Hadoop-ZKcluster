@@ -1,10 +1,10 @@
-# WHat is Hadoop Zookeeper Cluster
+## WHat is Hadoop Zookeeper Cluster
 Hadoop-zkcluster is ansible playbook to deploy Hadoop / Hive and Zookeeper cluster on Baremetal, Virtual Machines and Cloud Infrastructure.
 It implements HDFS HA architecture described at the below doc[1] and you could see details about how it works.
-[1] https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
+* https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
 
-# Where is Haddop Zookeeper from and what / how is it changed?
+## Where is Haddop Zookeeper from and what / how is it changed?
 Hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
 The ansible role for zookeepr is added, variables of many roles is integrated into group_vars/all.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
 
@@ -17,15 +17,13 @@ qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']
 In role of haddop a few playbooks are added / modified to start hdfs services and seperate whether these are defined or not in deploly-hadoop-zookeeper.yml playbook.
 
 
-# Supported versions of Platform and OS
-### These are only confirmed as the latest version currently and other version will be done or added soon or later
-```
-- CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
-- openjdk-1.8
-- Hadoop 3.3.1 ~ 4
-- Hive 3.1.2
-- ansible-zookeeper 3.7.0
-```
+## Supported versions of Platform and OS
+* These are only confirmed as the latest version currently and other version will be done or added soon or later
+** CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
+** openjdk-1.8
+** Hadoop 3.3.1 ~ 4
+** Hive 3.1.2
+** ansible-zookeeper 3.7.0
 
 
 # Prerequiste
