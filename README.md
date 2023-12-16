@@ -20,14 +20,14 @@ In role of haddop a few playbooks are added / modified to start hdfs services an
 ## Supported versions of Platform and OS
 
 * These are only confirmed as the latest version currently and other version will be done or added soon or later
-** CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
-** openjdk-1.8
-** Hadoop 3.3.1 ~ 4
-** Hive 3.1.2
-** ansible-zookeeper 3.7.0
+*** CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
+*** openjdk-1.8
+*** Hadoop 3.3.1 ~ 4
+*** Hive 3.1.2
+*** ansible-zookeeper 3.7.0
 
 
-# Prerequiste
+## Prerequiste
 Use DNS Server or update /etc/hosts for all servers.
 Passworless SSH for hadoop, root for ansible hosts may help to control.
 
