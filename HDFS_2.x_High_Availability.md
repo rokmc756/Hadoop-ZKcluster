@@ -18,7 +18,7 @@ The reasons for unavailability of NameNode can be:
 
 * A planned event like maintenance work such has upgradation of software or hardware.
 * It may also be due to an unplanned event where the NameNode crashes because of some reasons.
-In either of the above cases, we have a downtime where we are not able to use the HDFS cluster which becomes a challenge. 
+In either of the above cases, we have a downtime where we are not able to use the HDFS cluster which becomes a challenge.
 
 ## HDFS HA Architecture:
 Let us understand that how HDFS HA Architecture solved this critical problem of NameNode availability:
