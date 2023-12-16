@@ -1,19 +1,20 @@
 - hosts: all
   remote_user: root
   roles:
+    - init-hosts
     - firewall
 
 - hosts: all
   remote_user: root
   vars:
-     add_group: true
-     add_user: true
-     generate_key: true
-     open_firewall: true
-     disable_firewall: false
-     install_hadoop: true
-     config_hadoop: true
-     start_journalnode: true
+    add_group: true
+    add_user: true
+    generate_key: true
+    open_firewall: true
+    disable_firewall: false
+    install_hadoop: true
+    config_hadoop: true
+    start_journalnode: true
   roles:
     - user
     - fetch_public_key
