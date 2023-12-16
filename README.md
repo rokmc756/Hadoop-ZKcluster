@@ -72,7 +72,7 @@ java_packages:
  - "java-1.8.0-openjdk"
  - "java-1.8.0-openjdk-devel"
 
-download_path: "/Users/pivotal/Downloads"
+download_path: "/Users/jomoon/Downloads"
 hadoop_version: "3.3.1"
 ```
 #### 3) configure version / location to download & install / log_path / data_path of apache-zookeeper/java
@@ -98,7 +98,7 @@ java:
 ```
 #### 4) Configure varialbes such as download location, versions, install/config path, informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```
-download_path: "/Users/pivotal/Downloads"
+download_path: "/Users/jomoon/Downloads"
 hive_version: "3.1.2"
 hive_path: "/home/hadoop"
 hive_config_path: "/home/hadoop/apache-hive-{{hive_version}}-bin/conf"
