@@ -6,9 +6,9 @@
   when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS'  ansible_os_family != 'Rocky'
 
 - name: Install fetch_public_key
-  include: install.yml
+  import_tasks: install.yml
   tags: install
 
 - name: Uninstall fetch_public_key
-  include: uninstall.yml
+  import_tasks: uninstall.yml
   tags: uninstall

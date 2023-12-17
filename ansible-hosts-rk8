@@ -4,20 +4,20 @@ remote_machine_username="jomoon"
 remote_machine_password="changeme"
 
 [master]
-rk8-master ansible_ssh_host=192.168.0.171 zk_id=1
+rk8-master ansible_ssh_host=192.168.0.811 zk_id=1
 
 [standby]
-rk8-slave ansible_ssh_host=192.168.0.172 zk_id=2
+rk8-slave ansible_ssh_host=192.168.0.82 zk_id=2
 
 [workers]
-rk8-node01 ansible_ssh_host=192.168.0.173 zk_id=3
-rk8-node02 ansible_ssh_host=192.168.0.174 zk_id=4
-rk8-node03 ansible_ssh_host=192.168.0.173 zk_id=5
+rk8-node01 ansible_ssh_host=192.168.0.83 zk_id=3
+rk8-node02 ansible_ssh_host=192.168.0.84 zk_id=4
+rk8-node03 ansible_ssh_host=192.168.0.85 zk_id=5
 
 # These are your zookeeper cluster nodes
 [zk_servers]
-rk8-master ansible_ssh_host=192.168.0.171 zk_id=1
-rk8-slave ansible_ssh_host=192.168.0.172 zk_id=2
-rk8-node01 ansible_ssh_host=192.168.0.173 zk_id=3
-rk8-node02 ansible_ssh_host=192.168.0.174 zk_id=4
-rk8-node03 ansible_ssh_host=192.168.0.175 zk_id=5
+rk8-master ansible_ssh_host=192.168.0.81 zk_id=1
+rk8-slave ansible_ssh_host=192.168.0.82 zk_id=2
+rk8-node01 ansible_ssh_host=192.168.0.83 zk_id=3
+rk8-node02 ansible_ssh_host=192.168.0.84 zk_id=4
+rk8-node03 ansible_ssh_host=192.168.0.85 zk_id=5

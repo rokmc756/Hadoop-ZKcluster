@@ -10,54 +10,54 @@
     - "{{ hadoop_create_path }}"
   tags: install
 
-#- include: redhat.yml
+#- import_tasks: redhat.yml
 #  when: ansible_os_family == 'RedHat' or ansible_os_family == 'CentOS' or ansible_os_family == 'Rocky'
 #  tags: install
 
-- include: install_hadoop.yml
+- import_tasks: install_hadoop.yml
   when: install_hadoop is defined and install_hadoop
   tags: install
 
-- include: config_hadoop.yml
+- import_tasks: config_hadoop.yml
   when: config_hadoop is defined and config_hadoop
   tags: install
 
-- include: start_journalnode.yml
+- import_tasks: start_journalnode.yml
   when: start_journalnode is defined and start_journalnode
   tags: install
 
-- include: format_namenode.yml
+- import_tasks: format_namenode.yml
   when: format_namenode is defined and format_namenode
   tags: install
 
-- include: copy_metadata.yml
+- import_tasks: copy_metadata.yml
   when: copy_metadata is defined and copy_metadata
   tags: install
 
-- include: bootstrap_standby.yml
+- import_tasks: bootstrap_standby.yml
   when: bootstrap_standby is defined and bootstrap_standby
   tags: install
 
-- include: start_namenode.yml
+- import_tasks: start_namenode.yml
   when: start_namenode is defined and start_namenode
   tags: install
 
-- include: start_datanode.yml
+- import_tasks: start_datanode.yml
   when: start_datanode is defined and start_datanode
   tags: install
 
-- include: format_zkfc.yml
+- import_tasks: format_zkfc.yml
   when:  format_zkfc is defined and format_zkfc
   tags: install
 
-- include: start_zkfc.yml
+- import_tasks: start_zkfc.yml
   when: start_zkfc is defined and start_zkfc
   tags: install
 
-- include: start_yan.yml
+- import_tasks: start_yan.yml
   when: start_yan is defined and start_yan
   tags: install
 
-- include: start_yan_resource_manager.yml
+- import_tasks: start_yan_resource_manager.yml
   when: start_yan_resource_manager is defined and start_yan_resource_manager
   tags: install

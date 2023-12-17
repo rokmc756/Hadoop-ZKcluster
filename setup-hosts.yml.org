@@ -83,12 +83,13 @@
   roles:
     - hadoop
 
-      #- hosts: hive
-      #  remote_user: root
-      #  vars:
-      #     open_firewall: true
-      #     install_hive: true
-      #     config_hive: true
-      #     init_hive: true
-      #  roles:
-      #    - hive
+#- hosts: hive
+#  remote_user: root
+#  vars:
+#     open_firewall: true
+#     install_hive: true
+#     config_hive: true
+#     init_hive: true
+#  roles:
+#    - hive
+
