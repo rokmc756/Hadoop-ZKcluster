@@ -9,12 +9,12 @@ java_packages:
  - "java-1.8.0-openjdk"
  - "java-1.8.0-openjdk-devel"
 
-master_ip: "{{ hostvars[groups['master'][0]]['ansible_eth0']['ipv4']['address'] }}"
+master_ip: "{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
 master_hostname: "{{ hostvars[groups['master'][0]].ansible_hostname }}"
-standby_master_ip: "{{ hostvars[groups['standby'][0]]['ansible_eth0']['ipv4']['address'] }}"
+standby_master_ip: "{{ hostvars[groups['standby'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
 standby_master_hostname: "{{ hostvars[groups['standby'][0]].ansible_hostname }}"
 
-# standby_master_ip: "{{ hostvars['rk8-slave']['ansible_eth0']['ipv4']['address'] }}"
+# standby_master_ip: "{{ hostvars['rk8-slave']['ansible_'~ netdev0]['ipv4']['address'] }}"
 # standby_master_hostname: "{{ hostvars['rk8-slave'].ansible_hostname }}"
 
 download_path: "/Users/moonja/Downloads"
@@ -96,19 +96,19 @@ hdfs_site_properties:
   }
   - {
       "name":"dfs.namenode.rpc-address.ha-cluster.nn1",
-      "value":"{{ master_hostname }}:9000"
+      "value":"{{ hostvars[groups['master'][0]].ansible_hostname }}:9000"
   }
   - {
       "name":"dfs.namenode.rpc-address.ha-cluster.nn2",
-      "value":"{{ standby_master_hostname }}:9000"
+      "value":"{{ hostvars[groups['standby'][0]].ansible_hostname }}:9000"
   }
   - {
       "name":"dfs.namenode.http-address.ha-cluster.nn1",
-      "value":"{{ master_hostname }}:50070"
+      "value":"{{ hostvars[groups['master'][0]].ansible_hostname }}:50070"
   }
   - {
       "name":"dfs.namenode.http-address.ha-cluster.nn2",
-      "value":"{{ standby_master_hostname }}:50070"
+      "value":"{{ hostvars[groups['standby'][0]].ansible_hostname }}:50070"
   }
   - {
       "name":"dfs.namenode.shared.edits.dir",
@@ -222,23 +222,23 @@ yarn_site_properties:
   }   ###
   - {
     "name":"yarn.resourcemanager.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_port }}"
+    "value":"{{ hostvars[groups['master'][0]].ansible_hostname }}:{{ yarn_resourcemanager_port }}"
   }
   - {
     "name":"yarn.resourcemanager.scheduler.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_scheduler_port }}"
+    "value":"{{ hostvars[groups['master'][0]].ansible_hostname }}:{{ yarn_resourcemanager_scheduler_port }}"
   }
   - {
     "name":"yarn.resourcemanager.webapp.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_webapp_port }}"
+    "value":"{{ hostvars[groups['master'][0]].ansible_hostname }}:{{ yarn_resourcemanager_webapp_port }}"
   }
   - {
     "name": "yarn.resourcemanager.resource-tracker.address",
-    "value": "{{ master_hostname }}:{{ yarn_resourcemanager_tracker_port }}"
+    "value":"{{ hostvars[groups['master'][0]].ansible_hostname }}:{{ yarn_resourcemanager_tracker_port }}"
   }
   - {
     "name": "yarn.resourcemanager.admin.address",
-    "value": "{{ master_hostname }}:{{ yarn_resourcemanager_admin_port }}"
+    "value":"{{ hostvars[groups['master'][0]].ansible_hostname }}:{{ yarn_resourcemanager_admin_port }}"
   }
   - {
     "name": "yarn.nodemanager.aux-services.mapreduce.shuffle.class",

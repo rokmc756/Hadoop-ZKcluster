@@ -1,15 +1,14 @@
 ---
-#
 - set_fact:
     zk_package_name: apache-zookeeper-{{ zookeeper.version }}-bin.tar.gz
     zk_application_path: "{{ zookeeper.installation_path }}/apache-zookeeper-{{ zookeeper.version }}-bin"
 
 #
-- name: Stop zookeeper service
+- name: Stop Zookeeper Systemd Service
   shell: "systemctl stop zookeeper"
 
-#
-- name: Delete files of config files and binary
+
+- name: Delete Config and Binary Files
   file:
     path: "{{ item }}"
     state: absent
@@ -19,8 +18,8 @@
     - "{{ zk_application_path }}/conf/zoo.cfg"
     - "{{ package_download_path }}/{{ zk_package_name }}"
 
-#
-- name: Delete files of Directories
+
+- name: Delete Directories and Files
   file:
     path: "{{ item }}"
     state: absent
@@ -30,15 +29,15 @@
     - "{{ zookeeper.installation_path }}/apache-zookeeper"
     - "{{ zookeeper.installation_path }}/apache-zookeeper-{{ zookeeper.version }}-bin"
 
-#
-- name: Reload systemd daemon
+
+- name: Reload Systemd Daemon
   shell: "systemctl daemon-reload"
 
-#
+
 - name: Delete Zookeeper User
   user: name=zookeeper state=absent
 
-#
+
 - name: Delete Zookeeper Group
   group: name=zookeeper state=absent
 

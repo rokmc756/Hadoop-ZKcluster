@@ -40,3 +40,4 @@ common_firewall_ports:
   - "8030"      # yarn_resourcemanager_scheduler_port
 
 # https://docs.cloudera.com/HDPDocuments/HDP3/HDP-3.0.0/administration/content/hdfs-ports.html
+

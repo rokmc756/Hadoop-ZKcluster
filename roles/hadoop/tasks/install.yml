@@ -10,54 +10,68 @@
     - "{{ hadoop_create_path }}"
   tags: install
 
+
 #- import_tasks: redhat.yml
 #  when: ansible_os_family == 'RedHat' or ansible_os_family == 'CentOS' or ansible_os_family == 'Rocky'
 #  tags: install
+
 
 - import_tasks: install_hadoop.yml
   when: install_hadoop is defined and install_hadoop
   tags: install
 
+
 - import_tasks: config_hadoop.yml
   when: config_hadoop is defined and config_hadoop
   tags: install
+
 
 - import_tasks: start_journalnode.yml
   when: start_journalnode is defined and start_journalnode
   tags: install
 
+
 - import_tasks: format_namenode.yml
   when: format_namenode is defined and format_namenode
   tags: install
+
 
 - import_tasks: copy_metadata.yml
   when: copy_metadata is defined and copy_metadata
   tags: install
 
+
 - import_tasks: bootstrap_standby.yml
   when: bootstrap_standby is defined and bootstrap_standby
   tags: install
+
 
 - import_tasks: start_namenode.yml
   when: start_namenode is defined and start_namenode
   tags: install
 
+
 - import_tasks: start_datanode.yml
   when: start_datanode is defined and start_datanode
   tags: install
+
 
 - import_tasks: format_zkfc.yml
   when:  format_zkfc is defined and format_zkfc
   tags: install
 
+
 - import_tasks: start_zkfc.yml
   when: start_zkfc is defined and start_zkfc
   tags: install
+
 
 - import_tasks: start_yan.yml
   when: start_yan is defined and start_yan
   tags: install
 
+
 - import_tasks: start_yan_resource_manager.yml
   when: start_yan_resource_manager is defined and start_yan_resource_manager
   tags: install
+

@@ -1,7 +1,6 @@
 - hosts: all
   remote_user: root
   roles:
-    - init-hosts
     - firewall
 
 - hosts: all

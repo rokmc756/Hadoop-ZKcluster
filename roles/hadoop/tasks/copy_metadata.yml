@@ -1,3 +1,11 @@
 ---
-- name: Copy metadata to Standby master
-  shell: su {{ user }} -c "scp -r /home/hadoop/dfs/data {{ standby_master_hostname }}:/home/hadoop/dfs/"
+- name: Copy Metadata to Standby master
+  become_user: "{{ user}}"
+  synchronize:
+    src:  "{{ item }}"
+    dest: "{{ item }}"
+    rsync_opts:
+      - "-e ssh"    # "-e ssh -i ~/.ssh/id_rsa.pub"
+  delegate_to: "{{ hostvars[groups['standby'][0]]['ansible_hostname'] }}"
+  with_items:
+    - "/home/hadoop/dfs/data"

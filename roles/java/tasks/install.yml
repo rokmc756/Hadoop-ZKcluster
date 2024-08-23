@@ -1,6 +1,7 @@
-- name: Check if Java RPM Package is installed
+- name: Check if Java RPM Package Is Installed
   package_facts:
     manager: "auto"
+
 
 - name: Install Java RPM Package
   yum:
@@ -14,7 +15,8 @@
     - hostvars[inventory_hostname].ansible_distribution_major_version|int >= 8
     - install_oracle_java == false
 
-- name: Install Java rpm package
+
+- name: Install Java RPM Package
   yum:
     name: "{{ item }}"
     state: present
@@ -28,7 +30,8 @@
     - hostvars[inventory_hostname].ansible_distribution_major_version|int < 8
     - install_oracle_java == false
 
-- name: Copy Oracle JAVA RPM package
+
+- name: Copy Oracle JAVA RPM Package
   copy:
     src: jdk-{{ oracle_java_version }}_linux-x64_bin.rpm
     dest: /root/jdk-{{ oracle_java_version }}_linux-x64_bin.rpm
@@ -39,7 +42,8 @@
     - hostvars[inventory_hostname].ansible_distribution_major_version|int < 8
     - install_oracle_java == true
 
-- name: Install Oracle Java RPM package
+
+- name: Install Oracle Java RPM Package
   yum:
     name: /root/jdk-{{ oracle_java_version }}_linux-x64_bin.rpm
     state: present
@@ -49,6 +53,7 @@
   when:
     - hostvars[inventory_hostname].ansible_distribution_major_version|int < 8
     - install_oracle_java == true
+
 
 - name: Correct Java Version Selected
   alternatives:
@@ -60,6 +65,7 @@
     - hostvars[inventory_hostname].ansible_distribution_major_version|int >= 8
     - install_oracle_java == false
 
+
 - name: Correct Java Version Selected
   alternatives:
     link: /usr/bin/java
@@ -69,6 +75,7 @@
   when:
     - hostvars[inventory_hostname].ansible_distribution_major_version|int < 8
     - install_oracle_java == false
+
 
 - name: Correct Java Version Selected
   alternatives:
@@ -81,19 +88,22 @@
     - install_oracle_java == true
   #  path: /usr/lib/jvm/jdk-{{ oracle_java_version }}-oracle-x64/bin/java
 
+
 - name: Copy Java Home Script
   template: src=java_home.sh dest=/etc/profile.d
 
+
 - name: Set Java Home Script
   shell: source /etc/profile.d/java_home.sh
+
 
 - name: Get Java Version
   shell: java -version
   register: javaVersion
 
+
 - name: Set Java Version Fact
   set_fact:
     java_version: "{{ javaVersion.stdout_lines }}"
-
 - name: debug
   debug: var=java_version

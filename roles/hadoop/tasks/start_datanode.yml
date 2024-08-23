@@ -1,4 +1,3 @@
 ---
 - name: Start Data nodes
-  shell: su {{ user }} -c "hdfs --daemon start datanode"
-#  shell: su {{ user }} -c "hadoop-daemon.sh start datanode"
+  shell: su {{ user }} -c "hdfs --daemon start datanode"   #  su {{ user }} -c "hadoop-daemon.sh start datanode"

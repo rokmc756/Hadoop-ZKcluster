@@ -11,7 +11,8 @@
   when: open_firewall is defined and open_firewall
   ignore_errors: true
 
-- name: Disabled Firewalld
+
+- name: Disable Firewalld
   systemd:
     name: 'firewalld'
     state: stopped
@@ -19,10 +20,11 @@
   when: disable_firewall is defined and disable_firewall
   ignore_errors: true
 
+
 #- name: Whitelist of Ip addresses
 #  firewalld:
 #    zone: public
-#    rich_rule: "rule family=ipv4 source address={{ hostvars[item]['ansible_eth0']['ipv4']['address'] }} accept"
+#    rich_rule: "rule family=ipv4 source address={{ hostvars[item]['ansible_'~ netdev0]['ipv4']['address'] }} accept"
 #    permanent: true
 #    state: enabled
 #  with_items:
@@ -32,7 +34,7 @@
     #- name: Whitelist of Ip addresses
     #  firewalld:
     #    zone: public
-    #    source: "{{ hostvars[item]['ansible_eth0']['ipv4']['address'] }}/24"
+    #    source: "{{ hostvars[item]['ansible_'~ netdev0]['ipv4']['address'] }}/24"
     #    permanent: true
     #    state: enabled
     #  with_items:

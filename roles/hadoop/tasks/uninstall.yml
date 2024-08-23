@@ -2,9 +2,11 @@
   shell: "su {{ user }} -c 'hadoop-daemon.sh stop zkfc'"
   when: inventory_hostname in groups['master']
 
+
 - name: Stop the ZKFC in Active or Standby namenode
   shell: "su {{ user }} -c 'stop-all.sh'"
   when: inventory_hostname in groups['master']
+
 
 - name: Remove Haddop directories for configure, log, data and journal
   file:
