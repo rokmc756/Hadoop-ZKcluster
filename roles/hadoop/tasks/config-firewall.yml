@@ -1,0 +1,46 @@
+---
+- name: Open Firewall
+  firewalld:
+    port: '{{item}}/tcp'
+    permanent: true
+    state: enabled
+    zone: public
+    immediate: yes
+  with_items:
+    - '{{firewall_ports}}'
+  when: open_firewall is defined and open_firewall
+  ignore_errors: true
+
+
+- name: Disable Firewalld
+  systemd:
+    name: 'firewalld'
+    state: stopped
+    enabled: no
+  when: disable_firewall is defined and disable_firewall
+  ignore_errors: true
+
+
+#- name: Whitelist of Ip addresses
+#  firewalld:
+#    zone: public
+#    rich_rule: "rule family=ipv4 source address={{ hostvars[item]['ansible_'~ netdev0]['ipv4']['address'] }} accept"
+#    permanent: true
+#    state: enabled
+#  with_items:
+#    - "{{ groups['all'] }}"
+#  when: open_firewall is defined and open_firewall
+
+    #- name: Whitelist of Ip addresses
+    #  firewalld:
+    #    zone: public
+    #    source: "{{ hostvars[item]['ansible_'~ netdev0]['ipv4']['address'] }}/24"
+    #    permanent: true
+    #    state: enabled
+    #  with_items:
+    #    - "{{ groups['all'] }}"
+    #  when: open_firewall is defined and open_firewall
+
+#- name: Bounce firewalld
+#  service: name=firewalld state=restarted
+

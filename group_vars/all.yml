@@ -2,9 +2,10 @@ ansible_ssh_pass: "changeme"
 ansible_become_pass: "changeme"
 
 hadoop:
-  user: jomoon
-  group: jomoon
+  user: hadoop
+  group: hadoop
   domain: "jtest.pivotal.io"
+  hdfs_port: 9000
 #  major_version: "13"
 #  minor_version: "0"
 #  patch_version: "3"
@@ -19,11 +20,19 @@ hadoop:
     ipaddr1: "192.168.1.7"
     ipaddr2: "192.168.2.7"
 
-#postgres:
-#  net:
-#    type: "virtual"                # Or Physical
-#    gateway: "192.168.0.1"
-#    ipaddr0: "192.168.0.7"
-#    ipaddr1: "192.168.1.7"
-#    ipaddr2: "192.168.2.7"
+postgres:
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.7"
+    ipaddr1: "192.168.1.7"
+    ipaddr2: "192.168.2.7"
+
+# java version
+jvm_home: "/usr/lib/jvm"
+java_packages:
+ - "java-1.8.0-openjdk"
+ - "java-1.8.0-openjdk-devel"
+
+
 

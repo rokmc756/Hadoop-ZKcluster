@@ -3,7 +3,7 @@
   loop: "{{ nn_firewall_ports }}"
   ignore_errors: yes
   when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby']
-  notify: firewall restart
+  notify: Restart Firewalld
 
 
 - name: Disable Firewalld Port Policy For Data nodes
@@ -11,7 +11,7 @@
   loop: "{{ dn_firewall_ports }}"
   ignore_errors: yes
   when: inventory_hostname in groups['workers']
-  notify: firewall restart
+  notify: Restart Firewalld
 
 
 - name: Disable Firewalld Port Policy For Common
@@ -19,7 +19,7 @@
   loop: "{{ common_firewall_ports }}"
   ignore_errors: yes
   when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-  notify: firewall restart
+  notify: Restart Firewalld
 
 
 - name: Reset Ruleset For Public Zone In Firewalld
@@ -32,5 +32,4 @@
 - name: Disable And Stop Firewalld
   service: name=firewalld state=stopped
   when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-
 

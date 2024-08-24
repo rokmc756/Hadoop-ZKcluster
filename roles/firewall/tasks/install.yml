@@ -45,5 +45,6 @@
   loop: "{{ common_firewall_ports }}"
   when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
 
-#  notify: firewall restart
+#  notify: Restart Firewalld
 #  when: ( inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers'] )
+

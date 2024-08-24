@@ -11,11 +11,14 @@
   tags:
     - init
     - uninit
+  when: inventory_hostname in groups['zk_servers']
 
 - name: Install Zookeeper
   import_tasks: install.yml
+  when: inventory_hostname in groups['zk_servers']
   tags: install
 
 - name: Uninstall Zookeeper
   import_tasks: uninstall.yml
+  when: inventory_hostname in groups['zk_servers']
   tags: uninstall

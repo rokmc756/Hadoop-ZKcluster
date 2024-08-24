@@ -14,6 +14,7 @@ nn_firewall_ports:
   - 50091 # Secondary NN
   - 50470
 
+
 # Hadoop 3.x
 dn_firewall_ports:
   - 1019
@@ -25,6 +26,7 @@ dn_firewall_ports:
   - 50020
   - 50075
   - 50475
+
 
 # Hadoop 3.x
 common_firewall_ports:

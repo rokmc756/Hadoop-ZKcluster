@@ -1,17 +1,24 @@
-- hosts: all
+- hosts: hive
   remote_user: root
+  vars:
+     open_firewall: true
+     install_hive: true
+     config_hive: true
+     init_hive: true
   roles:
-    - firewall
+    - hive
+
+
+- hosts: postgres
+  become: true
+  roles:
+    - postgres
+
 
 - hosts: all
   remote_user: root
-  vars:
-     disable_firewall: true
   roles:
-    - zookeeper
     - hadoop
-    - authorized
-    - fetch_public_key
-    - user
-    - java
+    - zookeeper
+    - firewall
 

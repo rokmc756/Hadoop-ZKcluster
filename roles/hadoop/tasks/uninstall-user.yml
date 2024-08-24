@@ -1,0 +1,12 @@
+---
+- name: Delete Public Key
+  file:
+    path: "/home/hadoop/.ssh/id_rsa"
+    state: absent
+
+- name: Kill Processes Hold on User Directory
+  become: true
+  shell: |
+    nohup pkill -U {{ user }}
+    sleep 10
+   # nohup fuser -k /home/{{ user }}

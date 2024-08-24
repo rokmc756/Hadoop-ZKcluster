@@ -1,26 +1,52 @@
-- hosts: all
-  remote_user: root
+---
+- hosts: postgres
+  become: true
+  vars:
+    print_debug: true
   roles:
-    - firewall
+    - postgres
 
 - hosts: all
   remote_user: root
   vars:
-    add_group: true
-    add_user: true
     generate_key: true
-    open_firewall: true
-    disable_firewall: false
+    install_java: true
+    install_oracle_java: false
     install_hadoop: true
     config_hadoop: true
     start_journalnode: true
   roles:
-    - user
-    - fetch_public_key
-    - authorized
-    - java
+    - firewall
     - hadoop
     - zookeeper
+
+
+- hosts: all
+  remote_user: root
+  vars:
+    format_namenode: true
+    start_namenode: true
+    copy_metadata: true
+    bootstrap_standby: true
+    start_datanode: true
+    format_zkfc: true
+    start_zkfc: true
+    start_yarn: true
+    start_yan_resource_manager: false
+  roles:
+    - hadoop
+
+
+- hosts: hive
+  remote_user: root
+  vars:
+     open_firewall: true
+     install_hive: true
+     config_hive: true
+     init_hive: true
+  roles:
+    - hive
+
 
 # The priority of starting hdfs services. It's principal to order in main.yml
 #
@@ -34,61 +60,3 @@
 # 8 - start_zkfc : master
 # 9 - start_zkfc : standby
 #10 - start_yan : standby
-
-- hosts: master
-  remote_user: root
-  vars:
-     format_namenode: true
-     start_namenode: true
-     copy_metadata: true
-  roles:
-    - hadoop
-
-- hosts: standby
-  remote_user: root
-  vars:
-     bootstrap_standby: true
-     start_namenode: true
-  roles:
-    - hadoop
-
-- hosts: workers
-  remote_user: root
-  vars:
-     start_datanode: true
-  roles:
-    - hadoop
-
-- hosts: master
-  remote_user: root
-  vars:
-     format_zkfc: true
-     start_zkfc: true
-  roles:
-    - hadoop
-
-- hosts: standby
-  remote_user: root
-  vars:
-     start_zkfc: true
-     start_yarn: true
-  roles:
-    - hadoop
-
-- hosts: workers
-  remote_user: root
-  vars:
-     start_yan_resource_manager: false
-  roles:
-    - hadoop
-
-#- hosts: hive
-#  remote_user: root
-#  vars:
-#     open_firewall: true
-#     install_hive: true
-#     config_hive: true
-#     init_hive: true
-#  roles:
-#    - hive
-

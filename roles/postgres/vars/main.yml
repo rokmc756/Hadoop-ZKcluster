@@ -1,0 +1,45 @@
+pgsql:
+  major_version: 15
+  minor_version: 5
+  patch_version: 1
+  build_version: 1
+  os_version: el9
+  arch_type: x86_64
+  bin_type: rpm
+  db_name: single_testdb
+  db_user: jomoon
+  db_password: changeme
+  user: postgres
+  group: postgres
+  home_dir: "/home/postgres"
+  base_dir: "/var/lib/pgsql"
+
+
+common:
+  sudo_user: jomoon
+  sudo_group: jomoon
+  sudo_user_home_dir: "/home/jomoon"
+  pgsql_pkg_name: "postgres{{ pgsql.major_version }}"
+  pgsql_bin_dir: "/usr/bin"
+
+
+ssl:
+  ssl_dir: "{{ pgsql.base_dir }}/certs"
+  ssl_days: 3660
+  ssl_country: "KR"
+  ssl_state: "Seoul"
+  ssl_location: "Guro"
+  ssl_organization: "GSS"
+  ssl_organization_unit: "Pivotal"
+  ssl_common_name: "jtest.pivotal.io"
+  ssl_email: "jomoon@pivotal.io"
+  enable: true
+
+
+hive:
+  data_path: "/var/lib/postgresql/data"
+  pgsql:
+    db_name: hive_testdb
+    db_user: hive_user
+    db_password: changeme
+
