@@ -1,0 +1,23 @@
+# pip3 install PyVmomi
+# pip3 install pyVim
+# pip3 install ansible;
+
+- hosts: localhost
+
+  tasks:
+    - name: Power Off Virtual Machines Without the Answer Param
+      vmware_guest_powerstate:
+        hostname: "{{ vmware.esxi_hostname }}"
+        username: "{{ vmware.esxi_username }}"
+        password: "{{ vmware.esxi_password }}"
+        validate_certs: false
+        name: "{{ item }}"
+        state: powered-off
+      loop:
+        - rk9-freeipa
+        - rk9-node01
+        - rk9-node02
+        - rk9-node03
+        - rk9-node04
+        - rk9-node05
+        - rk9-node06

@@ -35,4 +35,8 @@ java_packages:
  - "java-1.8.0-openjdk-devel"
 
 
+vmware:
+  esxi_hostname: "192.168.0.231"
+  esxi_username: "root"
+  esxi_password: "Changeme34#$"
 

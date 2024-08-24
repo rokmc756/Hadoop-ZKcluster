@@ -50,6 +50,12 @@ upgrade: role-update upgrade.yml
 update: role-update update.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -i ${IP}, -u ${USERNAME} update.yml
 
+poweroff: role-update poweroff-vms.yml
+	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} poweroff-vms.yml
+
+poweron: role-update poweron-vms.yml
+	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} poweron-vms.yml
+
 # https://stackoverflow.com/questions/4219255/how-do-you-get-the-list-of-targets-in-a-makefile
 no_targets__:
 role-update:
