@@ -1,38 +1,30 @@
 ---
-#- name: Copy Hive
-#  copy: src={{ download_path }}/apache-hive-{{hive_version}}-bin.tar.gz dest=/tmp owner={{ hadoop.user }} mode=755
-
-
 - name: Check if Apache Hive Tarball File Already Exists
-  stat: path=apache-hive-{{hive_version}}-bin.tar.gz
+  stat: path={{ hive_file_name }}.{{ hive.bin_type }}
   register: hive_tarball_exists
 - debug: msg={{ hive_tarball_exists }}
 
 
 - name: Check if Apache Hive Installation Directory Already Exists
-  stat: path=/home/hadoop/apache-hive-{{hive_version}}-bin
+  stat: path={{ hive.base_path }}/{{ hive_file_name }}
   register: hive_install_dir_exists
 
 
-- name: Sanity check for existence of apache-hive-{{hive_version}}-bin.tar.gz file or apache-hive-{{hive_version}}-bin directory
-  debug: msg="Both /home/hadoop/apache-hive-{{hive_version}}-bin.tar.gz file and /home/hodoop/apache-hive-{{hive_version}}-bin Directory Already Exists"
+- name: Sanity check for existence of {{ hive_file_name }}.{{ hive.bin_type }} file or {{ hive_file_name }} directory
+  debug: msg="Both {{ hive_file_name }}.{{ hive.bin_type }} file and {{ hive_file_name }} Directory Already Exists"
   changed_when: hive_tarball_exists.stat.exists == True and hive_install_dir_exists.stat.exists == True
 
 
 - name: Copy Apache Hive Tarball from local directory, roles/hive/files
-  copy: src=apache-hive-{{ hive_version }}-bin.tar.gz dest=/home/hadoop/apache-hive-{{ hive_version }}-bin.tar.gz mode=0644 owner={{ hadoop.user }} group={{ hadoop.group }}
+  copy: src={{ hive_file_name }}.{{ hive.bin_type }} dest={{ hive.base_path }}/{{ hive_file_name }}.{{ hive.bin_type }} mode=0644 owner={{ hadoop.user }} group={{ hadoop.group }}
   register: local_copy_dss
   when: hadoop.download == false and hive_tarball_exists.stat.exists != True
 
 
-#- name: Unzip Hive
-#  shell: "tar zxf /tmp/apache-hive-{{hive_version}}-bin.tar.gz -C {{ hive_path }}"
-
-
 - name: Unarchive Apache Hive Tarball
   unarchive:
-    src: "/home/hadoop/apache-hive-{{ hive_version }}-bin.tar.gz"
-    dest: "/home/hadoop"
+    src: "{{ hive.base_path }}/{{ hive_file_name }}.{{ hive.bin_type }}"
+    dest: "{{ hive.base_path }}"
     owner: "{{ hadoop.user }}"
     group: "{{ hadoop.group }}"
     mode: "0755"

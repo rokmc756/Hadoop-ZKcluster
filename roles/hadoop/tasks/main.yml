@@ -17,7 +17,7 @@
   when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS'  ansible_os_family != 'Rocky'
 
 
-- name: Set facts for network and packages informations for Linux Distribution
+- name: Set Facts for Network and Packages Informations for Linux Distribution
   import_tasks: set-facts.yml
   tags:
     - install

@@ -84,12 +84,6 @@
   register: ssl_postgres_config
 
 
-#- name: Stop Postgres instance manually to apply systemd unit
-#  become_user: postgres
-#  shell: /opt/vmware/postgres/{{ pgsql.major_version }}/bin/pg_ctl stop -D {{ pgsql.base_dir }}/data -s -m fast
-#  register: postgres_instance_stoppped
-
-
 - name: Reload and Restart PostgreSQL through Systemd
   systemd:
     daemon_reexec: true

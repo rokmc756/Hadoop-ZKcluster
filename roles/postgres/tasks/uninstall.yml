@@ -1,3 +1,4 @@
+---
 - name: Stop Systemd Service for PostgreSQL
   systemd:
     name: postgresql
@@ -8,28 +9,6 @@
   poll: 5
 
 
-#- name: Kill all postgres processes
-#  shell: ( killall postgres )
-#  ignore_errors: true
-#  register: postgres_process_killed
-
-
-#- name: Delete configuration files and data directory
-#  file:
-#    path: "{{ item }}"
-#    state: absent
-#  register: patroni_config_files_deleted
-#  with_items:
-#    - "/var/lib/pgsql/{{ pgsql.db_name }}"
-#    - "/var/lib/pgsql/data"
-#    - "/var/lib/pgsql/backup"
-#    - "/var/lib/pgsql/backups"
-#    - "/var/lib/pgsql/.bash_profile"
-#    # - "/var/lib/pgsql"
-#    # - "/home/postgres"
-
-
-#   name: "{{ pgsql_pkg_name }}"
 - name: Uninstall Postgres Packages
   package:
     name: "{{ item }}"
@@ -40,12 +19,6 @@
     - postgresql-server
   vars:
     ansible_python_interpreter: "{{ yum_python_version }}"
-
-
-#- name: Delete Postgres RPM Package file
-#  file:
-#    path: "{{ common.sudo_user_home_dir }}/{{ pgsql_pkg_name }}.{{ pgsql.arch_type }}.{{ pgsql.bin_type }}"
-#    state: absent
 
 
 - name: Delete Configuration Files and Data Directory for PostgreSQL
@@ -88,18 +61,18 @@
   poll: 5
 
 
-- name: Flush IPTables Rules
-  shell: ( iptables -F )
-  register: iptables_rules_flushed
+#- name: Flush IPTables Rules
+#  shell: ( iptables -F )
+#  register: iptables_rules_flushed
 
 
-- name: List IPTables Rules
-  shell: ( iptables -nL )
-  register: iptables_rules_listed
+#- name: List IPTables Rules
+#  shell: ( iptables -nL )
+#  register: iptables_rules_listed
 
 
-- debug: msg={{ iptables_rules_listed.stdout }}
-  tags:  print_debug
+#- debug: msg={{ iptables_rules_listed.stdout }}
+#  tags:  print_debug
 
 
 - name: Alternative Python Version
@@ -108,4 +81,5 @@
     /usr/sbin/alternatives --set python {{ yum_python_version }}
   register: alternatives_python3
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky'
+
 

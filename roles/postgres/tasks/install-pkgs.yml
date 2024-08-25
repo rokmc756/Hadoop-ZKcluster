@@ -1,6 +1,4 @@
 ---
-# Configure and Install Single Postgres
-
 - name: Alternative Python version
   become: true
   become_user: root
@@ -8,7 +6,6 @@
     update-alternatives --install /usr/bin/python python {{ yum_python_version }} 1
     alternatives --set python {{ yum_python_version }}
   register: python_version_alternatives
-  # when: install_pkgs
 
 
 - name: Install Common Prerequisties RPM Packages for Postgres
@@ -18,8 +15,6 @@
     state: present
   vars:
     ansible_python_interpreter: "{{ yum_python_version }}"
-  # when: install_pkgs
-  # with_items: "{{ rh_install_pkgs }}"
   # async: 120
   # poll: 5
   # skip_broken: yes
@@ -30,14 +25,9 @@
   shell: ( pip3 install ipaddress )
   register: pip3_ipaddress_installed
   when: hostvars[inventory_hostname].ansible_distribution_major_version|int <= 7
-  # when: install_pkgs and hostvars[inventory_hostname].ansible_distribution_major_version|int <= 7
 
 
-#- name: Copy the Postgres RPM Package file
-#  copy: src={{ pgsql_pkg_name }}.{{ pgsql.arch_type }}.{{ pgsql.bin_type }} dest={{ common.sudo_user_home_dir }}/{{ pgsql_pkg_name }}.{{ pgsql.arch_type }}.{{ pgsql.bin_type }} mode=0644 owner={{ common.sudo_user }} group={{ common.sudo_group }}
-
-
-- name: Install the Postgres Packages
+- name: Install the PostgreSQL Packages
   become: true
   package:
     name: "{{ item }}"

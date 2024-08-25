@@ -1,6 +1,6 @@
 ---
 - name: Copy Hive Site
-  template: src=hive-site.xml dest={{ config.path }} mode=644 owner={{ hadoop.user }} group={{ hadoop.group }}
+  template: src=hive-site.xml dest={{ hive_config_path }} mode=644 owner={{ hadoop.user }} group={{ hadoop.group }}
 
 
 - name: Copy Hive Env Script

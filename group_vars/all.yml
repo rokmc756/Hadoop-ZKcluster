@@ -6,6 +6,7 @@ hadoop:
   group: hadoop
   domain: "jtest.pivotal.io"
   hdfs_port: 9000
+  base_path: "/home/hadoop"
 #  major_version: "13"
 #  minor_version: "0"
 #  patch_version: "3"
@@ -20,6 +21,26 @@ hadoop:
     ipaddr1: "192.168.1.7"
     ipaddr2: "192.168.2.7"
 
+
+hive:
+  major_version: 3
+  minor_version: 1
+  patch_version: 3
+  bin_type: tar.gz
+  base_path: "{{ hadoop.base_path }}"
+  default_path: "/user/hive"
+  tmp_path: "{{ hadoop.base_path }}/hive/tmp"
+  server_port: 10000
+  hwi_port: 9999
+  metastore_port: 9083
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.7"
+    ipaddr1: "192.168.1.7"
+    ipaddr2: "192.168.2.7"
+
+
 postgres:
   net:
     type: "virtual"                # Or Physical
@@ -28,11 +49,11 @@ postgres:
     ipaddr1: "192.168.1.7"
     ipaddr2: "192.168.2.7"
 
-# java version
+
 jvm_home: "/usr/lib/jvm"
 java_packages:
- - "java-1.8.0-openjdk"
- - "java-1.8.0-openjdk-devel"
+  - "java-1.8.0-openjdk"
+  - "java-1.8.0-openjdk-devel"
 
 
 vmware:
