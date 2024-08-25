@@ -1,33 +1,33 @@
 ---
-#- hosts: all
-#  remote_user: root
-#  vars:
-#    generate_key: true
-#    install_java: true
-#    install_oracle_java: false
-#    install_hadoop: true
-#    config_hadoop: true
-#    start_journalnode: true
-#  roles:
-#    - firewall
-#    - hadoop
-#    - zookeeper
-#
-#
-#- hosts: all
-#  remote_user: root
-#  vars:
-#    format_namenode: true
-#    start_namenode: true
-#    copy_metadata: true
-#    bootstrap_standby: true
-#    start_datanode: true
-#    format_zkfc: true
-#    start_zkfc: true
-#    start_yarn: true
-#    start_yan_resource_manager: false
-#  roles:
-#    - hadoop
+- hosts: all
+  remote_user: root
+  vars:
+    generate_key: true
+    install_java: true
+    install_oracle_java: false
+    install_hadoop: true
+    config_hadoop: true
+    start_journalnode: true
+  roles:
+    - firewall
+    - hadoop
+    - zookeeper
+
+
+- hosts: all
+  remote_user: root
+  vars:
+    format_namenode: true
+    start_namenode: true
+    copy_metadata: true
+    bootstrap_standby: true
+    start_datanode: true
+    format_zkfc: true
+    start_zkfc: true
+    start_yarn: true
+    start_yan_resource_manager: false
+  roles:
+    - hadoop
 
 
 - hosts: database

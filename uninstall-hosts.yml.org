@@ -15,10 +15,10 @@
     - postgres
 
 
-#- hosts: all
-#  remote_user: root
-#  roles:
-#    - hadoop
-#    - zookeeper
-#    - firewall
+- hosts: all
+  remote_user: root
+  roles:
+    - hadoop
+    - zookeeper
+    - firewall
 

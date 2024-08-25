@@ -7,19 +7,27 @@ hadoop:
   domain: "jtest.pivotal.io"
   hdfs_port: 9000
   base_path: "/home/hadoop"
-#  major_version: "13"
-#  minor_version: "0"
-#  patch_version: "3"
-#  build_version: ""
-#  base_path: "/home/jomoon"
-#  bin_type: "tar.gz"
   download: false
+  download_path: /tmp
+  major_version: "3"
+  minor_version: "3"
+  patch_version: "6"
+  bin_type: "tar.gz"
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
     ipaddr0: "192.168.0.7"
     ipaddr1: "192.168.1.7"
     ipaddr2: "192.168.2.7"
+  dfs:
+    namenode_httpport: 9001
+    nameservices: ha-cluster
+  yarn:
+    resmgr_port: 8040
+    resmgr_scheduler_port: 8030
+    resmgr_webapp_port: 8088
+    resmgr_tracker_port: 8025
+    resmgr_admin_port: 8141
 
 
 hive:
@@ -50,10 +58,25 @@ postgres:
     ipaddr2: "192.168.2.7"
 
 
-jvm_home: "/usr/lib/jvm"
-java_packages:
-  - "java-1.8.0-openjdk"
-  - "java-1.8.0-openjdk-devel"
+jdk:
+  oss:
+    install: true
+    jvm_home: "/usr/lib/jvm"
+    major_version: 1
+    minor_version: 8
+    patch_version: 0
+    pkgs:
+      - "java-1.8.0-openjdk"
+      - "java-1.8.0-openjdk-devel"
+  oracle:
+    install: false
+    jvm_home: "/usr/lib/jvm"
+    major_version: 1
+    minor_version: 8
+    patch_version: 0
+    pkgs:
+      - "java-1.8.0-openjdk"
+      - "java-1.8.0-openjdk-devel"
 
 
 vmware:

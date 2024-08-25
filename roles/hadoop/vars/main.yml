@@ -1,55 +1,43 @@
 ---
-user: "hadoop"
-group: "hadoop"
+hadoop_version: "{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
 
-master_ip: "{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
-master_hostname: "{{ hostvars[groups['master'][0]].ansible_hostname }}"
-standby_master_ip: "{{ hostvars[groups['standby'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
-standby_master_hostname: "{{ hostvars[groups['standby'][0]].ansible_hostname }}"
+netinfo:
+  ipaddr:
+    master: "{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
+    standby: "{{ hostvars[groups['standby'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
+  hostname:
+    master: "{{ hostvars[groups['master'][0]].ansible_hostname }}"
+    standby: "{{ hostvars[groups['standby'][0]].ansible_hostname }}"
 
-# download_path: "/Users/moonja/Downloads"
-download_hadoop: false
-download_path: "/tmp"
-hadoop_version: "3.3.6"
-hadoop_path: "/home/hadoop"
-hadoop_config_path: "/home/hadoop/hadoop-{{hadoop_version}}/etc/hadoop"
-hadoop_tmp: "/home/hadoop/tmp"
-hadoop_dfs_name: "/home/hadoop/dfs/name"
-hadoop_dfs_data: "/home/hadoop/dfs/data"
-hadoop_log_path: "/home/hadoop/hadoop_logs"
-hadoop_journalnode_path: "/home/hadoop/journalnode/data"
+config:
+  path: "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop"
+  tmp: "{{ hadoop.base_path }}/tmp"
+  dfs_name: "{{ hadoop.base_path }}/dfs/name"
+  dfs_data: "{{ hadoop.base_path }}/dfs/data"
+  log_path: "{{ hadoop.base_path }}/hadoop_logs"
+  journalnode_path: "{{ hadoop.base_path }}/journalnode/data"
 
 
-hadoop_create_path:
-  - "{{ hadoop_tmp }}"
-  - "{{ hadoop_dfs_name }}"
-  - "{{ hadoop_dfs_data }}"
-  - "{{ hadoop_log_path }}"
-  - "{{ hadoop_journalnode_path }}"
+create_path:
+  - "{{ config.tmp }}"
+  - "{{ config.dfs_name }}"
+  - "{{ config.dfs_data }}"
+  - "{{ config.log_path }}"
+  - "{{ config.journalnode_path }}"
 
-
-# hadoop configration
-hdfs_port: 9000
-  #zkquorum_list: |
-  #{% set results = [] %}
-  #{% for host in groups['all'] %}
-  #{{ hostvars[host][ansible_hostname] }}:2181
-  #{% endfor %}
-  #{% set results = [] %}
-
-
-zkservers_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
-qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
+list:
+  zkservers: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
+  qjournal: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
 
 
 core_site_properties:
   - {
       "name":"fs.defaultFS",
-      "value":"hdfs://{{ master_ip }}:{{ hdfs_port }}"
+      "value":"hdfs://{{ netinfo.ipaddr.master }}:{{ hadoop.hdfs_port }}"
   }
   - {
       "name":"hadoop.tmp.dir",
-      "value":"file:{{ hadoop_tmp }}"
+      "value":"file:{{ config.tmp }}"
   }
   - {
     "name":"io.file.buffer.size",
@@ -57,7 +45,7 @@ core_site_properties:
   }
   - {
       "name":"ha.zookeeper.quorum",
-      "value":"{{ zkservers_list }}"
+      "value":"{{ list.zkservers }}"
   }
   - {
     "name":"ha.zookeeper.session-timeout.ms",
@@ -76,11 +64,11 @@ dfs_namenode_httpport: 9001
 hdfs_site_properties:
   - {
       "name":"dfs.namenode.name.dir",
-      "value":"file:{{ hadoop_dfs_name }}"
+      "value":"file:{{ config.dfs_name }}"
   }
   - {
       "name":"dfs.namenode.data.dir",
-      "value":"file:{{ hadoop_dfs_data }}"
+      "value":"file:{{ config.dfs_data }}"
   }
   - {
       "name":"dfs.replication",
@@ -100,27 +88,27 @@ hdfs_site_properties:
   }
   - {
       "name":"dfs.namenode.rpc-address.ha-cluster.nn1",
-      "value":"{{ master_hostname }}:9000"
+      "value":"{{ netinfo.hostname.master }}:{{ hadoop.hdfs_port }}"
   }
   - {
       "name":"dfs.namenode.rpc-address.ha-cluster.nn2",
-      "value":"{{ standby_master_hostname }}:9000"
+      "value":"{{ netinfo.hostname.standby }}:{{ hadoop.hdfs_port }}"
   }
   - {
       "name":"dfs.namenode.http-address.ha-cluster.nn1",
-      "value":"{{ master_hostname }}:50070"
+      "value":"{{ netinfo.hostname.master }}:50070"
   }
   - {
       "name":"dfs.namenode.http-address.ha-cluster.nn2",
-      "value":"{{ standby_master_hostname }}:50070"
+      "value":"{{ netinfo.hostname.standby }}:50070"
   }
   - {
       "name":"dfs.namenode.shared.edits.dir",
-      "value":"qjournal://{{ qjournal_list }}/ha-cluster"
+      "value":"qjournal://{{ list.qjournal }}/{{ hadoop.dfs.nameservices }}"
   }
   - {
       "name":"dfs.journalnode.edits.dir",
-      "value":"{{ hadoop_journalnode_path }}"
+      "value":"{{ config.journalnode_path }}"
   }
   - {
       "name":"dfs.ha.fencing.methods",
@@ -128,7 +116,7 @@ hdfs_site_properties:
   }
   - {
       "name":"dfs.ha.fencing.ssh.private-key-files",
-      "value":"/home/hadoop/.ssh/id_rsa"
+      "value":"{{ hadoop.base_path }}/.ssh/id_rsa"
   }
   - {
     "name":"dfs.ha.fencing.ssh.connect-timeout",
@@ -172,6 +160,7 @@ hdfs_site_properties:
   #    "value":"0.0.0.0:9000"
   #}  # Applied first for Hadoop 2.10.2, 9000 was in 3.4.x
 
+
 mapred_site_properties:
  - {
    "name": "mapreduce.framework.name",
@@ -186,11 +175,6 @@ mapred_site_properties:
    "value":"HADOOP_MAPRED_HOME=$HADOOP_COMMON_HOME"
  }
 
-yarn_resourcemanager_port: 8040
-yarn_resourcemanager_scheduler_port: 8030
-yarn_resourcemanager_webapp_port: 8088
-yarn_resourcemanager_tracker_port: 8025
-yarn_resourcemanager_admin_port: 8141
 
 yarn_site_properties:
   - {
@@ -243,7 +227,7 @@ yarn_site_properties:
   }
   - {
     "name":"yarn.resourcemanager.zk-address",
-    "value":"{{ zkservers_list }}"
+    "value":"{{ list.zkservers }}"
   }
   - {
     "name":"yarn.resourcemanager.recovery.enabled",
@@ -255,23 +239,23 @@ yarn_site_properties:
   }   ###
   - {
     "name":"yarn.resourcemanager.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_port }}"
+    "value":"{{ netinfo.hostname.master }}:{{ hadoop.yarn.resmgr_port }}"
   }
   - {
     "name":"yarn.resourcemanager.scheduler.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_scheduler_port }}"
+    "value":"{{ netinfo.hostname.master }}:{{ hadoop.yarn.resmgr_scheduler_port }}"
   }
   - {
     "name":"yarn.resourcemanager.webapp.address",
-    "value":"{{ master_hostname }}:{{ yarn_resourcemanager_webapp_port }}"
+    "value":"{{ netinfo.hostname.master }}:{{ hadoop.yarn.resmgr_webapp_port }}"
   }
   - {
     "name": "yarn.resourcemanager.resource-tracker.address",
-    "value": "{{ master_hostname }}:{{ yarn_resourcemanager_tracker_port }}"
+    "value": "{{ netinfo.hostname.master }}:{{ hadoop.yarn.resmgr_tracker_port }}"
   }
   - {
     "name": "yarn.resourcemanager.admin.address",
-    "value": "{{ master_hostname }}:{{ yarn_resourcemanager_admin_port }}"
+    "value": "{{ netinfo.hostname.master }}:{{ hadoop.yarn.resmgr_admin_port }}"
   }
   - {
     "name": "yarn.nodemanager.aux-services.mapreduce.shuffle.class",

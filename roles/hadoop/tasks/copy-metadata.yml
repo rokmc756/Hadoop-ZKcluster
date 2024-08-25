@@ -1,6 +1,6 @@
 ---
 - name: Copy Metadata to Standby master
-  become_user: "{{ user}}"
+  become_user: "{{ hadoop.user }}"
   synchronize:
     src:  "{{ item }}"
     dest: "{{ item }}"
@@ -8,4 +8,5 @@
       - "-e ssh"    # "-e ssh -i ~/.ssh/id_rsa.pub"
   delegate_to: "{{ hostvars[groups['standby'][0]]['ansible_hostname'] }}"
   with_items:
-    - "/home/hadoop/dfs/data"
+    - "{{ hadoop.base_path }}/dfs/data"
+

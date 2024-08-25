@@ -1,0 +1,146 @@
+---
+- name: Create Hadoop Path
+  file:
+    path: "{{ item }}"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ hadoop_create_path }}"
+  tags: install
+
+
+# for now fail if it's not a Red Hat based system
+- name: Check OS ( GPDB )
+  fail: msg="Not a Red Hat based system!"
+  when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS'  ansible_os_family != 'Rocky'
+
+
+- name: Set Facts for Network and Packages Informations for Linux Distribution
+  import_tasks: set-facts.yml
+  tags:
+    - install
+    - uninstall
+
+
+- name: Configure Firewalld
+  import_tasks: config-firewall.yml
+  when: ( open_firewall is defined and open_firewall ) or ( disable_firewall is defined and disable_firewall )
+  tags: install
+
+
+- import_tasks: install-user.yml
+  tags: install
+  # when: add_user is defined and add_user
+
+- import_tasks: fetch-public-key.yml
+  when: generate_key is defined and generate_key
+  tags: install
+
+
+- import_tasks: authorized.yml
+  when: generate_key is defined and generate_key
+  tags: install
+
+
+- import_tasks: install-java.yml
+  when: install_java is defined and install_java
+  tags: install
+
+
+- import_tasks: install-hadoop.yml
+  when: install_hadoop is defined and install_hadoop
+  tags: install
+
+
+- import_tasks: config-hadoop.yml
+  when: config_hadoop is defined and config_hadoop
+  tags: install
+
+
+- import_tasks: start-journalnode.yml
+  when: start_journalnode is defined and start_journalnode
+  tags: install
+
+
+- import_tasks: format-namenode.yml
+  when: format_namenode is defined and format_namenode and inventory_hostname in groups['master']
+  tags: install
+
+
+- import_tasks: start-namenode.yml
+  when: start_namenode is defined and start_namenode and inventory_hostname in groups['master']
+  tags: install
+
+
+- import_tasks: copy-metadata.yml
+  when: copy_metadata is defined and copy_metadata and inventory_hostname in groups['master']
+  tags: install
+
+
+- import_tasks: bootstrap-standby.yml
+  when: bootstrap_standby is defined and bootstrap_standby and inventory_hostname in groups['standby']
+  tags: install
+
+
+- import_tasks: start-namenode.yml
+  when: start_namenode is defined and start_namenode and inventory_hostname in groups['standby']
+  tags: install
+
+
+- import_tasks: start-datanode.yml
+  when: start_datanode is defined and start_datanode and inventory_hostname in groups['workers']
+  tags: install
+
+
+- import_tasks: format-zkfc.yml
+  when: format_zkfc is defined and format_zkfc and inventory_hostname in groups['master']
+  tags: install
+
+
+- import_tasks: start-zkfc.yml
+  when: start_zkfc is defined and start_zkfc and inventory_hostname in groups['master']
+  tags: install
+
+
+- import_tasks: start-zkfc.yml
+  when: start_zkfc is defined and start_zkfc and inventory_hostname in groups['standby']
+  tags: install
+
+
+- import_tasks: start-yan.yml
+  when: start_yan is defined and start_yan and inventory_hostname in groups['standby']
+  tags: install
+
+
+- import_tasks: start-yan-resource-manager.yml
+  when: start_yan_resource_manager is defined and start_yan_resource_manager and inventory_hostname in groups['workers']
+  tags: install
+
+
+# Uninstall Hadoop Installation
+- name: Uninstall Hadoop
+  import_tasks: uninstall-hadoop.yml
+  tags: uninstall
+
+
+- name: Uninstall Authorized
+  import_tasks: uninstall-authorized.yml
+  tags: uninstall
+
+
+- name: Uninstall Fetch Public Key
+  import_tasks: uninstall-fetch-public-key.yml
+  tags: uninstall
+
+
+- name: Uninstall User
+  import_tasks: uninstall-user.yml
+  tags: uninstall
+
+
+- name: Uninstall Java
+  import_tasks: uninstall-java.yml
+  tags: uninstall
+

@@ -2,12 +2,12 @@
 - name: Create Hadoop Path
   file:
     path: "{{ item }}"
-    owner: "{{ user }}"
-    group: "{{ group }}"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.group }}"
     state: directory
     mode: 0755
   with_items:
-    - "{{ hadoop_create_path }}"
+    - "{{ create_path }}"
   tags: install
 
 
@@ -109,12 +109,12 @@
   tags: install
 
 
-- import_tasks: start-yan.yml
+- import_tasks: start-yarn.yml
   when: start_yan is defined and start_yan and inventory_hostname in groups['standby']
   tags: install
 
 
-- import_tasks: start-yan-resource-manager.yml
+- import_tasks: start-yarn-resource-manager.yml
   when: start_yan_resource_manager is defined and start_yan_resource_manager and inventory_hostname in groups['workers']
   tags: install
 

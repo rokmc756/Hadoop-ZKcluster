@@ -2,7 +2,7 @@
 
 USERNAME=jomoon
 COMMON="yes"
-ANSIBLE_HOST_PASS="rmsidwoalfh"
+ANSIBLE_HOST_PASS="changeme"
 ANSIBLE_TARGET_PASS="changeme"
 # include ./*.mk
 
@@ -30,7 +30,7 @@ all:
 		echo ""; \
 	done
 
-# - https://ansible-tutorial.schoolofdevops.com/control_structures/
+# https://ansible-tutorial.schoolofdevops.com/control_structures/
 init: role-update init-hosts.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} init-hosts.yml --tags="init"
 
@@ -74,5 +74,5 @@ update.yml:
 clean:
 	rm -rf ./known_hosts install-hosts.yml update.yml
 
-.PHONY:	all init install update ssh common clean no_targets__ role-update
+.PHONY:	all init install uninstall update ssh common clean no_targets__ role-update
 

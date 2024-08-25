@@ -61,3 +61,10 @@
 - set_fact:
     install_pkgs: "{{ suse_install_pkgs }}"
   when: ansible_distribution == "openSUSE Leap" and ansible_distribution_major_version|int <=  15
+
+
+- name: Define Fact for Hadoop Version
+  set_fact:
+    hadoop_file_name: "hadoop-{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
+
+

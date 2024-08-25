@@ -1,18 +1,72 @@
 ---
-- name: Download Hadoop Tar File If Not Downloaded
-  copy: src={{ download_path }}/hadoop-{{hadoop_version}}.tar.gz dest=/tmp owner={{ user }} mode=755
-  when: download_hadoop == true
+#- name: Download Hadoop Tar File If Not Downloaded
+#  copy: src={{ download_path }}/hadoop-{{ hadoop_version }}.tar.gz dest=/tmp owner={{ user }} mode=755
+#  when: download_hadoop == true
 
 
-- name: Copy Hadoop
-  copy: src=hadoop-{{hadoop_version}}.tar.gz dest=/tmp owner={{ user }} mode=755
-  when: download_hadoop == false
+#- name: Copy Hadoop
+#  copy: src=hadoop-{{hadoop_version}}.tar.gz dest=/tmp owner={{ user }} mode=755
+#  when: download_hadoop == false
 
 
-- name: Unzip Hadoop
-  shell: "tar zxf /tmp/hadoop-{{hadoop_version}}.tar.gz -C {{ hadoop_path }}"
+#- name: Unzip Hadoop
+#  shell: "tar zxf /tmp/hadoop-{{hadoop_version}}.tar.gz -C {{ hadoop_path }}"
 
 
-- name: Unzip Hadoop
-  shell: "chown -R {{ user }}.{{ group }} {{ hadoop_path }}"
+#- name: Unzip Hadoop
+#  shell: "chown -R {{ user }}.{{ group }} {{ hadoop_path }}"
+
+
+#- name: Download Hadoop Tar File If Not Downloaded
+#  copy: src=hadoop-{{ hadoop_version }}.tar.gz dest=/tmp owner={{ user }} mode=755
+#  when: download_hadoop == true
+
+
+# OK
+#- name: Copy Hadoop
+#  copy: src=hadoop-{{ hadoop_version }}.tar.gz dest=/tmp owner={{ hadoop.user }} mode=755
+#  when: hadoop.download == false
+
+
+#- name: Unzip Hadoop
+#  shell: "tar zxf /tmp/hadoop-{{ hadoop_version }}.tar.gz -C {{ hadoop.base_path }}"
+
+
+#- name: Unzip Hadoop
+#  shell: "chown -R {{ hadoop.user }}.{{ hadoop.group }} {{ hadoop.base_path }}"
+
+
+
+- name: Check if Apache Hadoop Tarball File Already Exists
+  stat: path={{ hadoop_file_name }}.{{ hadoop.bin_type }}
+  register: hadoop_tarball_exists
+- debug: msg={{ hadoop_tarball_exists }}
+
+
+- name: Check if Apache Hadoop Installation Directory Already Exists
+  stat: path={{ hadoop.base_path }}/{{ hadoop_file_name }}
+  register: hadoop_install_dir_exists
+#
+
+- name: Sanity check for existence of {{ hadoop_file_name }}.{{ hadoop.bin_type }} file or {{ hadoop_file_name }} directory
+  debug: msg="Both {{ hadoop_file_name }}.{{ hadoop.bin_type }} file and {{ hadoop_file_name }} Directory Already Exists"
+  changed_when: hadoop_tarball_exists.stat.exists == True and hadoop_install_dir_exists.stat.exists == True
+
+
+- name: Copy Apache Hadoop Tarball from local directory, roles/hadoop/files
+  copy: src={{ hadoop_file_name }}.{{ hadoop.bin_type }} dest={{ hadoop.base_path }}/{{ hadoop_file_name }}.{{ hadoop.bin_type }} mode=0644 owner={{ hadoop.user }} group={{ hadoop.group }}
+  register: local_copy_dss
+  when: hadoop.download == false and hadoop_tarball_exists.stat.exists != True
+
+
+- name: Unarchive Apache Hadoop Tarball
+  unarchive:
+    src: "{{ hadoop.base_path }}/{{ hadoop_file_name }}.{{ hadoop.bin_type }}"
+    dest: "{{ hadoop.base_path }}/"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.group }}"
+    mode: "0755"
+    remote_src: yes
+  register: unarchive_hadoop_tarball
+  when: hadoop_install_dir_exists.stat.exists == false
 

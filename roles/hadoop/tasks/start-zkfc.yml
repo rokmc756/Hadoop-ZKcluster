@@ -1,3 +1,3 @@
 ---
 - name: Start the ZKFC in Active or Standby Namenode
-  shell: su {{ user }} -c "hdfs --daemon start zkfc"    #  su {{ user }} -c "hadoop-daemon.sh start zkfc"
+  shell: su {{ hadoop.user }} -c "hdfs --daemon start zkfc"    #  su {{ user }} -c "hadoop-daemon.sh start zkfc"

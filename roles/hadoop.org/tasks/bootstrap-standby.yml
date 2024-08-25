@@ -1,0 +1,3 @@
+---
+- name: Start HDFS
+  shell: su {{ user }} -c "hdfs namenode -bootstrapStandby"

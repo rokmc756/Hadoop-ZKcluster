@@ -11,13 +11,13 @@ ALL_HOSTS="rk9-node01 rk9-node02 rk9-node03 rk9-node04 rk9-node05"
 sshpass -p "changeme" ssh root@$MASTER_HOSTNAME su "hadoop -c 'hadoop-daemon.sh stop zkfc'"
 sshpass -p "changeme" ssh root@$MASTER_HOSTNAME su "hadoop -c 'stop-all.sh'"
 
+
 for i in `echo "$ALL_HOSTS"`
 do
 
     echo $i
 
     sshpass -p "changeme" ssh root@$i "groupdel hadoop; userdel hadoop"
-
 
     sshpass -p "changeme" ssh root@$i "rm -rf /home/hadoop"
 

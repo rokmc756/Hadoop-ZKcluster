@@ -1,0 +1,41 @@
+rh_common_pkgs: "firewalld,sshpass,cifs-utils,nfs-utils,lsof,elfutils-libelf-devel,glibc-headers,glibc-devel,rpcbind,xfsprogs,kernel-devel,jq,expect,net-tools,ipvsadm,lvm2,bind-utils,python3-passlib"
+rh_common_devel_pkgs: "git"
+# libxml2-python,s3cmd
+
+rh7_common_devel_pkgs: "acl,expat,git,nginx,unzip,zip,java-11-openjdk-headless,java-17-openjdk-headless,python3,freetype,libgfortran,libgomp,policycoreutils,policycoreutils-python-utils,R-core-devel,libicu-devel,libcurl-devel,openssl-devel,libxml2-devel"
+rh8_common_devel_pkgs: "acl,expat,git,nginx,unzip,zip,java-11-openjdk-headless,java-17-openjdk-headless,python3,freetype,libgfortran,libgomp,policycoreutils,policycoreutils-python-utils,R-core-devel,libicu-devel,libcurl-devel,openssl-devel,libxml2-devel"
+rh9_common_devel_pkgs: "acl,expat,git,nginx,unzip,zip,java-11-openjdk-headless,java-17-openjdk-headless,python3,freetype,libgfortran,libgomp,policycoreutils,policycoreutils-python-utils,R-core-devel,libicu-devel,libcurl-devel,openssl-devel,libxml2-devel"
+
+# or java-17-openjdk-headless
+# or python39
+
+
+suse_common_pkgs: "firewalld,sshpass,cifs-utils,nfs-utils,lsof,glibc-devel,rpcbind,xfsprogs,kernel-devel,jq,expect,net-tools,ipvsadm,lvm2,docker,containerd,bind-utils,python3-passlib"
+suse_common_devel_pkgs: "git"
+suse15_common_devel_pkgs: "make,perl,gcc,tcl,tk,helm"
+# libnl, glibc-headers, elfutils-libelf-devel - No provider
+
+# libnl,elfutils-libelf-devel,kernel-devel
+ubt_common_pkgs: "firewalld,sshpass,s3cmd,cifs-utils,nfs-client,libnl-*,elfutils*,lsof,rpcbind,glibc-*,xfsprogs,linux-headers-generic,jq,expect,ipvsadm,lvm2,python3-passlib"
+ubt_common_devel_pkgs: "git,make,gcc,tcl,tk"
+
+
+ubt20_common_devel_pkgs: "acl,curl,git,libexpat1,nginx,unzip,zip,openjdk-11-jre-headless,python3.10,python3-distutils,libfreetype6 libgomp1,r-base-dev,libicu-dev,libcurl4-openssl-dev,libssl-dev,libxml2-dev,pkg-config"
+ubt22_common_devel_pkgs: "acl,curl,git,libexpat1,nginx,unzip,zip,openjdk-11-jre-headless,python3.10,python3-distutils,libfreetype6 libgomp1,r-base-dev,libicu-dev,libcurl4-openssl-dev,libssl-dev,libxml2-dev,pkg-config"
+ubt23_common_devel_pkgs: "acl,curl,git,libexpat1,nginx,unzip,zip,openjdk-11-jre-headless,python3.10,python3-distutils,libfreetype6 libgomp1,r-base-dev,libicu-dev,libcurl4-openssl-dev,libssl-dev,libxml2-dev,pkg-config"
+
+# or openjdk-17-jre-headless
+# python3.6 or python3.7 or python3.9 or python3.10
+
+
+# java-11-openjdk-headless or java-17-amazon-corretto-headless
+amazon_common_devel_pkgs: "acl,expat,git,nginx,unzip,zip,java-11-openjdk-headless,python3,libgomp,freetype,compat-gcc-48-libgfortran,R-core-devel,libicu-devel,libcurl-devel,openssl-devel,libxml2-devel"
+
+
+official_rh_pkgs: "pdsh"
+official_ubt_pkgs: "pdsh"
+official_suse_pkgs: "pdsh"
+
+update_cache: false
+upgrade_packages: false
+

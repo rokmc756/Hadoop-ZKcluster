@@ -1,0 +1,3 @@
+---
+- name: Format The Zookeeper Failover Controller In Activie Namenode
+  shell: su {{ user }} -c "hdfs zkfc -formatZK -force"
