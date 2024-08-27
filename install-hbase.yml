@@ -1,0 +1,10 @@
+- hosts: all
+  remote_user: root
+  vars:
+     open_firewall: true
+     install_hbase: true
+     config_hbase: true
+     init_hbase: true
+  roles:
+    - hbase
+

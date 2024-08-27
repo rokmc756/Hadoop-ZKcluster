@@ -1,4 +1,11 @@
 ---
+- name: Create Link to Spark Directory
+  file:
+    src: "{{ spark_root_dir }}"
+    dest: "{{ spark.base_path }}/spark"
+    state: link
+
+
 - name: Copy Spark Slaves
   template: src={{ item }}.j2 dest={{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }} mode=644 owner={{ spark.user }} group={{ spark.group }}
   with_items:

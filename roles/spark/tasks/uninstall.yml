@@ -18,9 +18,9 @@
     group: "{{ spark.group }}"
     state: absent
   with_items:
+    - "{{ spark.base_path }}/spark"
     - "{{ spark.base_path }}/{{ spark_file_name }}.{{ spark.bin_type }}"
     - "/etc/profile.d/spark_env.sh"
-  # - "{{ config.path }}/hive-site.xml"
 
 
 - name: Remove Spark Path
@@ -37,7 +37,3 @@
     - "/tmp/spark-hadoop-org.apache.spark.deploy.mesos.MesosClusterDispatcher-1.pid"
     - "/mtp/spark-hadoop-org.apache.spark.deploy.worker.Worker-1.pid"
     - "/tmp/spark-hadoop-org.apache.spark.sql.connect.service.SparkConnectServer-1.pid"
-
-# - "{{ config.create_path }}"
-# - "{{ hdfs_path }}"
-

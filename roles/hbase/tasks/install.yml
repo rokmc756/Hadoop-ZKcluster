@@ -1,0 +1,23 @@
+---
+- name: Create Hadoop Path
+  file: 
+    path: "{{ item }}"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.group }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ config.create_path }}"
+
+
+- import_tasks: install-hive.yml
+  when: install_hive is defined and install_hive
+
+
+- import_tasks: config-hive.yml
+  when: config_hive is defined and config_hive
+
+
+- import_tasks: init-hive.yml
+  when: init_hive is defined and init_hive
+

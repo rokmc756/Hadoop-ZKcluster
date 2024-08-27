@@ -55,6 +55,16 @@
     - spark
 
 
+- hosts: all
+  remote_user: root
+  vars:
+     open_firewall: true
+     install_hbase: true
+     config_hbase: true
+     init_hbase: true
+  roles:
+    - hbase
+
 # The priority of starting hdfs services. It's principal to order in main.yml
 #
 # 1 - format_namenode : master

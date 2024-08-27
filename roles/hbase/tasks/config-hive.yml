@@ -1,11 +1,4 @@
 ---
-- name: Create Link to Hive Directory
-  file:
-    src: "{{ hive_root_dir }}"
-    dest: "{{ hive.base_path }}/hive"
-    state: link
-
-
 - name: Copy Hive Site
   template: src=hive-site.xml dest={{ config.path }} mode=644 owner={{ hadoop.user }} group={{ hadoop.group }}
 

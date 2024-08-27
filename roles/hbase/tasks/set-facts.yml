@@ -1,0 +1,18 @@
+---
+- name: Get Network Interface Name from Prefix of IP Addresses
+  set_fact:
+    netdev0: "{{ ansible_interfaces | map('regex_replace', '^', 'ansible_') | map('extract', vars) | selectattr('ipv4', 'defined') | selectattr('ipv4.address', 'match', hbase.net.ipaddr0 ) | map(attribute='device') | first }}"
+    netdev1: "{{ ansible_interfaces | map('regex_replace', '^', 'ansible_') | map('extract', vars) | selectattr('ipv4', 'defined') | selectattr('ipv4.address', 'match', hbase.net.ipaddr1 ) | map(attribute='device') | first }}"
+
+
+- name: Get IP Address from Network Device Name
+  set_fact:
+    ipaddr0: "{{ hostvars[inventory_hostname]['ansible_'~netdev0].ipv4.address }}"
+    ipaddr1: "{{ hostvars[inventory_hostname]['ansible_'~netdev1].ipv4.address }}"
+
+
+- name: Define Fact for Hbase Version
+  set_fact:
+    hbase_file_name: "hbase-{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}-bin"
+    hbase_version: "{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}"
+    hbase_root_dir: "{{ hbase.base_path }}/hbase-{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}"

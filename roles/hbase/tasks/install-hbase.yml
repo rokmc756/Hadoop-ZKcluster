@@ -1,0 +1,47 @@
+---
+# https://www.youngju.dev/blog/archives/hbase_fully_distributed_mode_install
+# https://developer-woong.tistory.com/54
+# https://www.guru99.com/hbase-installation-guide.html
+# https://github.com/analytically/hadoop-ansible/tree/master/roles
+
+
+- name: Check if Apache Hbase Tarball File Already Exists
+  stat: path={{ hbase.base_path }}/{{ hbase_file_name }}.{{ hbase.bin_type }}
+  register: hbase_tarball_exists
+
+
+- name: Check if Apache Hbase Installation Directory Already Exists
+  stat: path={{ hbase.base_path }}/{{ hbase_file_name }}
+  register: hbase_install_dir_exists
+
+
+- name: Sanity Check for Existence of {{ hbase_file_name }}.{{ hbase.bin_type }} File or {{ hbase_file_name }} Directory
+  debug: msg="Both {{ hbase_file_name }}.{{ hbase.bin_type }} File and {{ hbase_file_name }} Directory Already Exists"
+  changed_when: hbase_tarball_exists.stat.exists == True and hbase_install_dir_exists.stat.exists == True
+
+
+- name: Copy Apache Hbase Tarball from Local Directory, roles/hbase/files
+  copy: src={{ hbase_file_name }}.{{ hbase.bin_type }} dest={{ hbase.base_path }}/{{ hbase_file_name }}.{{ hbase.bin_type }} mode=0644 owner={{ hbase.user }} group={{ hbase.group }}
+  register: local_copy_dss
+  when: hbase.download == false and hbase_tarball_exists.stat.exists != True
+
+
+- name: Download Hbase Pre-Built Package
+  get_url: url={{ download_url }} dest=/tmp/{{ hbase_file_name }}.{{ hbase.bin_type }}
+  when: hbase.download == true and hbase_tarball_exists.stat.exists != True
+
+
+- name: Unarchive Apache Hbase Tarball
+  unarchive:
+    src: "{{ hbase.base_path }}/{{ hbase_file_name }}.{{ hbase.bin_type }}"
+    dest: "{{ hbase.base_path }}/"
+    owner: "{{ hbase.user }}"
+    group: "{{ hbase.group }}"
+    mode: "0755"
+    remote_src: yes
+  register: unarchive_hbase_tarball
+  when: hbase_install_dir_exists.stat.exists == false
+
+
+#- name: Extract Hbase Archive
+#  unarchive: copy=no src=/tmp/{{ hbase_file_name }}.{{ hbase.bin_type }} dest={{ hbase.base_path }}

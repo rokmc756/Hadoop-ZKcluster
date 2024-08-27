@@ -1,0 +1,21 @@
+---
+- name: Stop Hbasse Cluster
+  shell: su {{ hbase.user }} -c "{{ hbase_root_dir }}/bin/stop-hbase.sh"
+  when: inventory_hostname in groups['master']
+
+
+- name: Remove Hbase Configuration, Environment and Binary
+  file:
+    path: "{{ item }}"
+    owner: "{{ hbase.user }}"
+    group: "{{ hbase.group }}"
+    state: absent
+  with_items:
+    - "{{ hbase_root_dir }}/conf/hbase-site.xml"
+    - "{{ hbase.base_path }}/{{ hbase_file_name }}.{{ hbase.bin_type }}"
+    - "/etc/profile.d/hbase_env.sh"
+    - "{{ hbase_root_dir }}/conf/hbase-env.sh"
+    - "{{ hbase_root_dir }}/conf/backup-masters"
+    - "{{ hbase_root_dir }}/conf/regionservers"
+    - "{{ hbase.base_path }}/hbase"
+    - "{{ hbase.base_path }}/{{ hbase_file_name }}"

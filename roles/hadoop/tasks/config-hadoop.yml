@@ -1,4 +1,11 @@
 ---
+- name: Create Link to Hadoop Directory
+  file:
+    src: "{{ hadoop_root_dir }}"
+    dest: "{{ hadoop.base_path }}/hadoop"
+    state: link
+
+
 - name: Copy core-site.xml
   template: src=core-site.xml dest={{ config.path }} mode=644 owner={{ hadoop.user }} group={{ hadoop.group }}
 

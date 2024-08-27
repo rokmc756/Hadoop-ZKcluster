@@ -1,2 +1,10 @@
-version: {{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}
 download_url: https://dlcdn.apache.org/hbase/{{ hbase_version }}/hbase-{{ hbase_version }}-bin.tar.gz
+
+firewall_ports:
+  - 2181
+  - 4096
+  - 60000
+  - 60010
+  - 60020
+  - 60030
+  - 33333

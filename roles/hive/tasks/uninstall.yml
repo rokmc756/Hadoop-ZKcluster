@@ -21,4 +21,5 @@
   with_items:
     - "{{ config.create_path }}"
     - "{{ hdfs_path }}"
+    - "{{ hive.base_path }}/hive"
     - "{{ hive.base_path }}/{{ hive_file_name }}"

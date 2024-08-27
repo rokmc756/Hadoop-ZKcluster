@@ -26,5 +26,6 @@
   - "{{ config.dfs_data }}"
   - "{{ config.log_path }}"
   - "{{ config.journalnode_path }}"
+  - "{{ hadoop.base_path }}/hadoop"
   - "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}"
 

@@ -14,6 +14,7 @@
 - name: Define Fact for Spark Version
   set_fact:
     spark_file_name: "spark-{{ spark.major_version }}.{{ spark.minor_version }}.{{ spark.patch_version }}-bin-hadoop{{ hadoop.major_version }}"
+    spark_root_dir: "{{ spark.base_path }}/spark-{{ spark.major_version }}.{{ spark.minor_version }}.{{ spark.patch_version }}-bin-hadoop{{ hadoop.major_version }}"
     hadoop_version: "{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
     spark_version: "{{ spark.major_version }}.{{ spark.minor_version }}.{{ spark.patch_version }}"
 

@@ -1,42 +1,48 @@
 ---
-# https://www.youngju.dev/blog/archives/hbase_fully_distributed_mode_install
-# https://developer-woong.tistory.com/54
-# https://www.guru99.com/hbase-installation-guide.html
-
-- name: Download Hbase Pre-Built Package
-  become: true
-  get_url: url={{ download_url }} dest=/tmp/hbase-{{ hbase_version }}.{{ hbase.bin_type }}
-  when: hbase.download == true
+# https://github.com/mcsrainbow/ansible-playbook-cdh5/blob/master/roles/cdh5-hive/tasks/main.yml
+- name: Check OS ( Hbase )
+  fail: msg="Not a Red Hat based system!"
+  when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS' or ansible_os_family != 'Rocky'
 
 
-- name: Extract Hbase Archive
-  become: true
-  unarchive: copy=no src="/tmp/hbase-{{ hbase_version }}.tar.gz" dest=/opt/
+- name: Set Facts for Network and Packages Informations
+  import_tasks: set-facts.yml
+  tags:
+    - install
+    - uninstall
 
 
-- name: Create Link to Hbase Directory
-  become: true
-  file: src=/opt/hbase-{{ hbase_version }} dest={{ hbase_root }} state=link
+- name: Disable Firewall
+  import_tasks: disable-firewall.yml
+  tags: install
+  when: hbase.firewall == true
 
 
-- name: Config Hbase Env
-  become: true
-  template: src=conf/hbase-env.sh.j2 dest={{ hbase_root }}/conf/hbase-env.sh mode="u=rwx,g=rx,o=rx"
+- name: Install Hbase
+  import_tasks: install-hbase.yml
+  tags: install
+  when: install_hbase is defined and install_hbase
 
 
-- name: Config Hbase hbase-site.xml
-  become: true
-  template: src=conf/hbase-site.xml.j2 dest="{{ hbase_root }}/conf/hbase-site.xml" owner=root group=root
+- name: Config Hbase
+  import_tasks: config-hbase.yml
+  tags: install
+  when: config_hbase is defined and config_hbase
 
 
-- name: Config Hbase Regionservers
-  become: true
-  template: src=conf/regionservers.j2 dest="{{ hbase_root }}/conf/regionservers" owner=root group=root
+#- name: Initialize Hbase
+#  import_tasks: init-hbase.yml
+#  tags: install
+#  when: init_hbase is defined and init_hbase
 
 
-- name: Attempt to start Hbasse cluster
-  become: true
-  shell: "{{ hbase_root }}/bin/start-hbase.sh"
-  tags: run
-  when: "hbase_type_of_node == 'master'"
+- name: Uninstall Hbase
+  import_tasks: uninstall.yml
+  tags: uninstall
+
+
+- name: Enable Firewall
+  import_tasks: enable-firewall.yml
+  tags: uninstall
+  when: hbase.firewall == true
 

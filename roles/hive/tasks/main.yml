@@ -1,6 +1,6 @@
 ---
-# for now fail if it's not a Red Hat based system
-- name: Check OS ( GPDB )
+# https://github.com/mcsrainbow/ansible-playbook-cdh5/blob/master/roles/cdh5-hive/tasks/main.yml
+- name: Check OS ( Hive )
   fail: msg="Not a Red Hat based system!"
   when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS' or ansible_os_family != 'Rocky'
 

@@ -83,14 +83,13 @@ spark:
 hbase:
   user: "{{ hadoop.user }}"
   group: "{{ hadoop.group }}"
+  base_path: "{{ hadoop.base_path }}"
   download: false
   firewall: false
   major_version: 2
   minor_version: 6
   patch_version: 0
   bin_type: tar.gz
-  base_path: "{{ hadoop.base_path }}"
-  default_path: "/opt/hbase"
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
