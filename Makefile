@@ -6,7 +6,7 @@ ANSIBLE_HOST_PASS="changeme"
 ANSIBLE_TARGET_PASS="changeme"
 # include ./*.mk
 
-GPHOSTS := $(shell grep -i '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' ./ansible-hosts | sed -e "s/ ansible_ssh_host=/,/g")
+HOSTS := $(shell grep -i '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' ./ansible-hosts | sed -e "s/ ansible_ssh_host=/,/g")
 
 all:
 	@echo ""
@@ -21,8 +21,8 @@ all:
 	@echo "available-roles: list known roles which can be downloaded"
 	@echo "clean:           delete all temporary files"
 	@echo ""
-	@for GPHOST in ${GPHOSTS}; do \
-		IP=$${GPHOST#*,}; \
+	@for HOST in ${HOSTS}; do \
+		IP=$${HOST#*,}; \
 	    	HOSTNAME=$${LINE%,*}; \
 		echo "Current used hostname: $${HOSTNAME}"; \
 		echo "Current used IP: $${IP}"; \
@@ -37,7 +37,6 @@ init: role-update init-hosts.yml
 uninit: role-update init-hosts.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} init-hosts.yml --tags="uninit"
 
-
 install: role-update install.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} install.yml --tags="install"
 
@@ -50,11 +49,14 @@ upgrade: role-update upgrade.yml
 update: role-update update.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -i ${IP}, -u ${USERNAME} update.yml
 
-poweroff: role-update poweroff-vms.yml
-	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} poweroff-vms.yml
+boot: role-update control-vms.yml
+	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} control-vms.yml --extra-vars "power_state=on power_title=Power-On"
 
-poweron: role-update poweron-vms.yml
-	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} poweron-vms.yml
+shutdown: role-update control-vms.yml
+	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} control-vms.yml --extra-vars "power_state=off power_title=Power-Off"
+
+#poweron: role-update poweron-vms.yml
+#	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} poweron-vms.yml
 
 # https://stackoverflow.com/questions/4219255/how-do-you-get-the-list-of-targets-in-a-makefile
 no_targets__:
@@ -74,5 +76,5 @@ update.yml:
 clean:
 	rm -rf ./known_hosts install-hosts.yml update.yml
 
-.PHONY:	all init install uninstall update ssh common clean no_targets__ role-update
+.PHONY:	all init install uninstall update ssh common clean no_targets__ role-update power
 
