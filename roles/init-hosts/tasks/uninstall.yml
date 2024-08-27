@@ -15,7 +15,12 @@
   become: true
   shell: |
     nohup pkill -U {{ sudo_user }}
-    sleep 10
+    sleep 3
+  register: kill_user_processes
+  until: kill_user_processes is succeeded
+  retries: 10
+  # sleep 3
+  #  nohup fuser -k /home/{{ sudo_user }}
 
 
 - name: Delete "{{ sudo_user }}" User and Group

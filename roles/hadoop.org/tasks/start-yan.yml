@@ -1,3 +1,0 @@
----
-- name: Start YARN
-  shell: su {{ user }} -c "start-yarn.sh"

@@ -69,3 +69,4 @@ firewall_ports:
   - "{{ hive.server_port }}"
   - "{{ hive.hwi_port }}"
   - "{{ hive.metastore_port }}"
+

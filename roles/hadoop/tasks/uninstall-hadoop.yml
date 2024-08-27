@@ -9,17 +9,13 @@
   when: inventory_hostname in groups['master']
 
 
-#- name: Stop Journalnode
-#  shell: su {{ hadoop.user }} -c "hdfs --daemon stop journalnode"
-
-
 - name: Kill Processes Hold On User Directory
   shell: |
     su {{ hadoop.user }} -c "nohup pkill -U {{ hadoop.user }}"
     sleep 10
 
 
-- name: Remove Haddop directories for configure, log, data and journal
+- name: Remove Haddop Directories for Configuration, Log, Data and Journal
   file:
     path: "{{ item }}"
     state: absent

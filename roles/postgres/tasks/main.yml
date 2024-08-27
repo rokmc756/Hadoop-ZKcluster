@@ -13,10 +13,10 @@
   when: inventory_hostname in groups['database']
 
 
-- name: Enable Firewalld
-  import_tasks: enable-firewall.yml
+- name: Disable Firewalld
+  import_tasks: disable-firewall.yml
   tags: install
-  when: inventory_hostname in groups['database']
+  when: postgres.firewall == true and inventory_hostname in groups['database']
 
 
 - name: Install Common Prerequisties and Postgres RPM Packages For Single Instance
@@ -53,6 +53,12 @@
   import_tasks: uninstall.yml
   tags: uninstall
   when: inventory_hostname in groups['database']
+
+
+- name: Enable Firewalld
+  import_tasks: enable-firewall.yml
+  tags: uninstall
+  when: postgres.firewall == true and inventory_hostname in groups['database']
 
 
 - name: Upgrade RPM Packages for PostgreSQL

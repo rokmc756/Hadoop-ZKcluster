@@ -46,33 +46,12 @@
   poll: 5
 
 
-- name: Stop and Disable Firewalld
-  service:
-    name: firewalld
-    state: stopped
-    enabled: false
-
-
 - name: Reload Systemd Daemon
   systemd:
     daemon_reload: yes
   register: sysemd_daemon_reloaded
   async: 60
   poll: 5
-
-
-#- name: Flush IPTables Rules
-#  shell: ( iptables -F )
-#  register: iptables_rules_flushed
-
-
-#- name: List IPTables Rules
-#  shell: ( iptables -nL )
-#  register: iptables_rules_listed
-
-
-#- debug: msg={{ iptables_rules_listed.stdout }}
-#  tags:  print_debug
 
 
 - name: Alternative Python Version

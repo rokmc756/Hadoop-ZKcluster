@@ -43,3 +43,8 @@ hive:
     db_user: hive_user
     db_password: changeme
 
+
+firewall_ports:
+  - "22"
+  - "5432"
+

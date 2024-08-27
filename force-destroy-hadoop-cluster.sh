@@ -29,7 +29,7 @@ do
 
     sshpass -p "changeme" ssh root@$i "rm -rf /var/lib/zookeeper /var/log/zookeeper /tmp/zookeeper"
 
-    sshpass -p "changeme" ssh root@$i "rm -rf /home/hadoop/* /tmp/*-hadoop-*.pid /usr/local/apache-zookeeper* /usr/local/kafka* /var/lib/zookeeper /var/log/zookeeper"
+    sshpass -p "changeme" ssh root@$i "rm -rf /home/hadoop/* /tmp/*-hadoop-*.pid /usr/local/apache-zookeeper* /usr/local/kafka* /var/lib/zookeeper /var/log/zookeeper /tmp/*.pid"
 
     sshpass -p "changeme" ssh root@$i "sync; echo 3 > /proc/sys/vm/drop_caches"
 

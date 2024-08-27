@@ -1,0 +1,42 @@
+---
+# https://www.youngju.dev/blog/archives/hbase_fully_distributed_mode_install
+# https://developer-woong.tistory.com/54
+# https://www.guru99.com/hbase-installation-guide.html
+
+- name: Download Hbase Pre-Built Package
+  become: true
+  get_url: url={{ download_url }} dest=/tmp/hbase-{{ hbase_version }}.{{ hbase.bin_type }}
+  when: hbase.download == true
+
+
+- name: Extract Hbase Archive
+  become: true
+  unarchive: copy=no src="/tmp/hbase-{{ hbase_version }}.tar.gz" dest=/opt/
+
+
+- name: Create Link to Hbase Directory
+  become: true
+  file: src=/opt/hbase-{{ hbase_version }} dest={{ hbase_root }} state=link
+
+
+- name: Config Hbase Env
+  become: true
+  template: src=conf/hbase-env.sh.j2 dest={{ hbase_root }}/conf/hbase-env.sh mode="u=rwx,g=rx,o=rx"
+
+
+- name: Config Hbase hbase-site.xml
+  become: true
+  template: src=conf/hbase-site.xml.j2 dest="{{ hbase_root }}/conf/hbase-site.xml" owner=root group=root
+
+
+- name: Config Hbase Regionservers
+  become: true
+  template: src=conf/regionservers.j2 dest="{{ hbase_root }}/conf/regionservers" owner=root group=root
+
+
+- name: Attempt to start Hbasse cluster
+  become: true
+  shell: "{{ hbase_root }}/bin/start-hbase.sh"
+  tags: run
+  when: "hbase_type_of_node == 'master'"
+

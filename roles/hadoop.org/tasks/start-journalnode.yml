@@ -1,3 +1,0 @@
----
-- name: Start Journalnode
-  shell: su {{ user }} -c "hdfs --daemon start journalnode"  #  su {{ user }} -c "hadoop-daemon.sh start journalnode"

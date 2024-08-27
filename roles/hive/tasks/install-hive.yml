@@ -32,4 +32,3 @@
   register: unarchive_hive_tarball
   when: hive_install_dir_exists.stat.exists == false
 
-

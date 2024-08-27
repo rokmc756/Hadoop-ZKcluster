@@ -24,123 +24,151 @@
     - uninstall
 
 
-- name: Configure Firewalld
-  import_tasks: config-firewall.yml
-  when: ( open_firewall is defined and open_firewall ) or ( disable_firewall is defined and disable_firewall )
+- name: Disable Firewalld on All Nodes
+  import_tasks: disable-firewall.yml
   tags: install
+  when: hadoop.firewall == true
+  # when: ( open_firewall is defined and open_firewall ) or ( disable_firewall is defined and disable_firewall )
 
 
-- import_tasks: install-user.yml
+- name: Install User on All Nodes
+  import_tasks: install-user.yml
   tags: install
   # when: add_user is defined and add_user
 
-- import_tasks: fetch-public-key.yml
+
+- name: Fetch Public Key on All Nodes
+  import_tasks: fetch-public-key.yml
   when: generate_key is defined and generate_key
   tags: install
 
 
-- import_tasks: authorized.yml
+- name: Authorize User with Public Key on All Nodes
+  import_tasks: authorized.yml
   when: generate_key is defined and generate_key
   tags: install
 
 
-- import_tasks: install-java.yml
+- name: Install Java on All Nodes
+  import_tasks: install-java.yml
   when: install_java is defined and install_java
   tags: install
 
 
-- import_tasks: install-hadoop.yml
+- name: Install Hadoop on All Nodes
+  import_tasks: install-hadoop.yml
   when: install_hadoop is defined and install_hadoop
   tags: install
 
 
-- import_tasks: config-hadoop.yml
+- name: Config Haddop on All Nodes
+  import_tasks: config-hadoop.yml
   when: config_hadoop is defined and config_hadoop
   tags: install
 
 
-- import_tasks: start-journalnode.yml
+- name: Start Journalnode on All Nodes
+  import_tasks: start-journalnode.yml
   when: start_journalnode is defined and start_journalnode
   tags: install
 
 
-- import_tasks: format-namenode.yml
+- name: Format Namenode on Master
+  import_tasks: format-namenode.yml
   when: format_namenode is defined and format_namenode and inventory_hostname in groups['master']
   tags: install
 
 
-- import_tasks: start-namenode.yml
+- name: Start Namenode on Master
+  import_tasks: start-namenode.yml
   when: start_namenode is defined and start_namenode and inventory_hostname in groups['master']
   tags: install
 
 
-- import_tasks: copy-metadata.yml
+- name: Copy Metadata from Master to Standby Master
+  import_tasks: copy-metadata.yml
   when: copy_metadata is defined and copy_metadata and inventory_hostname in groups['master']
   tags: install
 
 
-- import_tasks: bootstrap-standby.yml
+- name: Bootstrap Namenode on Standby Master
+  import_tasks: bootstrap-standby.yml
   when: bootstrap_standby is defined and bootstrap_standby and inventory_hostname in groups['standby']
   tags: install
 
 
-- import_tasks: start-namenode.yml
+- name: Start Namenode on Standby Master
+  import_tasks: start-namenode.yml
   when: start_namenode is defined and start_namenode and inventory_hostname in groups['standby']
   tags: install
 
 
-- import_tasks: start-datanode.yml
+- name: Start Datanodes on Worker Nodes
+  import_tasks: start-datanode.yml
   when: start_datanode is defined and start_datanode and inventory_hostname in groups['workers']
   tags: install
 
 
-- import_tasks: format-zkfc.yml
+- name: Format ZKFC on Master Node
+  import_tasks: format-zkfc.yml
   when: format_zkfc is defined and format_zkfc and inventory_hostname in groups['master']
   tags: install
 
 
-- import_tasks: start-zkfc.yml
+- name: Start ZKFC on Master Node
+  import_tasks: start-zkfc.yml
   when: start_zkfc is defined and start_zkfc and inventory_hostname in groups['master']
   tags: install
 
 
-- import_tasks: start-zkfc.yml
+- name: Start ZKFC on Standby Master Node
+  import_tasks: start-zkfc.yml
   when: start_zkfc is defined and start_zkfc and inventory_hostname in groups['standby']
   tags: install
 
 
-- import_tasks: start-yarn.yml
+- name: Start YARN on Standby Master Node
+  import_tasks: start-yarn.yml
   when: start_yan is defined and start_yan and inventory_hostname in groups['standby']
   tags: install
 
 
-- import_tasks: start-yarn-resource-manager.yml
+- name: Start YARN Resource Manager on Worker Nodes
+  import_tasks: start-yarn-resource-manager.yml
   when: start_yan_resource_manager is defined and start_yan_resource_manager and inventory_hostname in groups['workers']
   tags: install
 
 
 # Uninstall Hadoop Installation
-- name: Uninstall Hadoop
+- name: Uninstall Hadoop on All Nodes
   import_tasks: uninstall-hadoop.yml
   tags: uninstall
 
 
-- name: Uninstall Authorized
+- name: Uninstall Authorized on All Nodes
   import_tasks: uninstall-authorized.yml
   tags: uninstall
 
 
-- name: Uninstall Fetch Public Key
+- name: Uninstall Fetch Public Key on All Nodes
   import_tasks: uninstall-fetch-public-key.yml
   tags: uninstall
 
 
-- name: Uninstall User
+- name: Uninstall User on All Nodes
   import_tasks: uninstall-user.yml
   tags: uninstall
 
 
-- name: Uninstall Java
+- name: Uninstall Java on All Nodes
   import_tasks: uninstall-java.yml
   tags: uninstall
+
+
+- name: Enable Firewalld
+  import_tasks: enable-firewall.yml
+  tags: uninstall
+  when: hadoop.firewall == true
+
+# when: ( open_firewall is defined and open_firewall ) or ( disable_firewall is defined and disable_firewall )
 

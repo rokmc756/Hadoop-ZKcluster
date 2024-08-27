@@ -32,4 +32,3 @@
 - name: Disable And Stop Firewalld
   service: name=firewalld state=stopped
   when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-

@@ -1,0 +1,166 @@
+---
+# Tasks for spark_master
+- name: Generate RSA key for Spark User
+  user: name={{ spar.user }} generate_ssh_key=yes
+
+
+- name: Download Public Key
+  fetch: src=/home/{{ spark.user }}/.ssh/id_rsa.pub dest=/tmp/id_rsa.tmp flat=yes
+
+
+- name: Authorize Master Key on Slaves
+  local_action: shell cat /tmp/id_rsa.tmp | ssh -i {{ private_key_file }} {{ spark.user }}@{{ item.public_ip }} "sudo su -c 'cat >> /home/{{ remote_user }}/.ssh/authorized_keys'"
+  with_items: "{{ hostvars.localhost.spark_slave.tagged_instances }}"
+  when: hostvars.localhost.spark_slave is defined
+
+
+- name: Authorize Master Key on Slaves
+  local_action: shell cat /tmp/id_rsa.tmp | ssh -i {{ private_key_file }} {{ spark.user }}@{{ hostvars[item]['public_ip'] }} "sudo su -c 'cat >> /home/{{ remote_user }}/.ssh/authorized_keys'"
+  with_items: "{{ groups['tag_ds_role_spark_slave'] }}"
+  when: hostvars.localhost.spark_slave is not defined
+
+
+- name: Authorize Master Key on Itself
+  local_action: shell cat /tmp/id_rsa.tmp | ssh -i {{ private_key_file }} {{ spark.user }}@{{ hostvars.localhost.spark_master.tagged_instances[0].public_ip }} "sudo su -c 'cat >> /home/{{ remote_user }}/.ssh/authorized_keys'"
+  when: hostvars.localhost.spark_master is defined
+
+
+- name: Authorize Master Key on Itself
+  local_action: shell cat /tmp/id_rsa.tmp | ssh -i {{ private_key_file }} {{ spark.user }}@{{ hostvars[groups['tag_ds_role_spark_master'][0]].public_ip }} "sudo su -c 'cat >> /home/{{ remote_user }}/.ssh/authorized_keys'"
+  when: hostvars.localhost.spark_master is not defined
+
+
+# - name: delete temporary file
+#   local_action: file  path=/tmp/id_rsa.tmp state=absent
+
+
+- name: Write SPARK_PUBLIC_DNS on Master
+  local_action: shell echo 'export SPARK_PUBLIC_DNS="{{ item.public_ip }}"' | ssh -i {{ private_key_file }} {{ remote_user }}@{{ item.public_ip }} "sudo su -c 'cat >> {{ spark_root }}/conf/spark-env.sh'"
+  with_items: "{{ hostvars.localhost.spark_master.tagged_instances }}"
+  when: hostvars.localhost.spark_master is defined
+  tags: config_spark
+
+
+- name: Write SPARK_PUBLIC_DNS on Master
+  local_action: shell echo 'export SPARK_PUBLIC_DNS="{{ hostvars[item]['public_ip'] }}"' | ssh -i {{ private_key_file }} {{ remote_user }}@{{ hostvars[item]['public_ip'] }} "sudo su -c 'cat >> {{ spark_root }}/conf/spark-env.sh'"
+  with_items: "{{ groups['tag_ds_role_spark_master'] }}"
+  when: hostvars.localhost.spark_master is not defined
+  tags: config_spark
+
+
+- name: Write SPARK_PUBLIC_DNS on Slaves
+  local_action: shell echo 'export SPARK_PUBLIC_DNS="{{ item.public_ip }}"' | ssh -i {{ private_key_file }} {{ remote_user }}@{{ item.public_ip }} "sudo su -c 'cat >> {{ spark_root }}/conf/spark-env.sh'"
+  with_items: "{{ hostvars.localhost.spark_slave.tagged_instances }}"
+  when: hostvars.localhost.spark_slave is defined
+  tags: config_spark
+
+
+- name: Write SPARK_PUBLIC_DNS on Slaves
+  local_action: shell echo 'export SPARK_PUBLIC_DNS="{{ hostvars[item]['public_ip'] }}"' | ssh -i {{ private_key_file }} {{ remote_user }}@{{ hostvars[item]['public_ip'] }} "sudo su -c 'cat >> {{ spark_root }}/conf/spark-env.sh'"
+  with_items: "{{ groups['tag_ds_role_spark_slave'] }}"
+  when: hostvars.localhost.spark_slave is not defined
+  tags: config_spark
+
+
+# - name: add all slaves to known_host
+#   # become: true
+#   shell: ssh-keyscan -H {{ item.private_ip }} >> ~/.ssh/known_hosts
+#   with_items: "{{ hostvars.localhost.spark_slave.tagged_instances }}"
+#   when: hostvars.localhost.spark_slave is defined
+
+
+# - name: add all slaves to known_host
+#   # become: true
+#   shell: ssh-keyscan -H {{ hostvars[item]['public_ip'] }} >> ~/.ssh/known_hosts
+#   with_items: "{{ groups['tag_ds_role_spark_slave'] }}"
+#   when: hostvars.localhost.spark_slave is not defined
+
+
+# - name: add itself to known_host
+#   # become: true
+#   shell: ssh-keyscan -H {{ item.private_dns_name }} >> ~/.ssh/known_hosts
+#   with_items: "{{ hostvars.localhost.spark_master.tagged_instances }}"
+#   when: hostvars.localhost.spark_master is defined
+
+
+# - name: add itself to known_host
+#   # become: true
+#   shell: ssh-keyscan -H {{ hostvars[item]['public_ip'] }} >> ~/.ssh/known_hosts
+#   with_items: "{{ groups['tag_ds_role_spark_master'] }}"
+#   when: hostvars.localhost.spark_master is not defined
+
+
+# - name: add 0.0.0.0 (secondary namenode) to known_host
+#   # become: true
+#   shell: ssh-keyscan -H 0.0.0.0 >> ~/.ssh/known_hosts
+
+
+- name: Copy SSH Config to Master
+  copy: src=config dest=~/.ssh/config
+
+
+- name: Populate conf/slaves File
+  template: src=conf/slaves.j2 dest={{ spark_root }}/conf/slaves
+  when: hostvars.localhost.spark_master is defined
+  tags: config_spark
+
+
+- name: populate conf/slaves file
+  template: src=conf/slaves_local.j2 dest={{ spark_root }}/conf/slaves
+  when: hostvars.localhost.spark_master is not defined
+  tags: config_spark
+
+
+- name: Copy hadoop-aws Library
+  copy: src=hadoop-aws-2.7.3.jar dest={{ spark_root }}/jars/
+
+
+- name: Copy AWS Java SDK Library
+  copy: src=aws-java-sdk-1.7.4.jar dest={{ spark_root }}/jars/
+
+
+- name: Copy Spark Defaults
+  copy: src=spark-defaults.conf dest={{ spark_root }}/conf/spark-defaults.conf
+
+
+# YArn Specific
+- name: Copy Spark defaults for YARN
+  copy: src=yarn-spark-defaults.conf dest={{ spark_root }}/conf/spark-defaults.conf
+  tags: yarn
+
+
+#===== Jupiter stuff that's not working atm ======
+# - name: create Jupyter directories
+#   file: path={{ item }} state=directory mode=0755
+#   with_items:
+#     - "/home/{{ remote_user }}/.jupyter"
+#     - "/home/{{ remote_user }}/notebooks"
+
+
+# - name: Copy Jupyter Config File
+#   template: src=jupyter_notebook_config.py dest=~/.jupyter/jupyter_notebook_config.py
+
+
+# - name: Create Init Directory if It's not there
+#   become: true
+#   file:
+#     path: /etc/init
+#     state: directory
+
+
+# - name: Add Upstart Job for Jupyter-service
+#   become: true
+#   template:
+#     src: jupyter-service.conf
+#     dest: /etc/init/jupyter-service.conf
+#   tags: run
+
+
+#- name: Start Jupyter-service
+#  become: true
+#  service:
+#    name: jupyter-service
+#    state: restarted
+#  tags: run
+
+

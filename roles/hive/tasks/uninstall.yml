@@ -1,5 +1,5 @@
 ---
-- name: Remove Hive configure, environment and binary
+- name: Remove Hive Configuration, Environment and Binary
   file:
     path: "{{ item }}"
     owner: "{{ hadoop.user }}"
@@ -22,17 +22,3 @@
     - "{{ config.create_path }}"
     - "{{ hdfs_path }}"
     - "{{ hive.base_path }}/{{ hive_file_name }}"
-
-
-- name: Disable Firewall Ports
-  firewalld:
-    port: '{{ item }}/tcp'
-    permanent: true
-    state: disabled
-    zone: public
-    immediate: yes
-  with_items:
-    - '{{ firewall_ports }}'
-  when: ! open_firewall
-
-

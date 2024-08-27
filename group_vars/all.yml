@@ -8,6 +8,7 @@ hadoop:
   hdfs_port: 9000
   base_path: "/home/hadoop"
   download: false
+  firewall: false
   download_path: /tmp
   major_version: "3"
   minor_version: "3"
@@ -31,6 +32,10 @@ hadoop:
 
 
 hive:
+  user: "{{ hadoop.user }}"
+  group: "{{ hadoop.group }}"
+  download: false
+  firewall: false
   major_version: 3
   minor_version: 1
   patch_version: 3
@@ -49,7 +54,53 @@ hive:
     ipaddr2: "192.168.2.7"
 
 
+spark:
+  worker:
+    core: 6
+    memory: "6G"
+    default_core: 4
+  download: false
+  firewall: false
+  user: "{{ hadoop.user }}"
+  group: "{{ hadoop.group }}"
+  major_version: 3
+  minor_version: 5
+  patch_version: 2
+  bin_type: tgz
+  base_path: "{{ hadoop.base_path }}"
+  master_work_port: 7077
+  worker_work_port: 7078
+  master_ui_port: 8080
+  worker_ui_port: 8081
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.7"
+    ipaddr1: "192.168.1.7"
+    ipaddr2: "192.168.2.7"
+
+
+hbase:
+  user: "{{ hadoop.user }}"
+  group: "{{ hadoop.group }}"
+  download: false
+  firewall: false
+  major_version: 2
+  minor_version: 6
+  patch_version: 0
+  bin_type: tar.gz
+  base_path: "{{ hadoop.base_path }}"
+  default_path: "/opt/hbase"
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.7"
+    ipaddr1: "192.168.1.7"
+    ipaddr2: "192.168.2.7"
+
+
 postgres:
+  firewall: false
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"

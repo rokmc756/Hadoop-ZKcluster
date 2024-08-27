@@ -16,3 +16,4 @@ END;
 $$ LANGUAGE plpgsql;
 
 select drop_all_tables();
+

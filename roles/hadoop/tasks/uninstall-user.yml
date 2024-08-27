@@ -1,8 +1,8 @@
 ---
-- name: Delete Public Key
-  file:
-    path: "{{ hadoop.base_path }}/.ssh/id_rsa"
-    state: absent
+#- name: Delete Public Key
+#  file:
+#    path: "{{ hadoop.base_path }}/.ssh/id_rsa"
+#    state: absent
 
 
 - name: Kill Processes Hold on User Directory

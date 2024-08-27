@@ -21,6 +21,3 @@
 - import_tasks: init-hive.yml
   when: init_hive is defined and init_hive
 
-
-- import_tasks: config-firewall.yml
-  when: ansible_os_family == 'RedHat' or ansible_os_family == 'CentOS' or ansible_os_family == 'Rocky'

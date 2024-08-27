@@ -1,7 +1,0 @@
----
-- name: Start YARN resource manager
-  shell: su {{ user }} -c "yarn-daemon.sh start resourcemanager"
-
-# the ResourceManager service on DataNodes are usually not started at this time
-# and needs to be started manually
-

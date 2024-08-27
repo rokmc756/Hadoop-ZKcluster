@@ -1,0 +1,47 @@
+---
+- name: Copy Spark Slaves
+  template: src={{ item }}.j2 dest={{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }} mode=644 owner={{ spark.user }} group={{ spark.group }}
+  with_items:
+    - slaves
+    - workers
+
+
+#- name: Copy Spark Env file
+#  become_user: root
+#  template: src=spark-env.sh.j2 dest=/etc/profile.d/spark-env.sh mode=755 owner=root group=root
+
+
+- name: Copy Spark Config File
+  copy:
+    src: "{{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }}.template"
+    dest: "{{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }}"
+    owner: "{{ spark.user }}"
+    group: "{{ spark.group }}"
+    mode: '0644'
+    remote_src: yes
+  with_items:
+    - "spark-env.sh"
+    - "spark-defaults.conf"
+
+
+#- name: Deploy the Customized Spark log4j Properties
+#  template:
+#    src: "{{ log4j_template_file }}.j2"
+#    dest: "{{ spark.base_path }}/spark-{{ spark_version }}/conf/{{ log4j_template_file }}"
+#    owner: "{{ spark.user }}"
+#    group: "{{ spark.user }}"
+
+
+- name: Start All Spark Services
+  shell: |
+    su {{ hadoop.user }} -c '{{ hadoop.base_path }}/{{ spark_file_name }}/sbin/start-all.sh'
+  when: inventory_hostname in groups['master']
+
+
+#
+# Need to run the below service without any errors
+#
+# start-history-server.sh
+# start-mesos-shuffle-service.sh
+#
+
