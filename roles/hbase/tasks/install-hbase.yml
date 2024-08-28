@@ -20,15 +20,20 @@
   changed_when: hbase_tarball_exists.stat.exists == True and hbase_install_dir_exists.stat.exists == True
 
 
+- name: Download Hbase Software Binaries
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { url: "{{ hbase.download_url }}/{{ hbase_version }}/hbase-{{ hbase_version }}-bin.tar.gz",
+        dest: "{{ hbase.base_path }}/hbase-{{ hbase_version }}-bin.tar.gz" }
+  when: hbase.download == true and hbase_tarball_exists.stat.exists != True
+
+
 - name: Copy Apache Hbase Tarball from Local Directory, roles/hbase/files
   copy: src={{ hbase_file_name }}.{{ hbase.bin_type }} dest={{ hbase.base_path }}/{{ hbase_file_name }}.{{ hbase.bin_type }} mode=0644 owner={{ hbase.user }} group={{ hbase.group }}
   register: local_copy_dss
   when: hbase.download == false and hbase_tarball_exists.stat.exists != True
-
-
-- name: Download Hbase Pre-Built Package
-  get_url: url={{ download_url }} dest=/tmp/{{ hbase_file_name }}.{{ hbase.bin_type }}
-  when: hbase.download == true and hbase_tarball_exists.stat.exists != True
 
 
 - name: Unarchive Apache Hbase Tarball
@@ -41,7 +46,3 @@
     remote_src: yes
   register: unarchive_hbase_tarball
   when: hbase_install_dir_exists.stat.exists == false
-
-
-#- name: Extract Hbase Archive
-#  unarchive: copy=no src=/tmp/{{ hbase_file_name }}.{{ hbase.bin_type }} dest={{ hbase.base_path }}

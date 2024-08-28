@@ -77,6 +77,16 @@
   changed_when: spark_tarball_exists.stat.exists == True and spark_install_dir_exists.stat.exists == True
 
 
+- name: Download Spark Software Binaries
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { url: "{{ spark.download_url }}/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop.major_version }}.tgz",
+        dest: "{{ spark.base_path }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop.major_version }}.tgz" }
+  when: spark.download == true and spark_tarball_exists.stat.exists != True
+
+
 - name: Copy Apache Spark Tarball from local directory, roles/spark/files
   copy: src={{ spark_file_name }}.{{ spark.bin_type }} dest={{ spark.base_path }}/{{ spark_file_name }}.{{ spark.bin_type }} mode=0644 owner={{ hadoop.user }} group={{ hadoop.group }}
   register: local_copy_dss

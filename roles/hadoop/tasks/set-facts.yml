@@ -65,6 +65,7 @@
 
 - name: Define Fact for Hadoop Version
   set_fact:
+    hadoop_version: "{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
     hadoop_root_dir: "{{ hadoop.base_path }}/hadoop-{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
     hadoop_file_name: "hadoop-{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
 

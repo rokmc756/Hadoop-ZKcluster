@@ -13,6 +13,7 @@
 
 - name: Define Fact for Hive Version
   set_fact:
+    hive_version: "{{ hive.major_version }}.{{ hive.minor_version }}.{{ hive.patch_version }}"
     hive_file_name: "apache-hive-{{ hive.major_version }}.{{ hive.minor_version }}.{{ hive.patch_version }}-bin"
     hive_root_dir: "{{ hive.base_path }}/apache-hive-{{ hive.major_version }}.{{ hive.minor_version }}.{{ hive.patch_version }}-bin"
 

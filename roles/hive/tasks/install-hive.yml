@@ -15,6 +15,16 @@
   changed_when: hive_tarball_exists.stat.exists == True and hive_install_dir_exists.stat.exists == True
 
 
+- name: Download Hive Software Binaries
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { url: "{{ hive.download_url }}/hive-{{ hive_version }}/apache-hive-{{ hive_version }}-bin.tar.gz",
+        dest: "{{ hive.base_path }}/apache-hive-{{ hive_version }}-bin.tar.gz" }
+  when: hadoop.download == true and hive_tarball_exists.stat.exists != True
+
+
 - name: Copy Apache Hive Tarball from local directory, roles/hive/files
   copy: src={{ hive_file_name }}.{{ hive.bin_type }} dest={{ hive.base_path }}/{{ hive_file_name }}.{{ hive.bin_type }} mode=0644 owner={{ hadoop.user }} group={{ hadoop.group }}
   register: local_copy_dss

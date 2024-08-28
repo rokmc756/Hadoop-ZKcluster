@@ -7,11 +7,21 @@
 - name: Check if Apache Hadoop Installation Directory Already Exists
   stat: path={{ hadoop.base_path }}/{{ hadoop_file_name }}
   register: hadoop_install_dir_exists
-#
+
 
 - name: Sanity check for existence of {{ hadoop_file_name }}.{{ hadoop.bin_type }} file or {{ hadoop_file_name }} directory
   debug: msg="Both {{ hadoop_file_name }}.{{ hadoop.bin_type }} file and {{ hadoop_file_name }} Directory Already Exists"
   changed_when: hadoop_tarball_exists.stat.exists == True and hadoop_install_dir_exists.stat.exists == True
+
+
+- name: Download Hadoop Software Binaries
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+  with_items:
+      - { url: "{{ hadoop.download_url }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz",
+          dest: "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}.tar.gz" }
+  when: hadoop.download == true and hadoop_tarball_exists.stat.exists != True
 
 
 - name: Copy Apache Hadoop Tarball from local directory, roles/hadoop/files

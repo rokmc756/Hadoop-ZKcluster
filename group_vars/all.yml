@@ -7,7 +7,7 @@ hadoop:
   domain: "jtest.pivotal.io"
   hdfs_port: 9000
   base_path: "/home/hadoop"
-  download: false
+  download: true
   firewall: false
   download_path: /tmp
   major_version: "3"
@@ -37,7 +37,7 @@ hadoop:
 hive:
   user: "{{ hadoop.user }}"
   group: "{{ hadoop.group }}"
-  download: false
+  download: true
   firewall: false
   major_version: 3
   minor_version: 1
@@ -63,7 +63,7 @@ spark:
     core: 6
     memory: "6G"
     default_core: 4
-  download: false
+  download: true
   firewall: false
   user: "{{ hadoop.user }}"
   group: "{{ hadoop.group }}"
@@ -89,7 +89,7 @@ hbase:
   user: "{{ hadoop.user }}"
   group: "{{ hadoop.group }}"
   base_path: "{{ hadoop.base_path }}"
-  download: false
+  download: true
   firewall: false
   major_version: 2
   minor_version: 6

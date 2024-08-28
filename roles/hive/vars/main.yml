@@ -17,10 +17,11 @@ hdfs_path:
   - "{{ config.querylog_location }}"
 
 
+# conn_host: "{{ hostvars[groups['database'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
 db:
   type: "postgres"
   conn_driver_name: "org.postgresql.Driver"
-  conn_host: "{{ hostvars[groups['database'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
+  conn_host: "{{ hostvars[groups['database'][0]].ansible_ssh_host }}"
   conn_port: "5432"
   conn_dbname: "hive_testdb"
   conn_user_name: "hive_user"
