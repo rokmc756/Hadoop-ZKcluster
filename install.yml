@@ -1,69 +1,76 @@
 ---
-- hosts: all
-  remote_user: root
-  vars:
-    generate_key: true
-    install_java: true
-    install_oracle_java: false
-    install_hadoop: true
-    config_hadoop: true
-    start_journalnode: true
-  roles:
-    - hadoop
-    - zookeeper
-  # - firewall
+#- hosts: all
+#  remote_user: root
+#  vars:
+#    generate_key: true
+#    install_java: true
+#    install_oracle_java: false
+#    install_hadoop: true
+#    config_hadoop: true
+#    start_journalnode: true
+#  roles:
+#    - hadoop
+#    - zookeeper
+#  # - firewall
+#
+#
+#- hosts: all
+#  remote_user: root
+#  vars:
+#    format_namenode: true
+#    start_namenode: true
+#    copy_metadata: true
+#    bootstrap_standby: true
+#    start_datanode: true
+#    format_zkfc: true
+#    start_zkfc: true
+#    start_yarn: true
+#    start_yan_resource_manager: false
+#  roles:
+#    - hadoop
+#
+#
+#- hosts: database
+#  become: true
+#  vars:
+#    print_debug: true
+#  roles:
+#    - postgres
+#
+#
+#- hosts: hive
+#  remote_user: root
+#  vars:
+#     open_firewall: true
+#     install_hive: true
+#     config_hive: true
+#     init_hive: true
+#  roles:
+#    - hive
+#
+#
+#- hosts: all
+#  remote_user: root
+#  roles:
+#    - spark
+#
+#
+#- hosts: all
+#  remote_user: root
+#  vars:
+#     open_firewall: true
+#     install_hbase: true
+#     config_hbase: true
+#     init_hbase: true
+#  roles:
+#    - hbase
 
 
 - hosts: all
-  remote_user: root
-  vars:
-    format_namenode: true
-    start_namenode: true
-    copy_metadata: true
-    bootstrap_standby: true
-    start_datanode: true
-    format_zkfc: true
-    start_zkfc: true
-    start_yarn: true
-    start_yan_resource_manager: false
-  roles:
-    - hadoop
-
-
-- hosts: database
   become: true
-  vars:
-    print_debug: true
   roles:
-    - postgres
+    - ganglia
 
-
-- hosts: hive
-  remote_user: root
-  vars:
-     open_firewall: true
-     install_hive: true
-     config_hive: true
-     init_hive: true
-  roles:
-    - hive
-
-
-- hosts: all
-  remote_user: root
-  roles:
-    - spark
-
-
-- hosts: all
-  remote_user: root
-  vars:
-     open_firewall: true
-     install_hbase: true
-     config_hbase: true
-     init_hbase: true
-  roles:
-    - hbase
 
 # The priority of starting hdfs services. It's principal to order in main.yml
 #

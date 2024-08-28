@@ -1,0 +1,52 @@
+---
+- name: Start Gmetad
+  systemd: name=gmetad enabled=yes state=started daemon_reload=yes
+
+
+- name: Stop Gmetad
+  systemd: name=gmetad enabled=no state=stopped daemon_reload=yes
+
+
+- name: Restart Gmetad
+  systemd: name=gmetad state=restarted
+
+
+- name: Start Gmond
+  systemd: name=gmond enabled=yes state=started daemon_reload=yes
+
+
+- name: Stop Gmond
+  systemd: name=gmond enabled=no state=stopped daemon_reload=yes
+
+
+- name: Restart Gmond
+  systemd: name=gmond state=restarted
+
+
+#- name: Restart Ganglia-Monitor
+#  shell: killall -v gmond && /usr/sbin/gmond --pid-file=/var/run/ganglia-monitor.pid
+
+
+- name: Start Apache2
+  systemd: name=httpd enabled=yes state=started daemon_reload=yes
+
+
+- name: Start PHP-FPM
+  systemd: name=php-fpm enabled=yes state=started daemon_reload=yes
+
+
+- name: Stop Apache2
+  systemd: name=httpd enabled=no state=stopped daemon_reload=yes
+
+
+- name: Stop PHP-FPM
+  service: name=php-fpm enabled=no state=stopped daemon_reload=yes
+
+
+- name: Restart Apache2
+  service: name=httpd state=restarted
+
+
+- name: Restart PHP-FPM
+  service: name=php-fpm state=restarted
+

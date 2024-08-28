@@ -1,0 +1,99 @@
+---
+# For Gmetad and Web Server In Master Node
+- name: Stop Apache HTTPd Server and PHP-FPM and Gmetad
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items:
+    - gmetad
+    - httpd
+    - php-fpm
+  ignore_errors: true
+  when: inventory_hostname in groups['master']
+
+
+- name: Uninstall Ganglia Web Dependencies
+  package: name={{ item }} state=absent
+  with_items:
+    - httpd
+    - php
+    - rrdtool
+    - rrdtool-devel
+  ignore_errors: true
+  when: inventory_hostname in groups['master']
+
+
+- name: Delete Ganglia-Web at /var/www/ganglia
+  file:
+    path: "{{ item }}"
+    state: absent
+  ignore_errors: true
+  with_items:
+    - "/var/www/ganglia"
+    - "/var/lib/ganglia-web"
+  when: inventory_hostname in groups['master']
+
+
+- name: Uninstall Ganglia Meta Deamon and RRDTool
+  package: name={{ item }} state=absent
+  ignore_errors: true
+  with_items:
+    - ganglia-web
+    - ganglia-gmetad
+    - rrdtool
+    - rrdtool-devel
+  when: inventory_hostname in groups['master']
+
+
+- name: Delete /etc/ganglia/gmetad.conf
+  file:
+    path: "{{ item }}"
+    state: absent
+  ignore_errors: true
+  with_items:
+    - "/etc/ganglia/gmetad.conf"
+  when: inventory_hostname in groups['master']
+
+
+# For Gmond In all Worker Nodes
+- name: Stop Gmond
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  ignore_errors: true
+  with_items:
+    - gmond
+  when: inventory_hostname in groups['workers']
+
+
+- name: Uninstall Ganglia Monitor and Required Packages
+  package: name={{ item }} state=absent
+  ignore_errors: true
+  with_items:
+    - sysstat
+    - php-cli
+    - ganglia-gmond
+    - hddtemp
+  when: inventory_hostname in groups['workers']
+
+
+- name: Delete /etc/ganglia/gmond.conf
+  file:
+    path: "{{ item }}"
+    state: absent
+  ignore_errors: true
+  with_items:
+    - "/etc/ganglia/gmond.conf"
+    - "/usr/local/sbin/device-metrics.php"
+    - "/etc/cron.d/device-metrics"
+  when: inventory_hostname in groups['workers']
+
+
+- name: Reload Systemd Daemon
+  systemd:
+    daemon_reload: yes
+  register: sysemd_daemon_reloaded
+  async: 60
+  poll: 5

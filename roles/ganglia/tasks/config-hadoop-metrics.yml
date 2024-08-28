@@ -1,0 +1,30 @@
+---
+- name: Add Hadoop Master Metrics into Ganglia
+  become_user: hadoop
+  lineinfile:
+    dest: "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop/hadoop-metrics2.properties"
+    line: '{{ item }}'
+  with_items: "{{ hadoop_master_metrics2_properties }}"
+  when: inventory_hostname in groups['master']
+
+
+- name: Add Hadoop Slave Metrics into Ganglia
+  become_user: hadoop
+  lineinfile:
+    dest: "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop/hadoop-metrics2.properties"
+    line: '{{ item }}'
+  with_items: "{{ hadoop_slave_metrics2_properties }}"
+  when: inventory_hostname in groups['workers']
+
+
+- name: Stop All Hadoop Services on Master
+  remote_user: root
+  shell: su {{ hadoop.user }} -c "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/sbin/stop-all.sh"
+  when: inventory_hostname in groups['master']
+
+
+- name: Start All Hadoop Services on Master
+  remote_user: root
+  shell: su {{ hadoop.user }} -c "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/sbin/start-all.sh"
+  when: inventory_hostname in groups['master']
+

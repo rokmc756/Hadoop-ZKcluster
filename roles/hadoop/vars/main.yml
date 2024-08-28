@@ -60,7 +60,7 @@ core_site_properties:
     "value":"*"
   }
 
-dfs_namenode_httpport: 9001
+# dfs_namenode_httpport: 9001
 hdfs_site_properties:
   - {
       "name":"dfs.namenode.name.dir",
@@ -80,7 +80,7 @@ hdfs_site_properties:
   }
   - {
       "name":"dfs.nameservices",
-      "value":"ha-cluster"
+      "value":"{{ hadoop.dfs.nameservices }}"
   }
   - {
       "name":"dfs.ha.namenodes.ha-cluster",
@@ -195,35 +195,7 @@ yarn_site_properties:
   }
   - {
     "name":"yarn.resourcemanager.cluster-id",
-    "value":"my-yarn-cluster"
-  }
-  - {
-    "name":"yarn.resourcemanager.ha.rm-ids",
-    "value":"rm1,rm2,rm3"
-  }
-  - {
-    "name":"yarn.resourcemanager.hostname.rm1",
-    "value":"{{ hostvars[groups['workers'][0]].ansible_hostname }}"
-  }
-  - {
-    "name":"yarn.resourcemanager.hostname.rm2",
-    "value":"{{ hostvars[groups['workers'][1]].ansible_hostname }}"
-  }
-  - {
-    "name":"yarn.resourcemanager.hostname.rm3",
-    "value":"{{ hostvars[groups['workers'][2]].ansible_hostname }}"
-  }
-  - {
-    "name":"yarn.resourcemanager.webapp.address.rm1",
-    "value":"{{ hostvars[groups['workers'][0]].ansible_hostname }}:8088"
-  }
-  - {
-    "name":"yarn.resourcemanager.webapp.address.rm2",
-    "value":"{{ hostvars[groups['workers'][1]].ansible_hostname }}:8088"
-  }
-  - {
-    "name":"yarn.resourcemanager.webapp.address.rm3",
-    "value":"{{ hostvars[groups['workers'][2]].ansible_hostname }}:8088"
+    "value":"{{ hadoop.yarn.cluster_id }}"
   }
   - {
     "name":"yarn.resourcemanager.zk-address",
@@ -236,7 +208,7 @@ yarn_site_properties:
   - {
     "name":"yarn.resourcemanager.store.class",
     "value":"org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore"
-  }   ###
+  }
   - {
     "name":"yarn.resourcemanager.address",
     "value":"{{ netinfo.hostname.master }}:{{ hadoop.yarn.resmgr_port }}"
@@ -262,17 +234,46 @@ yarn_site_properties:
     "value": "org.apache.hadoop.mapred.ShuffleHandler"
   }
 
+#  - {
+#    "name":"yarn.resourcemanager.ha.rm-ids",
+#    "value":"rm1,rm2,rm3"
+#  }
+#  - {
+#    "name":"yarn.resourcemanager.hostname.rm1",
+#    "value":"{{ hostvars[groups['workers'][0]].ansible_hostname }}"
+#  }
+#  - {
+#    "name":"yarn.resourcemanager.hostname.rm2",
+#    "value":"{{ hostvars[groups['workers'][1]].ansible_hostname }}"
+#  }
+#  - {
+#    "name":"yarn.resourcemanager.hostname.rm3",
+#    "value":"{{ hostvars[groups['workers'][2]].ansible_hostname }}"
+#  }
+#  - {
+#    "name":"yarn.resourcemanager.webapp.address.rm1",
+#    "value":"{{ hostvars[groups['workers'][0]].ansible_hostname }}:8088"
+#  }
+#  - {
+#    "name":"yarn.resourcemanager.webapp.address.rm2",
+#    "value":"{{ hostvars[groups['workers'][1]].ansible_hostname }}:8088"
+#  }
+#  - {
+#    "name":"yarn.resourcemanager.webapp.address.rm3",
+#    "value":"{{ hostvars[groups['workers'][2]].ansible_hostname }}:8088"
+#  }
 
-dashbord_port: 9870
+
+# dashbord_port: 9870
 firewall_ports:
-  - "{{ dashbord_port}}"
-  - "{{ hdfs_port }}"
-  - "{{ dfs_namenode_httpport }}"
-  - "{{ yarn_resourcemanager_port }}"
-  - "{{ yarn_resourcemanager_scheduler_port }}"
-  - "{{ yarn_resourcemanager_webapp_port }}"
-  - "{{ yarn_resourcemanager_tracker_port }}"
-  - "{{ yarn_resourcemanager_admin_port }}"
+  - "{{ hadoop.dashbord.port}}"
+  - "{{ hadoop.hdfs_port }}"
+  - "{{ hadoop.dfs.namenode_httpport }}"
+  - "{{ hadoop.yarn.resmgr_port }}"
+  - "{{ hadoop.yarn.resmgr_scheduler_port }}"
+  - "{{ hadoop.yarn.resmgr_webapp_port }}"
+  - "{{ hadoop.yarn.resmgr_tracker_port }}"
+  - "{{ hadoop.yarn.resmgr_admin_port }}"
   - "8485"
   - "50010"
 

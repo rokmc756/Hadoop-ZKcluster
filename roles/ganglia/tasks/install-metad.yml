@@ -1,0 +1,13 @@
+---
+- name: Install Ganglia Meta Deamon and RRDTool
+  package: name={{ item }}
+  with_items:
+    - ganglia-gmetad
+    - rrdtool
+    - rrdtool-devel
+
+
+- name: Configure Gmetad.conf In /etc/ganglia/gmetad.conf
+  template: src=gmetad.conf.master.j2 dest=/etc/ganglia/gmetad.conf owner=root group=root mode=0644
+  notify:
+    - Start Gmetad

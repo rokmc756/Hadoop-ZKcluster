@@ -1,0 +1,30 @@
+download_url: http://heanet.dl.sourceforge.net/project/ganglia/ganglia-web/3.5.12/ganglia-web-3.5.12.tar.gz
+
+hadoop_master_metrics2_properties:
+  - "*.sink.ganglia.class=org.apache.hadoop.metrics2.sink.ganglia.GangliaSink31"
+  - "*.sink.ganglia.period=10"
+  - "*.sink.ganglia.slope=jvm.metrics.gcCount=zero,jvm.metrics.memHeapUsedM=both"
+  - "*.sink.ganglia.dmax=jvm.metrics.threadsBlocked=70,jvm.metrics.memHeapUsedM=40"
+  - "namenode.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "resourcemanager.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "datanode.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "nodemanager.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "maptask.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "reducetask.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  # 'master' refers to the hostname of Hadoop master node.
+  # or could be the ip address of the node that has Ganglia gmetad installed.
+
+hadoop_slave_metrics2_properties:
+  - "*.sink.ganglia.class=org.apache.hadoop.metrics2.sink.ganglia.GangliaSink31"
+  - "*.sink.ganglia.period=10"
+  - "*.sink.ganglia.slope=jvm.metrics.gcCount=zero,jvm.metrics.memHeapUsedM=both"
+  - "*.sink.ganglia.dmax=jvm.metrics.threadsBlocked=70,jvm.metrics.memHeapUsedM=40"
+  - "namenode.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "resourcemanager.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "datanode.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "nodemanager.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "maptask.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  - "reducetask.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649"
+  # 'master' refers to the hostname of Hadoop master node.
+  # or could be the ip address of the node that has Ganglia gmetad installed.
+

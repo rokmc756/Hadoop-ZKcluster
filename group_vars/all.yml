@@ -20,10 +20,13 @@ hadoop:
     ipaddr0: "192.168.0.7"
     ipaddr1: "192.168.1.7"
     ipaddr2: "192.168.2.7"
+  dashboard:
+    port: 9870
   dfs:
     namenode_httpport: 9001
-    nameservices: ha-cluster
+    nameservices: "ha-cluster"
   yarn:
+    cluster_id: "my-yarn-cluster"
     resmgr_port: 8040
     resmgr_scheduler_port: 8030
     resmgr_webapp_port: 8088
@@ -97,6 +100,37 @@ hbase:
     ipaddr1: "192.168.1.7"
     ipaddr2: "192.168.2.7"
 
+
+ganglia:
+  user: "ganglia"
+  group: "ganglia"
+  base_path: "/var/www"
+  firewall: false
+  web:
+    major_version: 3
+    minor_version: 7
+    patch_version: 2
+    bin_type: tar.gz
+    download: true
+    firewall: false
+    apache_user: apache
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.7"
+    ipaddr1: "192.168.1.7"
+    ipaddr2: "192.168.2.7"
+  cluster_name: "Hadoop-ZKcluster"
+  site_name: "ffhadoop"
+  mtu: 9216 # IPv4 maximum transmission unit, 9216 is the maximum for Intel/Cisco hardware
+  upgrade_kernel: no
+
+  # To enable Postfix SMTP through Mandrill (@mandrillapp), set the following variables:
+  # notify_email: notifications@example.com
+  # postfix_domain: example.com
+  # mandrill_username: your_username
+  # mandrill_api_key: your_api_key
+  # Upgrade kernel to 3.13, much improved epoll performance
 
 postgres:
   firewall: false

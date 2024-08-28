@@ -19,4 +19,20 @@
     <value>{{ item.value }}</value>
   </property>
 {% endfor %}
+  <property>
+    <name>yarn.resourcemanager.ha.rm-ids</name>
+    <value>{{ groups['workers'] | map('extract', hostvars, ['rm_ids']) | join(',') }}</value>
+  </property>
+{% for h1 in groups['workers'] %}
+  <property>
+    <name>yarn.resourcemanager.hostname.{{ hostvars[h1].rm_ids }}</name>
+    <value>{{ hostvars[h1].ansible_hostname }}</value>
+  </property>
+{% endfor %}
+{% for h2 in groups['workers'] %}
+  <property>
+    <name>yarn.resourcemanager.webapp.address.{{ hostvars[h2].rm_ids }}</name>
+    <value>{{ hostvars[h2].ansible_hostname }}:8088</value>
+  </property>
+{% endfor %}
 </configuration>

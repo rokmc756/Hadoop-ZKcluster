@@ -33,5 +33,10 @@
 
 
 - name: Print the URL of HBase Web UI
-  debug: msg="Open Web Brower and Check HBase Web UI with http://{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}:60010"
+  debug:
+    msg: "HBase Web UI with http://{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}:60010\n
+    Spark Web UI with http://{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}:4040\n
+    Hadoop Namenode Web UI with http://{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}:50070\n
+    YARN Resource Manager Web UI with http://{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}:8088\n
+    MapReduce JobHistory Server Web UI with http://{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}:19888"
   when: inventory_hostname in groups['master']

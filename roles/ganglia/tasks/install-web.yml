@@ -1,0 +1,133 @@
+---
+- name: Install Ganglia Web Dependencies
+  package: name={{ item }}
+  with_items:
+    - httpd
+    - php
+    - rrdtool
+    - rrdtool-devel
+    - ganglia-web
+    - ganglia-gmond
+    - hddtemp
+
+
+#- name: Install Ganglia-Web at /var/www/ganglia
+#  shell: creates=/var/www/ganglia chdir=/var/www curl -L http://sourceforge.net/projects/ganglia/files/ganglia-web/{{ ganglia_web_version }}/{{ ganglia_web_file_name }}.{{ ganglia.web.bin_type }} | tar -xz && mv {{ ganglia_web_file_name }} ganglia
+#  curl -L https://sourceforge.net/projects/ganglia/files/ganglia-web/3.5.2/ganglia-web-3.5.2.tar.gz/download -o ganglia-web-3.5.2.tar.gz
+#- name: Install Ganglia-Web at /var/www/ganglia
+#  git:
+#    repo: 'https://github.com/ganglia/ganglia-web'
+#    dest: '/var/www/ganglia'
+#    version: 4.0.0
+#- name: Make Sure Ganglia-Web Makefile Has the Correct Path
+#  command: creates=/var/lib/ganglia-web/dwoo chdir=/var/www/ganglia sed -i "s=/var/www/html/ganglia=/var/www/ganglia=" Makefile
+#- name: Make Sure Ganglia-Web Makefile Has the Correct User
+#  command: creates=/var/lib/ganglia-web/dwoo chdir=/var/www/ganglia sed -i "s/APACHE_USER =  apache/APACHE_USER = {{ ganglia.web.apache_user }}/" Makefile
+
+
+- name: Copy Ganglia Config for Apache HTTPd Server
+  template: src=ganglia-httpd.conf.j2 dest=/etc/httpd/conf.d/ganglia.conf owner=root group=root mode=0644
+
+
+- name: Create HTTP Authentication for Ganglia
+  shell: |
+    htpasswd -b -c /etc/httpd/auth.basic ganglia-admin changeme
+
+- name: Provide Directory with A New default SELinux Context
+  shell: |
+    semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/ganglia(/.*)?"
+    setsebool -P httpd_can_network_connect 1
+    # Apply the default context to the directory
+    # restorecon -R /var/lib/ganglia-web
+
+
+#- name: Change File Permissions and Ownership
+#  file:
+#    path: "/var/lib/ganglia-web"
+#    state: directory
+#    recurse: yes
+#    owner: ganglia
+#    group: ganglia
+#    mode: u=rwX,g=rX,o=rX
+
+
+- name: Change File Permissions and Ownership
+  file:
+    path: "/var/lib/ganglia/rrds"
+    state: directory
+    recurse: yes
+    owner: ganglia
+    group: ganglia
+    mode: u=rwX,g=rX,o=rX
+
+# drwxr-xr-x   3 jomoon jomoon  105 Jan  7  2014 conf
+# drwxr-xr-x   4 root   root     35 Aug 28 06:19 dwoo
+
+# Need to write
+# /var/lib/ganglia-web
+# conf  dwoo
+
+# Install semanage if you don't already have it. It'll be one of:
+# $ yum install policycoreutils-python
+# $ dnf install policycoreutils-python-utils
+# chown -R apache.apache /var/www/ganglia
+
+
+- name: Enable Short Open Tags in PHP Codes
+  replace:
+    path: "/etc/php.ini"
+    regexp: "^short_open_tags: Off(.*)$"
+    replace: "short_open_tags: On"
+    backup: yes
+
+
+# Under ganglia-web-3.5.12
+#- name: Replace Apache User from www-data to apache for Red Hat Based 
+#  replace:
+#    path: "/var/www/ganglia/{{ item }}"
+#    regexp: 'www-data'
+#    replace: "apache"
+#  ignore_errors: true
+#  with_items:
+#   - "debian/ganglia-webfrontend.postinst"
+#   - "debian/rules"
+#   - "nagios/warmup_metric_cache.sh"
+#   - "Makefile"
+#   - "nagios/warmup_metric_cache.sh"
+#   # - "ganglia-web.spec"
+
+
+#- name: Make Install Ganglia-Web
+#  command: creates=/var/lib/ganglia-web/dwoo chdir=/var/www/ganglia make install
+#  notify:
+#    - Restart Apache2
+#    - Restart PHP-FPM
+
+
+#- name: Enable and Start Web Service for Ganglia
+#  become: true
+#  systemd:
+#    daemon_reload: yes
+#    name: "{{ item }}"
+#    enabled: yes
+#    state: started
+#  register: start_ganglia_service
+#  with_items:
+#    - php-fpm
+#    - httpd
+#    - gmetad
+
+
+- name: Configure gmond.conf In /etc/ganglia/gmond.conf
+  template: src=gmond.conf.slave.j2 dest=/etc/ganglia/gmond.conf owner=root group=root mode=0644
+  notify:
+    - Start Gmond
+    - Start PHP-FPM
+    - Start Apache2
+
+
+- name: Print the URL of Ganglias Web UI
+  debug:
+    msg: "Ganglia Web UI - http://{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}/ganglia"
+  when: inventory_hostname in groups['master']
+
