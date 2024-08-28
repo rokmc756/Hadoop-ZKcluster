@@ -4,46 +4,40 @@
   roles:
     - ganglia
 
+- hosts: all
+  remote_user: root
+  vars:
+     open_firewall: true
+     install_hbase: true
+     config_hbase: true
+     init_hbase: true
+  roles:
+    - hbase
 
-#- hosts: all
-#  remote_user: root
-#  vars:
-#     open_firewall: true
-#     install_hbase: true
-#     config_hbase: true
-#     init_hbase: true
-#  roles:
-#    - hbase
-#
-#
-#- hosts: all
-#  remote_user: root
-#  roles:
-#    - spark
-#
-#
-#- hosts: hive
-#  remote_user: root
-#  vars:
-#     open_firewall: true
-#     install_hive: true
-#     config_hive: true
-#     init_hive: true
-#  roles:
-#    - hive
-#
-#
-#- hosts: database
-#  become: true
-#  roles:
-#    - postgres
-#
-#
-#- hosts: all
-#  remote_user: root
-#  roles:
-#    - hadoop
-#    - zookeeper
-#  # - firewall
+- hosts: all
+  remote_user: root
+  roles:
+    - spark
 
+- hosts: hive
+  remote_user: root
+  vars:
+     open_firewall: true
+     install_hive: true
+     config_hive: true
+     init_hive: true
+  roles:
+    - hive
+
+- hosts: database
+  become: true
+  roles:
+    - postgres
+
+- hosts: all
+  remote_user: root
+  roles:
+    - hadoop
+    - zookeeper
+  # - firewall
 

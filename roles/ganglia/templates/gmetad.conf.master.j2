@@ -41,7 +41,7 @@
 # data_source "my grid" 50 1.3.4.7:8655 grid.org:8651 grid-backup.org:8651
 # data_source "another source" 1.3.4.7:8655  1.3.4.8
 
-data_source "Haddop-ZKcluster" 10 {{ hostvars[groups["master"][0]].ansible_hostname }}:8649 {{ groups['workers'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', ':8649') | join(' ') }}
+data_source "Haddop-ZKcluster" 10 {{ hostvars[groups["master"][0]].ansible_hostname }}:8649 {{ hostvars[groups["standby"][0]].ansible_hostname }}:8649 {{ groups['workers'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', ':8649') | join(' ') }}
 setuid_username "ganglia"
 rrd_rootdir "/var/lib/ganglia/rrds"
 
@@ -72,7 +72,8 @@ rrd_rootdir "/var/lib/ganglia/rrds"
 # tag with this name.
 # default: unspecified
 # gridname "MyGrid"
-gridname "{{ ganglia.site_name | capitalize }}"
+# gridname "{{ ganglia.site_name | capitalize }}"
+gridname "{{ ganglia.site_name }}"
 
 #
 #-------------------------------------------------------------------------------

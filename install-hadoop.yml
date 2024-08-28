@@ -1,0 +1,44 @@
+---
+- hosts: all
+  remote_user: root
+  vars:
+    generate_key: true
+    install_java: true
+    install_oracle_java: false
+    install_hadoop: true
+    config_hadoop: true
+    start_journalnode: true
+  roles:
+    - hadoop
+    - zookeeper
+  # - firewall
+
+
+- hosts: all
+  remote_user: root
+  vars:
+    format_namenode: true
+    start_namenode: true
+    copy_metadata: true
+    bootstrap_standby: true
+    start_datanode: true
+    format_zkfc: true
+    start_zkfc: true
+    start_yarn: true
+    start_yan_resource_manager: false
+  roles:
+    - hadoop
+
+
+# The priority of starting hdfs services. It's principal to order in main.yml
+#
+#  1 - format_namenode : master
+#  2 - start_namenode : master
+#  3 - copy_metadata : master
+#  4 - bootstrap_standby : standby
+#  5 - start_namenode : standby
+#  6 - start_datanode : workers
+#  7 - format_zkfc : master
+#  8 - start_zkfc : master
+#  9 - start_zkfc : standby
+# 10 - start_yan : standby

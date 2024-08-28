@@ -10,4 +10,5 @@
 - name: Configure Gmetad.conf In /etc/ganglia/gmetad.conf
   template: src=gmetad.conf.master.j2 dest=/etc/ganglia/gmetad.conf owner=root group=root mode=0644
   notify:
-    - Start Gmetad
+    - Restart Gmetad
+

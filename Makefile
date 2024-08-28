@@ -37,10 +37,10 @@ init: role-update init-hosts.yml
 uninit: role-update init-hosts.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} init-hosts.yml --tags="uninit"
 
-install: role-update install.yml
+deploy: role-update install.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} install.yml --tags="install"
 
-uninstall: role-update uninstall.yml
+destroy: role-update uninstall.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} uninstall.yml --tags="uninstall"
 
 upgrade: role-update upgrade.yml
@@ -54,6 +54,66 @@ boot: role-update control-vms.yml
 
 shutdown: role-update control-vms.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} control-vms.yml --extra-vars "power_state=off power_title=Power-Off"
+
+hadoop:
+	@if [ "${r}" = "install" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} install-hadoop.yml --tags="install";\
+	elif [ "${r}" = "uninstall" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} uninstall-hadoop.yml --tags="uninstall";\
+	else\
+	  echo "No Actions for Hadoop";\
+	  exit;\
+	fi
+
+pgsql:
+	@if [ "${r}" = "install" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-pgsql.yml --tags="install";\
+	elif [ "${r}" = "uninstall" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-pgsql.yml --tags="uninstall";\
+	else\
+	  echo "No Actions for PostgreSQL";\
+	  exit;\
+	fi
+
+hive:
+	@if [ "${r}" = "install" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-hive.yml --tags="install";\
+	elif [ "${r}" = "uninstall" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-hive.yml --tags="uninstall";\
+	else\
+	  echo "No Actions for Hive";\
+	  exit;\
+	fi
+
+spark:
+	@if [ "${r}" = "install" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-spark.yml --tags="install";\
+	elif [ "${r}" = "uninstall" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-spark.yml --tags="uninstall";\
+	else\
+	  echo "No Actions for Spark";\
+	  exit;\
+	fi
+
+hbase:
+	@if [ "${r}" = "install" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-hbase.yml --tags="install";\
+	elif [ "${r}" = "uninstall" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-hbase.yml --tags="uninstall";\
+	else\
+	  echo "No Actions for Hbase";\
+	  exit;\
+	fi
+
+ganglia:
+	@if [ "${r}" = "install" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-ganglia.yml --tags="install";\
+	elif [ "${r}" = "uninstall" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-ganglia.yml --tags="uninstall";\
+	else\
+	  echo "No Actions for Ganglia";\
+	  exit;\
+	fi
 
 #poweron: role-update poweron-vms.yml
 #	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} poweron-vms.yml

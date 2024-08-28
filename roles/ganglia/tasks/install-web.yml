@@ -1,3 +1,6 @@
+# Reference Under Ganglia Web 3.5.12 Version
+# https://github.com/analytically/hadoop-ansible/blob/master/roles/ganglia_web/tasks/main.yml
+
 ---
 - name: Install Ganglia Web Dependencies
   package: name={{ item }}
@@ -9,20 +12,7 @@
     - ganglia-web
     - ganglia-gmond
     - hddtemp
-
-
-#- name: Install Ganglia-Web at /var/www/ganglia
-#  shell: creates=/var/www/ganglia chdir=/var/www curl -L http://sourceforge.net/projects/ganglia/files/ganglia-web/{{ ganglia_web_version }}/{{ ganglia_web_file_name }}.{{ ganglia.web.bin_type }} | tar -xz && mv {{ ganglia_web_file_name }} ganglia
-#  curl -L https://sourceforge.net/projects/ganglia/files/ganglia-web/3.5.2/ganglia-web-3.5.2.tar.gz/download -o ganglia-web-3.5.2.tar.gz
-#- name: Install Ganglia-Web at /var/www/ganglia
-#  git:
-#    repo: 'https://github.com/ganglia/ganglia-web'
-#    dest: '/var/www/ganglia'
-#    version: 4.0.0
-#- name: Make Sure Ganglia-Web Makefile Has the Correct Path
-#  command: creates=/var/lib/ganglia-web/dwoo chdir=/var/www/ganglia sed -i "s=/var/www/html/ganglia=/var/www/ganglia=" Makefile
-#- name: Make Sure Ganglia-Web Makefile Has the Correct User
-#  command: creates=/var/lib/ganglia-web/dwoo chdir=/var/www/ganglia sed -i "s/APACHE_USER =  apache/APACHE_USER = {{ ganglia.web.apache_user }}/" Makefile
+    - policycoreutils-python-utils
 
 
 - name: Copy Ganglia Config for Apache HTTPd Server
@@ -33,11 +23,12 @@
   shell: |
     htpasswd -b -c /etc/httpd/auth.basic ganglia-admin changeme
 
+
 - name: Provide Directory with A New default SELinux Context
   shell: |
     semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/ganglia(/.*)?"
     setsebool -P httpd_can_network_connect 1
-    # Apply the default context to the directory
+    # Apply the Default Context to the Directory
     # restorecon -R /var/lib/ganglia-web
 
 
@@ -60,18 +51,6 @@
     group: ganglia
     mode: u=rwX,g=rX,o=rX
 
-# drwxr-xr-x   3 jomoon jomoon  105 Jan  7  2014 conf
-# drwxr-xr-x   4 root   root     35 Aug 28 06:19 dwoo
-
-# Need to write
-# /var/lib/ganglia-web
-# conf  dwoo
-
-# Install semanage if you don't already have it. It'll be one of:
-# $ yum install policycoreutils-python
-# $ dnf install policycoreutils-python-utils
-# chown -R apache.apache /var/www/ganglia
-
 
 - name: Enable Short Open Tags in PHP Codes
   replace:
@@ -81,49 +60,16 @@
     backup: yes
 
 
-# Under ganglia-web-3.5.12
-#- name: Replace Apache User from www-data to apache for Red Hat Based 
-#  replace:
-#    path: "/var/www/ganglia/{{ item }}"
-#    regexp: 'www-data'
-#    replace: "apache"
-#  ignore_errors: true
-#  with_items:
-#   - "debian/ganglia-webfrontend.postinst"
-#   - "debian/rules"
-#   - "nagios/warmup_metric_cache.sh"
-#   - "Makefile"
-#   - "nagios/warmup_metric_cache.sh"
-#   # - "ganglia-web.spec"
-
-
-#- name: Make Install Ganglia-Web
-#  command: creates=/var/lib/ganglia-web/dwoo chdir=/var/www/ganglia make install
-#  notify:
-#    - Restart Apache2
-#    - Restart PHP-FPM
-
-
-#- name: Enable and Start Web Service for Ganglia
-#  become: true
-#  systemd:
-#    daemon_reload: yes
-#    name: "{{ item }}"
-#    enabled: yes
-#    state: started
-#  register: start_ganglia_service
-#  with_items:
-#    - php-fpm
-#    - httpd
-#    - gmetad
-
-
-- name: Configure gmond.conf In /etc/ganglia/gmond.conf
-  template: src=gmond.conf.slave.j2 dest=/etc/ganglia/gmond.conf owner=root group=root mode=0644
-  notify:
-    - Start Gmond
-    - Start PHP-FPM
-    - Start Apache2
+- name: Enable and Restart Web Service for Ganglia
+  systemd:
+    daemon_reload: yes
+    name: "{{ item }}"
+    enabled: yes
+    state: restarted
+  register: start_ganglia_service
+  with_items:
+    - php-fpm
+    - httpd
 
 
 - name: Print the URL of Ganglias Web UI

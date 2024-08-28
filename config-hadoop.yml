@@ -28,44 +28,6 @@
   roles:
     - hadoop
 
-- hosts: database
-  become: true
-  vars:
-    print_debug: true
-  roles:
-    - postgres
-
-- hosts: hive
-  remote_user: root
-  vars:
-     open_firewall: true
-     install_hive: true
-     config_hive: true
-     init_hive: true
-  roles:
-    - hive
-
-- hosts: all
-  remote_user: root
-  roles:
-    - spark
-
-- hosts: all
-  remote_user: root
-  vars:
-     open_firewall: true
-     install_hbase: true
-     config_hbase: true
-     init_hbase: true
-  roles:
-    - hbase
-
-- hosts: all
-  become: true
-  roles:
-    - ganglia
-
-
 # The priority of starting hdfs services. It's principal to order in main.yml
 #
 # 1 - format_namenode : master

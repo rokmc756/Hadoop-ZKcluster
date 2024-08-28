@@ -6,6 +6,7 @@
     state: stopped
     enabled: no
   with_items:
+    - gmond
     - gmetad
     - httpd
     - php-fpm
@@ -28,9 +29,10 @@
   file:
     path: "{{ item }}"
     state: absent
-  ignore_errors: true
   with_items:
     - "/var/www/ganglia"
+    - "/var/lib/ganglia/rrds"
+    - "/var/lib/ganglia"
     - "/var/lib/ganglia-web"
   when: inventory_hostname in groups['master']
 

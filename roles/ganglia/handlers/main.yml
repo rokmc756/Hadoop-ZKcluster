@@ -8,7 +8,7 @@
 
 
 - name: Restart Gmetad
-  systemd: name=gmetad state=restarted
+  systemd: name=gmetad enabled=no state=restarted daemon_reload=yes
 
 
 - name: Start Gmond
@@ -20,7 +20,7 @@
 
 
 - name: Restart Gmond
-  systemd: name=gmond state=restarted
+  systemd: name=gmond enabled=no state=restarted daemon_reload=yes
 
 
 #- name: Restart Ganglia-Monitor
@@ -31,22 +31,22 @@
   systemd: name=httpd enabled=yes state=started daemon_reload=yes
 
 
-- name: Start PHP-FPM
-  systemd: name=php-fpm enabled=yes state=started daemon_reload=yes
-
-
 - name: Stop Apache2
   systemd: name=httpd enabled=no state=stopped daemon_reload=yes
+
+
+- name: Restart Apache2
+  service: name=httpd enabled=no state=restarted daemon_reload=yes
+
+
+- name: Start PHP-FPM
+  systemd: name=php-fpm enabled=yes state=started daemon_reload=yes
 
 
 - name: Stop PHP-FPM
   service: name=php-fpm enabled=no state=stopped daemon_reload=yes
 
 
-- name: Restart Apache2
-  service: name=httpd state=restarted
-
-
 - name: Restart PHP-FPM
-  service: name=php-fpm state=restarted
+  service: name=php-fpm enabled=no state=restarted daemon_reload=yes
 
