@@ -1,5 +1,0 @@
----
-# file: roles/ganglia_monitor/handlers/main.yml
-
-- name: restart apache2
-  service: name=apache2 state=restarted

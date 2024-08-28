@@ -1,0 +1,12 @@
+- hosts: localhost
+  tasks:
+    - name: Download a file from a URL
+      get_url:
+        url: "https://releases.ansible.com/ansible/ansible-2.9.25.tar.gz"
+        dest: "/tmp/ansible-2.9.25.tar.gz"
+      with_items:
+        - { url: '', dest: '~/Haddop-ZKcluster/roles/hadoop/files/' }
+        - { url: '', dest: '~/Haddop-ZKcluster/roles/hive/files/' }
+        - { url: '', dest: '~/Haddop-ZKcluster/roles/hbase/files/' }
+        - { url: '', dest: '~/Haddop-ZKcluster/roles/spark/files/' }
+

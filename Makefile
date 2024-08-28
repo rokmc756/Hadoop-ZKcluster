@@ -31,6 +31,10 @@ all:
 	done
 
 # https://ansible-tutorial.schoolofdevops.com/control_structures/
+
+download: role-update download-hadoop.yml
+	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} download-hadoop.yml --tags="download"
+
 init: role-update init-hosts.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} init-hosts.yml --tags="init"
 

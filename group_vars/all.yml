@@ -14,6 +14,7 @@ hadoop:
   minor_version: "3"
   patch_version: "6"
   bin_type: "tar.gz"
+  download_url: "https://dlcdn.apache.org/hadoop/common"
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
@@ -33,7 +34,6 @@ hadoop:
     resmgr_tracker_port: 8025
     resmgr_admin_port: 8141
 
-
 hive:
   user: "{{ hadoop.user }}"
   group: "{{ hadoop.group }}"
@@ -43,6 +43,7 @@ hive:
   minor_version: 1
   patch_version: 3
   bin_type: tar.gz
+  download_url: "https://dlcdn.apache.org/hive"
   base_path: "{{ hadoop.base_path }}"
   default_path: "/user/hive"
   tmp_path: "{{ hadoop.base_path }}/hive/tmp"
@@ -70,6 +71,7 @@ spark:
   minor_version: 5
   patch_version: 2
   bin_type: tgz
+  download_url: "https://archive.apache.org/dist/spark"
   base_path: "{{ hadoop.base_path }}"
   master_work_port: 7077
   worker_work_port: 7078
@@ -93,6 +95,7 @@ hbase:
   minor_version: 6
   patch_version: 0
   bin_type: tar.gz
+  download_url: "https://archive.apache.org/dist/hbase"
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
