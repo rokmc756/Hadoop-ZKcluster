@@ -38,60 +38,72 @@ remote_machine_username="jomoon"
 remote_machine_password="changeme"
 
 [master]
-rk8-master ansible_ssh_host=192.168.0.171 zk_id=1
+rk9-node01 ansible_ssh_host=192.168.0.71 zk_id=1
 
 [standby]
-rk8-slave ansible_ssh_host=192.168.0.172 zk_id=2
+rk9-node02 ansible_ssh_host=192.168.0.72 zk_id=2
 
 [workers]
-rk8-node01 ansible_ssh_host=192.168.0.173 zk_id=3
-rk8-node02 ansible_ssh_host=192.168.0.174 zk_id=4
-rk8-node03 ansible_ssh_host=192.168.0.173 zk_id=5
+rk9-node03 ansible_ssh_host=192.168.0.73 zk_id=3 rm_ids=rm1
+rk9-node04 ansible_ssh_host=192.168.0.74 zk_id=4 rm_ids=rm2
+rk9-node05 ansible_ssh_host=192.168.0.75 zk_id=5 rm_ids=rm3
 
 # These are your zookeeper cluster nodes
 [zk_servers]
-rk8-master ansible_ssh_host=192.168.0.171 zk_id=1
-rk8-slave ansible_ssh_host=192.168.0.172 zk_id=2
-rk8-node01 ansible_ssh_host=192.168.0.173 zk_id=3
-rk8-node02 ansible_ssh_host=192.168.0.174 zk_id=4
-rk8-node03 ansible_ssh_host=192.168.0.175 zk_id=5
+rk9-node01 ansible_ssh_host=192.168.0.71 zk_id=1
+rk9-node02 ansible_ssh_host=192.168.0.72 zk_id=2
+rk9-node03 ansible_ssh_host=192.168.0.73 zk_id=3 rm_ids=rm1
+rk9-node04 ansible_ssh_host=192.168.0.74 zk_id=4 rm_ids=rm2
+rk9-node05 ansible_ssh_host=192.168.0.75 zk_id=5 rm_ids=rm3
 
-[hive] # hive nodes
-rk8-master ansible_ssh_host=192.168.0.171 zk_id=1
+[database]
+rk9-node06 ansible_ssh_host=192.168.0.76
+
+[hive]
+rk9-node01 ansible_ssh_host=192.168.0.71 zk_id=1
+
 ```
-#### 2) Configure user/group, hadoop version and location to download in role/hadoop/vars/main.yml
+#### 2) Configure user/group, hadoop version and location to download in group_vars/all.yml
 ```
-$ vi roles/hadoop/vars/main.yml
----
-user: "hadoop"
-group: "hadoop"
+$ vi group_vars/all.yml
+ansible_ssh_pass: "changeme"
+ansible_become_pass: "changeme"
 
-master_ip: "{{ hostvars[groups['master'][0]]['ansible_eth0']['ipv4']['address'] }}"
-master_hostname: "{{ hostvars[groups['master'][0]].ansible_hostname }}"
-standby_master_ip: "{{ hostvars[groups['standby'][0]]['ansible_eth0']['ipv4']['address'] }}"
-standby_master_hostname: "{{ hostvars[groups['standby'][0]].ansible_hostname }}"
-
-# download_path: "/Users/jomoon/Downloads"
-download_hadoop: false
-download_path: "/tmp"
-hadoop_version: "3.3.5"
-hadoop_path: "/home/hadoop"
-hadoop_config_path: "/home/hadoop/hadoop-{{hadoop_version}}/etc/hadoop"
-hadoop_tmp: "/home/hadoop/tmp"
-hadoop_dfs_name: "/home/hadoop/dfs/name"
-hadoop_dfs_data: "/home/hadoop/dfs/data"
-hadoop_log_path: "/home/hadoop/hadoop_logs"
-hadoop_journalnode_path: "/home/hadoop/journalnode/data"
-
-hadoop_create_path:
-  - "{{ hadoop_tmp }}"
-  - "{{ hadoop_dfs_name }}"
-  - "{{ hadoop_dfs_data }}"
-  - "{{ hadoop_log_path }}"
-  - "{{ hadoop_journalnode_path }}"
+hadoop:
+  user: hadoop
+  group: hadoop
+  domain: "jtest.pivotal.io"
+  hdfs_port: 9000
+  base_path: "/home/hadoop"
+  download: true
+  firewall: false
+  download_path: /tmp
+  major_version: "3"
+  minor_version: "3"
+  patch_version: "6"
+  bin_type: "tar.gz"
+  download_url: "https://dlcdn.apache.org/hadoop/common"
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.7"
+    ipaddr1: "192.168.1.7"
+    ipaddr2: "192.168.2.7"
+  dashboard:
+    port: 9870
+  dfs:
+    namenode_httpport: 9001
+    nameservices: "ha-cluster"
+  yarn:
+    cluster_id: "my-yarn-cluster"
+    resmgr_port: 8040
+    resmgr_scheduler_port: 8030
+    resmgr_webapp_port: 8088
+    resmgr_tracker_port: 8025
+    resmgr_admin_port: 8141
 ~~ snip
 ```
-#### 3) Configure version / location to download & install / log_path / data_path of apache-zookeeper/java
+#### 3) Configure version / location to download & install / log_path / data_path of Zookeeper
 ```
 $ vi roles/zookeeper/vars/main.yml
 package_download_path : "/tmp"
@@ -122,42 +134,41 @@ java:
 ```
 #### 4) Configure varialbes such as download location, versions, install/config path, informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```
-$ vi roles/hive/vars/main.yml
----
-# Hive basic vars
-download_path: "/Users/jomoon/Downloads"
-hive_version: "3.1.2"
-hive_path: "/home/hadoop"
-hive_config_path: "/home/hadoop/apache-hive-{{hive_version}}-bin/conf"
-hive_tmp: "/home/hadoop/hive/tmp"
-
-hive_create_path:
-  - "{{ hive_tmp }}"
-
-hive_warehouse: "/user/hive/warehouse"
-hive_scratchdir: "/user/hive/tmp"
-hive_querylog_location: "/user/hive/log"
-
-hive_hdfs_path:
-  - "{{ hive_warehouse }}"
-  - "{{ hive_scratchdir }}"
-  - "{{ hive_querylog_location }}"
-
-hive_logging_operation_log_location: "{{ hive_tmp }}/{{ user }}/operation_logs"
-
-# database
-db_type: "postgres"
-hive_connection_driver_name: "org.postgresql.Driver"
-# hive_connection_host: "172.16.251.33"
-hive_connection_host: "192.168.0.81"
-hive_connection_port: "5432"
-hive_connection_dbname: "bdrdemo"
-hive_connection_user_name: "bdrsync"
-hive_connection_password: "changeme"
-hive_connection_url: "jdbc:postgresql://{{ hive_connection_host }}:{{ hive_connection_port }}/{{hive_connection_dbname}}?ssl=false"
+$ vi group_vars/all.yml
+hive:
+  user: "{{ hadoop.user }}"
+  group: "{{ hadoop.group }}"
+  download: true
+  firewall: false
+  major_version: 3
+  minor_version: 1
+  patch_version: 3
+  bin_type: tar.gz
+  download_url: "https://dlcdn.apache.org/hive"
+  base_path: "{{ hadoop.base_path }}"
+  default_path: "/user/hive"
+  tmp_path: "{{ hadoop.base_path }}/hive/tmp"
+  server_port: 10000
+  hwi_port: 9999
+  metastore_port: 9083
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.7"
+    ipaddr1: "192.168.1.7"
+    ipaddr2: "192.168.2.7"
+~~  snip
+postgres:
+  firewall: false
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.7"
+    ipaddr1: "192.168.1.7"
+    ipaddr2: "192.168.2.7"
 ~~ snip
 ```
-#### 5) The below query file is useful to remove all tables in hive database before running playboot.
+#### 5) The below query file is useful to remove all tables in hive database before running playbook.
 ```
 $ vi drop_all_tables.sql
 CREATE FUNCTION drop_all_tables() RETURNS void AS $$
@@ -181,21 +192,70 @@ select drop_all_tables();```
 
 ## Run to remove tables in a specific database
 ```
-$ psql -h 192.168.0.81 -U bdrsync -d bdrdemo -p 5432 -f drop_all_tables.sql
+$ psql -h 192.168.0.76 -U hive_user -d hive_testdb -p 5432 -f drop_all_tables.sql
 ```
 
-## How to install and deploy hadoop cluster
+## How to Install and Deploy Hadoop Cluster
 ```
-$ make install
+$ make hadoop r=install
+```
+## How to Install and Deploy Postgres Database
+```
+$ make postgres r=install
+```
+## How to Install and Deploy Hive
+```
+$ make hive r=install
+```
+## How to Install and Deploy Spark
+```
+$ make spark r=install
+```
+## How to Install and Deploy Ganglia
+```
+$ make ganglia r=install
 ```
 
-## How to undeply and uninstall hadoop cluster
+
+## How to Deploy All Software Components for Hadoop at Once
 ```
-$ make uninstall
+$ make deploy
 ```
+
+
+## How to Uninstall Ganglia
+```
+$ make ganglia r=uninstall
+```
+## How to Uninstall Hbase
+```
+$ make hbase r=uninstall
+```
+## How to Uninstall Spark
+```
+$ make spark r=uninstall
+```
+## How to uninstall Hive
+```
+$ make hive r=uninstall
+```
+## How to Uninstall Postgres Database
+```
+$ make postgres r=uninstall
+```
+## How to Uninstall Hadoop
+```
+$ make hadoop r=uninstall
+```
+
+## How to Destroy All Software Components for Hadoop at Once
+```
+$ make destory
+```
+
 
 ## Planning
-A few variables for yarn-resource-manager, etc in role/hadoop/var/main.yml need to modify to arrange at once.
+A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
 
 ## License
 GNU General Public License v3.0

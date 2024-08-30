@@ -28,4 +28,5 @@
   - "{{ config.journalnode_path }}"
   - "{{ hadoop.base_path }}/hadoop"
   - "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}"
+  - "/etc/profile.d/hadoop_env.sh"
 

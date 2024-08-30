@@ -20,7 +20,7 @@
   with_items:
     - "{{ spark.base_path }}/spark"
     - "{{ spark.base_path }}/{{ spark_file_name }}.{{ spark.bin_type }}"
-    - "/etc/profile.d/spark_env.sh"
+    - "/etc/profile.d/spark-env.sh"
 
 
 - name: Remove Spark Path
