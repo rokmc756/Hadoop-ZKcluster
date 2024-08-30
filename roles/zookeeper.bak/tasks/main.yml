@@ -1,24 +1,26 @@
 ---
-# For now fail if it's not a Red Hat based system
+# for now fail if it's not a Red Hat based system
 - name: Check OS ( Zookeeper )
   fail: msg="Not a Red Hat based system!"
   when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS'  ansible_os_family != 'Rocky'
 
 
-- name: Set Facts for Network and Packages Informations
+- name: Set facts for network and packages informations for Linux Distribution
   import_tasks: set-facts.yml
   tags:
     - install
     - uninstall
+  when: inventory_hostname in groups['zk_servers']
 
 
-- name: Install ZooKeeper
+- name: Install Zookeeper
   import_tasks: install.yml
+  when: inventory_hostname in groups['zk_servers']
   tags: install
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby']
 
 
 - name: Uninstall Zookeeper
   import_tasks: uninstall.yml
+  when: inventory_hostname in groups['zk_servers']
   tags: uninstall
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby']
+

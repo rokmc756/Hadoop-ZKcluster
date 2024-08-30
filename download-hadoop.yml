@@ -7,6 +7,7 @@
         hive_download_version: "{{ hive.major_version }}.{{ hive.minor_version }}.{{ hive.patch_version }}"
         hbase_download_version: "{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}"
         spark_download_version: "{{ spark.major_version }}.{{ spark.minor_version }}.{{ spark.patch_version }}"
+        zookeeper_download_version: "{{ zookeeper.major_version }}.{{ zookeeper.minor_version }}.{{ zookeeper.patch_version }}"
         local_dir: "/home/jomoon/Hadoop-ZKcluster"
       get_url:
         url: "{{ item.url }}"
@@ -20,4 +21,7 @@
             dest: "{{ local_dir }}/roles/hbase/files/hbase-{{ hbase_download_version }}-bin.tar.gz" }
         - { url: "{{ spark.download_url }}/spark-{{ spark_download_version }}/spark-{{ spark_download_version }}-bin-hadoop{{ hadoop.major_version }}.tgz",
             dest: "{{ local_dir }}/roles/spark/files/spark-{{ spark_download_version }}-bin-hadoop{{ hadoop.major_version }}.tgz" }
+        - { url: "{{ zookeeper.download_url }}/zookeeper-{{ zookeeper_download_version }}/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz",
+            dest: "{{ local_dir }}/roles/zookeeper/files/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz" }
       tags: download
+

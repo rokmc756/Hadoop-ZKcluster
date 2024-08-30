@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: master,standby
   remote_user: root
   vars:
     generate_key: true
@@ -13,7 +13,7 @@
     - zookeeper
   # - firewall
 
-- hosts: all
+- hosts: master,standby
   remote_user: root
   vars:
     format_namenode: true

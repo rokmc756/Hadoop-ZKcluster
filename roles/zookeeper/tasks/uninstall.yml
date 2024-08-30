@@ -1,43 +1,52 @@
----
-- set_fact:
-    zk_package_name: apache-zookeeper-{{ zookeeper.version }}-bin.tar.gz
-    zk_application_path: "{{ zookeeper.installation_path }}/apache-zookeeper-{{ zookeeper.version }}-bin"
-
-#
-- name: Stop Zookeeper Systemd Service
-  shell: "systemctl stop zookeeper"
+- name: Reload and Stop Systemd Service of Zookeeper
+  systemd:
+    name: "zookeeper"
+    enabled: no
+    state: stopped
+  ignore_errors: true
 
 
-- name: Delete Config and Binary Files
+- name: Delete Config/Log/Data Files for Zookeeper
   file:
     path: "{{ item }}"
     state: absent
+  ignore_errors: true
   with_items:
-    - "/etc/systemd/system/zookeeper.service"
-    - "{{ zookeeper.configuration.data_dir }}/myid"
+    - "{{ zookeeper.config.data_dir }}/myid"
     - "{{ zk_application_path }}/conf/zoo.cfg"
-    - "{{ package_download_path }}/{{ zk_package_name }}"
+    - "{{ zookeeper.config.log_path }}"
+    - "{{ zookeeper.config.data_dir }}"
+    - "{{ zookeeper.config.data_dir }}"
+    - "{{ zookeeper.base_path }}/apache-zookeeper-{{ zookeeper_version }}"
+    - "{{ zookeeper.base_path }}/apache-zookeeper"
+    - "{{ zookeeper.download_path }}/{{ zk_package_name }}"
+    - "/etc/systemd/system/zookeeper.service"
 
 
-- name: Delete Directories and Files
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ zookeeper.configuration.data_dir }}"
-    - "{{ zookeeper.configuration.log_path }}"
-    - "{{ zookeeper.installation_path }}/apache-zookeeper"
-    - "{{ zookeeper.installation_path }}/apache-zookeeper-{{ zookeeper.version }}-bin"
+- name: Reload Systemd Services
+  systemd:
+    daemon_reload: yes
+  register: systemd_reloaded
+  ignore_errors: true
 
 
-- name: Reload Systemd Daemon
-  shell: "systemctl daemon-reload"
-
-
-- name: Delete Zookeeper User
+- name: Remove Zookeeper User
   user: name=zookeeper state=absent
+  ignore_errors: true
 
 
-- name: Delete Zookeeper Group
-  group: name=zookeeper state=absent
+- name: Remove Zookeeper Group
+  group: name=zookeeper state=present
+  ignore_errors: true
+
+
+- name: Remove a Line Including PATH Variablefor Zookeeper
+  lineinfile:
+    path: "{{ item }}"
+    regexp: "^export PATH=(.*)zookeeper(.*)PATH$"
+    state: absent
+  register: remove_zookeeper_path
+  with_items:
+    - "/home/{{ zookeeper.user }}/.bashrc"
+    - "/root/.bashrc"
 
