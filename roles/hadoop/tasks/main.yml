@@ -49,12 +49,6 @@
   tags: install
 
 
-- name: Install Java on All Nodes
-  import_tasks: install-java.yml
-  when: install_java is defined and install_java
-  tags: install
-
-
 - name: Install Hadoop on All Nodes
   import_tasks: install-hadoop.yml
   when: install_hadoop is defined and install_hadoop
@@ -160,15 +154,9 @@
   tags: uninstall
 
 
-- name: Uninstall Java on All Nodes
-  import_tasks: uninstall-java.yml
-  tags: uninstall
-
-
 - name: Enable Firewalld
   import_tasks: enable-firewall.yml
   tags: uninstall
   when: hadoop.firewall == true
 
 # when: ( open_firewall is defined and open_firewall ) or ( disable_firewall is defined and disable_firewall )
-

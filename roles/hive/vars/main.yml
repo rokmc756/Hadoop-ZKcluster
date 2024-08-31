@@ -64,7 +64,14 @@ site_properties:
     "name":"hive.server2.logging.operation.log.location",
     "value":"{{ config.logging_operation_log_location }}"
   }
-
+  - {
+    "name":"hive.exec.reducers.bytes.per.reducer",
+    "value":"67108864"
+  }
+  # https://stackoverflow.com/questions/40339339/hive-query-does-not-begin-mapreduce-process-after-starting-job-and-generating-tr
+  # https://stackoverflow.com/questions/16203314/how-does-hive-choose-the-number-of-reducers-for-a-job
+  # https://stackoverflow.com/questions/30368437/reducers-for-hive-data
+  # https://stackoverflow.com/questions/61874740/insert-into-hive-using-ql-not-running
 
 firewall_ports:
   - "{{ hive.server_port }}"

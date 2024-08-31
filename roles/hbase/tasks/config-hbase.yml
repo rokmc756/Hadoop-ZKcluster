@@ -9,6 +9,8 @@
   file:
     src: "{{ hbase_root_dir }}"
     dest: "{{ hbase.base_path }}/hbase"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.group }}"
     state: link
 
 

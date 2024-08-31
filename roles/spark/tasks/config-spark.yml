@@ -3,6 +3,8 @@
   file:
     src: "{{ spark_root_dir }}"
     dest: "{{ spark.base_path }}/spark"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.group }}"
     state: link
 
 

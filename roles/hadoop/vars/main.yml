@@ -124,8 +124,12 @@ hdfs_site_properties:
   }
   - {
       "name":"dfs.client.failover.proxy.provider.ha-cluster",
-      "value":"org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider"
+      "value":"org.apache.hadoop.hdfs.server.namenode.ha.RequestHedgingProxyProvider"
   }
+  # Checked by Jack
+  # RequestHedgingProxyProvider works fine and Need to know the behavior of these two actions.
+  #    "value":"org.apache.hadoop.hdfs.server.namenode.ha.RequestHedgingProxyProvider"
+  #    "value":"org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider"
   - {
       "name":"dfs.ha.automatic-failover.enabled",
       "value":"true"

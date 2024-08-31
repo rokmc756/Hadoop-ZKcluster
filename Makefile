@@ -59,6 +59,18 @@ boot: role-update control-vms.yml
 shutdown: role-update control-vms.yml
 	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} control-vms.yml --extra-vars "power_state=shutdown-guest power_title=Shutdown VMs"
 
+
+java:
+	@if [ "${r}" = "install" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-java.yml --tags="install";\
+	elif [ "${r}" = "uninstall" ]; then\
+	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} config-java.yml --tags="uninstall";\
+	else\
+	  echo "No Actions for Java";\
+	  exit;\
+	fi
+
+
 hadoop:
 	@if [ "${r}" = "install" ]; then\
 	  ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} install-hadoop.yml --tags="install";\

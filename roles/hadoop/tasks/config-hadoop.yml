@@ -3,6 +3,8 @@
   file:
     src: "{{ hadoop_root_dir }}"
     dest: "{{ hadoop.base_path }}/hadoop"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.group }}"
     state: link
 
 
