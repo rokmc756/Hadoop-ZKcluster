@@ -62,6 +62,7 @@ export PYSPARK_PYTHON="/usr/bin/python"
 export PYSPARK_DRIVER_PYTHON="/usr/bin/python"
 export SPARK_MASTER_OPTS="-Dspark.deploy.defaultCores={{ spark.worker.default_core }}"
 export HADOOP_CONF_DIR="{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop"
+export YARN_CONF_DIR="{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop"
 export PATH="{{ hadoop.base_path }}/{{ spark_file_name }}/bin:$PATH"
 
 export SPARK_HOME="{{ hadoop.base_path }}/{{ spark_file_name }}"

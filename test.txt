@@ -1,0 +1,14 @@
+spark = SparkSession .builder .appName("EnableHive") .config("spark.sql.warehouse.dir", "hdfs://localhost:9000/user/hive/warehouse") .enableHiveSupport() .getOrCreate()
+
+spark = SparkSession \
+        .builder \
+        .appName("CreateDatabaseAndTables") \
+        .config("spark.sql.warehouse.dir", "hdfs://localhost:9000/user/hive/warehouse") \
+        .config("spark.hadoop.hive.exec.dynamic.partition", True) \
+        .config("spark.hadoop.hive.exec.dynamic.partition.mode", True) \
+        .config("spark.sql.sources.partitionOverwriteMode", "dynamic") \
+        .enableHiveSupport() \
+        .getOrCreate()
+
+
+

@@ -1,4 +1,16 @@
 ---
+- name: Install PostgreSQL JDBC Driver
+  become: true
+  package:
+    name: postgresql-jdbc
+    state: present
+  #vars:
+  #  ansible_python_interpreter: "{{ yum_python_version }}"
+  # async: 120
+  # poll: 5
+  # skip_broken: yes
+
+
 - name: Create Hadoop Path
   file: 
     path: "{{ item }}"

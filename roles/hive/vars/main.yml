@@ -68,10 +68,28 @@ site_properties:
     "name":"hive.exec.reducers.bytes.per.reducer",
     "value":"67108864"
   }
-  # https://stackoverflow.com/questions/40339339/hive-query-does-not-begin-mapreduce-process-after-starting-job-and-generating-tr
-  # https://stackoverflow.com/questions/16203314/how-does-hive-choose-the-number-of-reducers-for-a-job
-  # https://stackoverflow.com/questions/30368437/reducers-for-hive-data
-  # https://stackoverflow.com/questions/61874740/insert-into-hive-using-ql-not-running
+
+
+#  In order to avoid the issue Cannot connect to hive using beeline,
+#  user root cannot impersonate anonymous when connecting to HiveServer2 from beeline,
+#  from hadoop/etc/hadoop, add to the core-site.xml, with [username] is your local user that will be use in beeline
+#
+#  <property>
+#    <name>hadoop.proxyuser.[username].groups</name>
+#    <value>*</value>
+#  </property>
+#  <property>
+#    <name>hadoop.proxyuser.[username].hosts</name>
+#    <value>*</value>
+#  </property>
+
+
+# https://stackoverflow.com/questions/40339339/hive-query-does-not-begin-mapreduce-process-after-starting-job-and-generating-tr
+# https://stackoverflow.com/questions/16203314/how-does-hive-choose-the-number-of-reducers-for-a-job
+# https://stackoverflow.com/questions/30368437/reducers-for-hive-data
+# https://stackoverflow.com/questions/61874740/insert-into-hive-using-ql-not-running
+# https://github.com/chuqbach/Big-Data-Installation/blob/master/Hive%20Setup%20with%20Spark%20Exection%20and%20Spark%20HiveContext.md
+
 
 firewall_ports:
   - "{{ hive.server_port }}"

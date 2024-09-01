@@ -15,11 +15,6 @@
     - workers
 
 
-#- name: Copy Spark Env file
-#  become_user: root
-#  template: src=spark-env.sh.j2 dest=/etc/profile.d/spark-env.sh mode=755 owner=root group=root
-
-
 - name: Copy Spark Config File
   copy:
     src: "{{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }}.template"
@@ -29,8 +24,25 @@
     mode: '0644'
     remote_src: yes
   with_items:
-    - "spark-env.sh"
     - "spark-defaults.conf"
+  #  - "spark-env.sh"
+
+
+- name: Add Hadoop Master Metrics into Ganglia
+  become_user: hadoop
+  lineinfile:
+    dest: "{{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item.file }}"
+    line: '{{ item.line }}'
+  with_items:
+    - { file: "spark-defaults.conf", line: "hdfs://localhost:9000/user/hive/warehouse" }
+
+
+- name: Copy Spark Env Script
+  template: src=spark-env.sh.j2 dest=/etc/profile.d/spark-env.sh mode=755 owner=root group=root
+
+
+- name: Set Spark Env
+  shell: source /etc/profile.d/spark-env.sh
 
 
 #- name: Deploy the Customized Spark log4j Properties
