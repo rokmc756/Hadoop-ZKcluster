@@ -56,7 +56,7 @@
 
 export SPARK_WORKER_CORES="{{ spark.worker.core }}"
 export SPARK_WORKER_MEMORY="{{ spark.worker.memory }}"
-export SPARK_MASTER_HOST="{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
+export SPARK_MASTER_HOST="{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}"
 export JAVA_HOME="$(dirname $(dirname $(readlink $(readlink $(which javac)))))"
 export PYSPARK_PYTHON="/usr/bin/python"
 export PYSPARK_DRIVER_PYTHON="/usr/bin/python"

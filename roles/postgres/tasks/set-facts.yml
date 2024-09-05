@@ -5,6 +5,13 @@
     netdev1: "{{ ansible_interfaces | map('regex_replace', '^', 'ansible_') | map('extract', vars) | selectattr('ipv4', 'defined') | selectattr('ipv4.address', 'match', postgres.net.ipaddr1 ) | map(attribute='device') | first }}"
     netdev2: "{{ ansible_interfaces | map('regex_replace', '^', 'ansible_') | map('extract', vars) | selectattr('ipv4', 'defined') | selectattr('ipv4.address', 'match', postgres.net.ipaddr2 ) | map(attribute='device') | first }}"
 
+#
+- name: Get IP Address from provided network device name
+  set_fact:
+    ipaddr0: "{{ hostvars[inventory_hostname]['ansible_'~netdev0].ipv4.address }}"
+    ipaddr1: "{{ hostvars[inventory_hostname]['ansible_'~netdev1].ipv4.address }}"
+    ipaddr2: "{{ hostvars[inventory_hostname]['ansible_'~netdev2].ipv4.address }}"
+
 
 - name: Define Facts for List of Packages to Install or Uninstall
   set_fact:
@@ -35,9 +42,15 @@
 #    pgsql_pkg_name: "{{ common.pgsql_pkg_name }}-{{ pgsql.major_version }}.{{ pgsql.minor_version }}-{{ pgsql.patch_version }}.{{ pgsql.os_version }}"
 
 
+- name: Set Default Network Device and Address
+  set_fact:
+    _netdev: "ansible_{{ netdev1 }}"
+    _ipaddr: "{{ ipaddr1 }}"
+
+
 - name: Define Fact of Network Address
   set_fact:
-    pgsql_network_range: "{{ hostvars[inventory_hostname]['ansible_'~ netdev0]['ipv4']['network'] }}/{{ ( hostvars[inventory_hostname]['ansible_'~ netdev0]['ipv4']['address'] + '/' + hostvars[inventory_hostname]['ansible_'~ netdev0]['ipv4']['netmask'] ) | ansible.utils.ipaddr('prefix') }}"
+    pgsql_network_range: "{{ hostvars[inventory_hostname][_netdev]['ipv4']['network'] }}/{{ ( hostvars[inventory_hostname][_netdev]['ipv4']['address'] + '/' + hostvars[inventory_hostname][_netdev]['ipv4']['netmask'] ) | ansible.utils.ipaddr('prefix') }}"
 
 
 - name: Define Fact of Specific IP Address Range

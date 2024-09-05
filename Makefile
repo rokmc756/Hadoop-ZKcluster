@@ -131,6 +131,7 @@ ganglia:
 	  exit;\
 	fi
 
+
 #poweron: role-update poweron-vms.yml
 #	ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} poweron-vms.yml
 

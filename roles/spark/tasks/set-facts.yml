@@ -18,3 +18,9 @@
     hadoop_version: "{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
     spark_version: "{{ spark.major_version }}.{{ spark.minor_version }}.{{ spark.patch_version }}"
 
+
+- name: Set Default Network Device and Address
+  set_fact:
+    _netdev: "ansible_{{ netdev1 }}"
+    _ipaddr: "{{ ipaddr1 }}"
+

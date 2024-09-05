@@ -24,7 +24,7 @@
 #- name: Whitelist of Ip addresses
 #  firewalld:
 #    zone: public
-#    rich_rule: "rule family=ipv4 source address={{ hostvars[item]['ansible_'~ netdev0]['ipv4']['address'] }} accept"
+#    rich_rule: "rule family=ipv4 source address={{ hostvars[item]['ansible_'~ netdev1]['ipv4']['address'] }} accept"
 #    permanent: true
 #    state: enabled
 #  with_items:
@@ -34,7 +34,7 @@
     #- name: Whitelist of Ip addresses
     #  firewalld:
     #    zone: public
-    #    source: "{{ hostvars[item]['ansible_'~ netdev0]['ipv4']['address'] }}/24"
+    #    source: "{{ hostvars[item]['ansible_'~ netdev1]['ipv4']['address'] }}/24"
     #    permanent: true
     #    state: enabled
     #  with_items:

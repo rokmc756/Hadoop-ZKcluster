@@ -21,6 +21,7 @@
 - name: Define fact for all worker's first ip addresses
   set_fact:
     all_net0_ipaddrs: "{{ groups['all'] | map('extract', hostvars, ['ansible_'~netdev0, 'ipv4', 'address']) | join(',') }}"
+    all_net1_ipaddrs: "{{ groups['all'] | map('extract', hostvars, ['ansible_'~netdev1, 'ipv4', 'address']) | join(',') }}"
 - debug: msg={{ all_net0_ipaddrs }}
 
 
@@ -68,4 +69,10 @@
     hadoop_version: "{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
     hadoop_root_dir: "{{ hadoop.base_path }}/hadoop-{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
     hadoop_file_name: "hadoop-{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
+
+
+- name: Set Default Network Device and Address
+  set_fact:
+    _netdev: "ansible_{{ netdev1 }}"
+    _ipaddr: "{{ ipaddr1 }}"
 

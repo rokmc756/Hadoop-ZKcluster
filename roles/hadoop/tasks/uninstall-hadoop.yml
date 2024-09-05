@@ -29,4 +29,6 @@
   - "{{ hadoop.base_path }}/hadoop"
   - "{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}"
   - "/etc/profile.d/hadoop_env.sh"
-
+  - "/tmp/hadoop-hadoop-journalnode.pid"
+  - "/tmp/hadoop-hadoop-namenode.pid"
+  - "/tmp/hadoop-hadoop-datanode.pid"

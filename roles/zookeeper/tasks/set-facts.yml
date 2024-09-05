@@ -32,6 +32,6 @@
 
 - name: Set Default Network Device and Address
   set_fact:
-    _netdev: "{{ netdev0 }}"
-    _ipaddr: "{{ ipaddr0 }}"
+    _netdev: "{{ netdev1 }}"
+    _ipaddr: "{{ ipaddr1 }}"
 

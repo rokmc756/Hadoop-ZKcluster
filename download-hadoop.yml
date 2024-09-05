@@ -8,6 +8,8 @@
         hbase_download_version: "{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}"
         spark_download_version: "{{ spark.major_version }}.{{ spark.minor_version }}.{{ spark.patch_version }}"
         zookeeper_download_version: "{{ zookeeper.major_version }}.{{ zookeeper.minor_version }}.{{ zookeeper.patch_version }}"
+        impala_download_version: "{{ impala.major_version }}.{{ impala.minor_version }}.{{ impala.patch_version }}"
+        cassandra_download_version: "{{ cassandra.major_version }}.{{ cassandra.minor_version }}.{{ cassandra.patch_version }}"
         local_dir: "/home/jomoon/Hadoop-ZKcluster"
       get_url:
         url: "{{ item.url }}"
@@ -23,5 +25,9 @@
             dest: "{{ local_dir }}/roles/spark/files/spark-{{ spark_download_version }}-bin-hadoop{{ hadoop.major_version }}.tgz" }
         - { url: "{{ zookeeper.download_url }}/zookeeper-{{ zookeeper_download_version }}/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz",
             dest: "{{ local_dir }}/roles/zookeeper/files/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz" }
+        - { url: "{{ impala.download_url }}/{{ impala_download_version }}/apache-impala-{{ impala_download_version }}.tar.gz",
+            dest: "{{ local_dir }}/roles/impala/files/apache-impala-{{ impala_download_version }}.tar.gz" }
+        - { url: "{{ cassandra.download_url }}/{{ cassandra_download_version }}/apache-cassandra-{{ cassandra_download_version }}-bin.tar.gz",
+            dest: "{{ local_dir }}/roles/cassandra/files/apache-cassandra-{{ cassandra_download_version }}-bin.tar.gz" }
       tags: download
 

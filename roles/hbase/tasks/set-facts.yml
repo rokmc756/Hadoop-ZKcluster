@@ -16,3 +16,11 @@
     hbase_file_name: "hbase-{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}-bin"
     hbase_version: "{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}"
     hbase_root_dir: "{{ hbase.base_path }}/hbase-{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}"
+
+
+- name: Set Default Network Device and Address
+  set_fact:
+    _netdev: "ansible_{{ netdev1 }}"
+    _ipaddr: "{{ ipaddr1 }}"
+
+

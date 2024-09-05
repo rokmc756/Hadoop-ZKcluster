@@ -3,8 +3,8 @@ hadoop_version: "{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop
 
 netinfo:
   ipaddr:
-    master: "{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
-    standby: "{{ hostvars[groups['standby'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
+    master: "{{ hostvars[groups['master'][0]]['ansible_'~ netdev1]['ipv4']['address'] }}"
+    standby: "{{ hostvars[groups['standby'][0]]['ansible_'~ netdev1]['ipv4']['address'] }}"
   hostname:
     master: "{{ hostvars[groups['master'][0]].ansible_hostname }}"
     standby: "{{ hostvars[groups['standby'][0]].ansible_hostname }}"
@@ -26,8 +26,8 @@ create_path:
   - "{{ config.journalnode_path }}"
 
 list:
-  zkservers: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
-  qjournal: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
+  zkservers: "{{ groups['zk_servers'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
+  qjournal: "{{ groups['zk_servers'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
 
 
 core_site_properties:
@@ -124,7 +124,7 @@ hdfs_site_properties:
   }
   - {
       "name":"dfs.client.failover.proxy.provider.ha-cluster",
-      "value":"org.apache.hadoop.hdfs.server.namenode.ha.RequestHedgingProxyProvider"
+      "value":"org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider"
   }
   # Checked by Jack
   # RequestHedgingProxyProvider works fine and Need to know the behavior of these two actions.

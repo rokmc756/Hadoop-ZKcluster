@@ -15,8 +15,8 @@
 
 - name: Set Default Network Device and Address
   set_fact:
-    _netdev: "ansible_{{ netdev0 }}"
-    _ipaddr: "{{ ipaddr0 }}"
+    _netdev: "ansible_{{ netdev1 }}"
+    _ipaddr: "{{ ipaddr1 }}"
 
 
 # Set Fact for Java Packages depends on OS version.

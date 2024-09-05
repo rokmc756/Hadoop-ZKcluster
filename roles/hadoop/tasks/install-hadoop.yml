@@ -24,7 +24,7 @@
   when: hadoop.download == true and hadoop_tarball_exists.stat.exists != True
 
 
-- name: Copy Apache Hadoop Tarball from local directory, roles/hadoop/files
+- name: Copy Apache Hadoop Tarball from Local Directory, roles/hadoop/files
   copy: src={{ hadoop_file_name }}.{{ hadoop.bin_type }} dest={{ hadoop.base_path }}/{{ hadoop_file_name }}.{{ hadoop.bin_type }} mode=0644 owner={{ hadoop.user }} group={{ hadoop.group }}
   register: local_copy_dss
   when: hadoop.download == false and hadoop_tarball_exists.stat.exists != True
@@ -41,3 +41,13 @@
   register: unarchive_hadoop_tarball
   when: hadoop_install_dir_exists.stat.exists == false
 
+
+- name: Create Hadoop Path
+  file:
+    path: "{{ item }}"
+    owner: "{{ hadoop.user }}"
+    group: "{{ hadoop.group }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "{{ create_path }}"

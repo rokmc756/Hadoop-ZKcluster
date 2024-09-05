@@ -15,10 +15,11 @@
 - name: Install ZooKeeper
   import_tasks: install.yml
   tags: install
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby']
+  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
 
 
 - name: Uninstall Zookeeper
   import_tasks: uninstall.yml
   tags: uninstall
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby']
+  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
+
