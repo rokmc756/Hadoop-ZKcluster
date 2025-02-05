@@ -28,8 +28,8 @@ globals {
 * tag that will wrap all hosts collected by this instance.
 */
 cluster {
-  name = "{{ ganglia.cluster_name }}"
-  owner = "{{ ganglia.user }}"
+  name = "{{ _ganglia.cluster_name }}"
+  owner = "{{ _ganglia.user }}"
   latlong = "unspecified"
   url = "unspecified"
 }

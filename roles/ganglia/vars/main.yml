@@ -1,4 +1,4 @@
-download_url: http://heanet.dl.sourceforge.net/project/ganglia/ganglia-web/3.5.12/ganglia-web-3.5.12.tar.gz
+_download_url: http://heanet.dl.sourceforge.net/project/ganglia/ganglia-web/3.5.12/ganglia-web-3.5.12.tar.gz
 
 #hadoop_master_metrics2_properties:
 #  - "*.sink.ganglia.class=org.apache.hadoop.metrics2.sink.ganglia.GangliaSink31"
@@ -29,7 +29,7 @@ download_url: http://heanet.dl.sourceforge.net/project/ganglia/ganglia-web/3.5.1
 #  # or could be the ip address of the node that has Ganglia gmetad installed.
 
 
-hadoop_master_metrics2_properties:
+_hadoop_master_metrics2_properties:
   - { regexp: "^(.*).sink.ganglia.class=*", line: "*.sink.ganglia.class=org.apache.hadoop.metrics2.sink.ganglia.GangliaSink31" }
   - { regexp: "^(.*).sink.ganglia.period=*", line: "*.sink.ganglia.period=10" }
   - { regexp: "^(.*).sink.ganglia.slope=*", line: "*.sink.ganglia.slope=jvm.metrics.gcCount=zero,jvm.metrics.memHeapUsedM=both" }
@@ -42,7 +42,7 @@ hadoop_master_metrics2_properties:
   - { regexp: "^reducetask.sink.ganglia.servers=*", line: "reducetask.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649" }
 
 
-hadoop_slave_metrics2_properties:
+_hadoop_slave_metrics2_properties:
   - { regexp: "^(.*).sink.ganglia.class=*", line: "*.sink.ganglia.class=org.apache.hadoop.metrics2.sink.ganglia.GangliaSink31" }
   - { regexp: "^(.*).sink.ganglia.period=*", line: "*.sink.ganglia.period=10" }
   - { regexp: "^(.*).sink.ganglia.slope=*", line: "*.sink.ganglia.slope=jvm.metrics.gcCount=zero,jvm.metrics.memHeapUsedM=both" }

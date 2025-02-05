@@ -30,8 +30,8 @@ globals {
 cluster {
   # name = "{{ ganglia_cluster|default('Hadoop') }}"
   # owner = "{{ ganglia.user | capitalize }}"
-  name = "{{ ganglia.cluster_name }}"
-  owner = "{{ ganglia.user }}"
+  name = "{{ _ganglia.cluster_name }}"
+  owner = "{{ _ganglia.user }}"
   latlong = "unspecified"
   url = "unspecified"
 }

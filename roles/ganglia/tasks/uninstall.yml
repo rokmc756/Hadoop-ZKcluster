@@ -96,6 +96,8 @@
 - name: Reload Systemd Daemon
   systemd:
     daemon_reload: yes
-  register: sysemd_daemon_reloaded
+  register: reload_sysemd_daemon
   async: 60
   poll: 5
+
+

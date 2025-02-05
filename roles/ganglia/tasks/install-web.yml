@@ -1,7 +1,6 @@
 # Reference Under Ganglia Web 3.5.12 Version
 # https://github.com/analytically/hadoop-ansible/blob/master/roles/ganglia_web/tasks/main.yml
 
----
 - name: Install Ganglia Web Dependencies
   package: name={{ item }}
   with_items:
@@ -74,6 +73,6 @@
 
 - name: Print the URL of Ganglias Web UI
   debug:
-    msg: "Ganglia Web UI - http://{{ hostvars[groups['master'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}/ganglia"
+    msg: "Ganglia Web UI - http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}/ganglia"
   when: inventory_hostname in groups['master']
 

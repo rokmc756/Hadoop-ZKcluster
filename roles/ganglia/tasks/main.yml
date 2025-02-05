@@ -7,54 +7,53 @@
 
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
-  tags:
-    - install
-    - uninstall
+  tags: install, uninstall, enable, disable, 
 
 
 - name: Disable Firewall
   import_tasks: disable-firewall.yml
-  tags: install
-  when: ganglia.firewall == true
+  tags: disable, install
+  when: (( firewall is defined and firewall == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Install Ganglia Monitor
   import_tasks: install-monitor.yml
-  tags: install
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
+  tags: setup, install
+  when: (( monitor is defined and monitor == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Install Ganglia Mmetad
   import_tasks: install-gmetad.yml
-  tags: install
-  when: inventory_hostname in groups['master']
+  tags: setup, install
+  when: (( gmetad is defined and gmetad == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Install Ganglia Web
   import_tasks: install-web.yml
-  tags: install
-  when: inventory_hostname in groups['master']
+  tags: setup, install
+  when: (( web is defined and web == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Configure Hadoop Metrics
   import_tasks: config-hadoop-metrics.yml
-  tags: install
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
+  tags: config, install
+  when: (( metrics is defined and metrics == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Uninstall Ganglia Web/Metad/Monitor
   import_tasks: uninstall.yml
-  tags: uninstall
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
+  tags: delete, remove, uninstall
+  when: (( ganglia is defined and ganglia == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Remove Hadoop Metrics
   import_tasks: remove-hadoop-metrics.yml
-  tags: uninstall
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
+  tags: delete, remove, uninstall
+  when: (( metrics is defined and metrics == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Enable Firewall
   import_tasks: enable-firewall.yml
-  tags: uninstall
-  when: spark.firewall == true
+  tags: enable, uninstall
+  when: (( firewall is defined and firewall == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
+

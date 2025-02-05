@@ -18,8 +18,8 @@ globals {
  * of a <CLUSTER> tag.  If you do not specify a cluster tag, then all <HOSTS> will
  * NOT be wrapped inside of a <CLUSTER> tag. */
 cluster {
-  name = "{{ ganglia_cluster|default('Hadoop') }}"
-  owner = "{{ ganglia.user|capitalize }}"
+  name = "{{ _ganglia_cluster|default('Hadoop') }}"
+  owner = "{{ _ganglia.user|capitalize }}"
   latlong = "unspecified"
   url = "unspecified"
 }
@@ -39,12 +39,12 @@ host {
    also have each node send the same information to more than one place for redundancy. */
 
 udp_send_channel {
-  host = {{ hostvars[groups["master"][0]]['ansible_'~ netdev0]['ipv4']['address']|default(hostvars[groups["master"][0]]['ansible_'~ netdev0]['ipv4']['address']) }}
+  host = {{ hostvars[groups["master"][0]][_netdev]['ipv4']['address']|default(hostvars[groups["master"][0]][_netdev]['ipv4']['address']) }}
   port = {{ ganglia_udp_send|default('8649') }}
 }
 
 udp_send_channel {
-  host = {{ hostvars[groups["standby"][0]]['ansible-'~ netdev0]['ipv4']['address']|default(hostvars[groups["standby"][0]]['ansible_'~ netdev0]['ipv4']['address']) }}
+  host = {{ hostvars[groups["standby"][0]][_netdev]['ipv4']['address']|default(hostvars[groups["standby"][0]][_netdev]['ipv4']['address']) }}
   port = {{ ganglia_udp_accept|default('8649') }}
 }
 
@@ -348,3 +348,4 @@ collection_group {
     title = "Maximum Disk Space Used"
   }
 }
+
