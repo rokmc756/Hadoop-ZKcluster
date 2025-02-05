@@ -17,7 +17,7 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-{% for item in site_properties %}
+{% for item in _site_properties %}
   <property>
     <name>{{ item.name }}</name>
     <value>{{ item.value }}</value>

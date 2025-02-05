@@ -1,24 +1,24 @@
 ---
-config:
-  base_path: "{{ hadoop.base_path }}"
-  path: "{{ hadoop.base_path }}/{{ hive_file_name }}/conf"
-  tmp: "{{ hive.tmp_path }}"
+_config:
+  base_path: "{{ _hadoop.base_path }}"
+  path: "{{ _hadoop.base_path }}/{{ hive_file_name }}/conf"
+  tmp: "{{ _hive.tmp_path }}"
   create_path:
-    - "{{ hive.tmp_path }}"
-  warehouse: "{{ hive.default_path }}/warehouse"
-  scratchdir: "{{ hive.default_path }}/tmp"
-  querylog_location: "{{ hive.default_path }}/log"
-  logging_operation_log_location: "{{ hive.tmp_path }}/{{ hadoop.user }}/operation_logs"
+    - "{{ _hive.tmp_path }}"
+  warehouse: "{{ _hive.default_path }}/warehouse"
+  scratchdir: "{{ _hive.default_path }}/tmp"
+  querylog_location: "{{ _hive.default_path }}/log"
+  logging_operation_log_location: "{{ _hive.tmp_path }}/{{ _hadoop.user }}/operation_logs"
 
 
-hdfs_path:
-  - "{{ config.warehouse }}"
-  - "{{ config.scratchdir }}"
-  - "{{ config.querylog_location }}"
+_hdfs_path:
+  - "{{ _config.warehouse }}"
+  - "{{ _config.scratchdir }}"
+  - "{{ _config.querylog_location }}"
 
 
 # conn_host: "{{ hostvars[groups['database'][0]]['ansible_'~ netdev0]['ipv4']['address'] }}"
-db:
+_db:
   type: "postgres"
   conn_driver_name: "org.postgresql.Driver"
   conn_host: "{{ hostvars[groups['database'][0]].ansible_ssh_host }}"
@@ -28,41 +28,41 @@ db:
   conn_password: "changeme"
 
 
-jdbc_connection_string: "jdbc:postgresql://{{ db.conn_host }}:{{ db.conn_port }}/{{ db.conn_dbname }}?ssl=false"
+_jdbc_connection_string: "jdbc:postgresql://{{ _db.conn_host }}:{{ _db.conn_port }}/{{ _db.conn_dbname }}?ssl=false"
 
 
-site_properties:
+_site_properties:
   - {
       "name":"hive.metastore.warehouse.dir",
-      "value":"hdfs://{{ hostvars[groups['master'][0]].ansible_hostname }}:{{ hadoop.hdfs_port }}{{ config.warehouse }}"
+      "value":"hdfs://{{ hostvars[groups['master'][0]].ansible_hostname }}:{{ _hadoop.hdfs_port }}{{ _config.warehouse }}"
   }
   - {
       "name":"hive.exec.scratchdir",
-      "value":"{{ config.scratchdir }}"
+      "value":"{{ _config.scratchdir }}"
   }
   - {
       "name":"hive.querylog.location",
-      "value":"{{ config.querylog_location }}/hadoop"
+      "value":"{{ _config.querylog_location }}/hadoop"
   }
   - {
       "name":"javax.jdo.option.ConnectionURL",
-      "value":"{{ jdbc_connection_string }}"
+      "value":"{{ _jdbc_connection_string }}"
   }
   - {
     "name":"javax.jdo.option.ConnectionDriverName",
-    "value":"{{ db.conn_driver_name }}"
+    "value":"{{ _db.conn_driver_name }}"
   }
   - {
     "name":"javax.jdo.option.ConnectionUserName",
-    "value":"{{ db.conn_user_name }}"
+    "value":"{{ _db.conn_user_name }}"
   }
   - {
     "name":"javax.jdo.option.ConnectionPassword",
-    "value":"{{ db.conn_password }}"
+    "value":"{{ _db.conn_password }}"
   }
   - {
     "name":"hive.server2.logging.operation.log.location",
-    "value":"{{ config.logging_operation_log_location }}"
+    "value":"{{ _config.logging_operation_log_location }}"
   }
   - {
     "name":"hive.exec.reducers.bytes.per.reducer",
@@ -91,8 +91,8 @@ site_properties:
 # https://github.com/chuqbach/Big-Data-Installation/blob/master/Hive%20Setup%20with%20Spark%20Exection%20and%20Spark%20HiveContext.md
 
 
-firewall_ports:
-  - "{{ hive.server_port }}"
-  - "{{ hive.hwi_port }}"
-  - "{{ hive.metastore_port }}"
+_firewall_ports:
+  - "{{ _hive.server_port }}"
+  - "{{ _hive.hwi_port }}"
+  - "{{ _hive.metastore_port }}"
 

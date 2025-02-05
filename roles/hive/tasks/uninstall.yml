@@ -2,24 +2,25 @@
 - name: Remove Hive Configuration, Environment and Binary
   file:
     path: "{{ item }}"
-    owner: "{{ hadoop.user }}"
-    group: "{{ hadoop.group }}"
+    owner: "{{ _hadoop.user }}"
+    group: "{{ _hadoop.group }}"
     state: absent
   with_items:
-    - "{{ config.path }}/hive-site.xml"
-    - "{{ hive.base_path }}/{{ hive_file_name }}.{{ hive.bin_type }}"
+    - "{{ _config.path }}/hive-site.xml"
+    - "{{ _hive.base_path }}/{{ hive_file_name }}.{{ _hive.bin_type }}"
     - "/etc/profile.d/hive_env.sh"
 
 
 - name: Remove Hive Path
   file:
     path: "{{ item }}"
-    owner: "{{ hadoop.user }}"
-    group: "{{ hadoop.group }}"
+    owner: "{{ _hadoop.user }}"
+    group: "{{ _hadoop.group }}"
     state: absent
     mode: 0755
   with_items:
-    - "{{ config.create_path }}"
-    - "{{ hdfs_path }}"
-    - "{{ hive.base_path }}/hive"
-    - "{{ hive.base_path }}/{{ hive_file_name }}"
+    - "{{ _config.create_path }}"
+    - "{{ _hdfs_path }}"
+    - "{{ _hive.base_path }}/hive"
+    - "{{ _hive.base_path }}/{{ hive_file_name }}"
+

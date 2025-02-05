@@ -2,47 +2,47 @@
 # https://github.com/mcsrainbow/ansible-playbook-cdh5/blob/master/roles/cdh5-hive/tasks/main.yml
 - name: Check OS ( Hive )
   fail: msg="Not a Red Hat based system!"
-  when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS' or ansible_os_family != 'Rocky'
+  when: ( ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS' or ansible_os_family != 'Rocky' ) and inventory_hostname in groups['hive']
 
 
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
-  tags:
-    - install
-    - uninstall
+  tags: install, uninstall, enable, disable, setup, remove, config, init, uninit
+  when: inventory_hostname in groups['hive']
 
 
 - name: Disable Firewall
   import_tasks: disable-firewall.yml
-  tags: install
-  when: hive.firewall == true
+  tags: disable, install
+  when: (( firewall is defined and firewall == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
 
 
 - name: Install Hive
   import_tasks: install-hive.yml
-  tags: install
-  when: install_hive is defined and install_hive
+  tags: setup, install
+  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
 
 
 - name: Config Hive
   import_tasks: config-hive.yml
-  tags: install
-  when: config_hive is defined and config_hive
+  tags: config, install
+  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
 
 
 - name: Initialize Hive
   import_tasks: init-hive.yml
-  tags: install
-  when: init_hive is defined and init_hive
+  tags: init, install
+  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
 
 
 - name: Uninstall Hive
   import_tasks: uninstall.yml
-  tags: uninstall
+  tags: delete, remove, uninstall
+  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
 
 
 - name: Enable Firewall
   import_tasks: enable-firewall.yml
-  tags: uninstall
-  when: hive.firewall == true
+  tags: enable, uninstall
+  when: (( firewall is defined and firewall == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
 

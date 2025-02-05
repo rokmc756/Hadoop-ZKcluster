@@ -2,14 +2,14 @@
 - name: Create Link to Hive Directory
   file:
     src: "{{ hive_root_dir }}"
-    dest: "{{ hive.base_path }}/hive"
-    owner: "{{ hadoop.user }}"
-    group: "{{ hadoop.group }}"
+    dest: "{{ _hive.base_path }}/hive"
+    owner: "{{ _hadoop.user }}"
+    group: "{{ _hadoop.group }}"
     state: link
 
 
 - name: Copy Hive Site
-  template: src=hive-site.xml dest={{ config.path }} mode=644 owner={{ hadoop.user }} group={{ hadoop.group }}
+  template: src=hive-site.xml dest={{ _config.path }} mode=644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
 
 
 - name: Copy Hive Env Script
@@ -18,3 +18,4 @@
 
 - name: Set Hive Env
   shell: source /etc/profile.d/hive_env.sh
+

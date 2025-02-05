@@ -1,18 +1,18 @@
 ---
 - name: Check if Apache Hive Tarball File Already Exists
-  stat: path={{ hive_file_name }}.{{ hive.bin_type }}
-  register: hive_tarball_exists
-- debug: msg={{ hive_tarball_exists }}
+  stat: path={{ hive_file_name }}.{{ _hive.bin_type }}
+  register: check_hive_tarball
+- debug: msg={{ check_hive_tarball }}
 
 
 - name: Check if Apache Hive Installation Directory Already Exists
-  stat: path={{ hive.base_path }}/{{ hive_file_name }}
-  register: hive_install_dir_exists
+  stat: path={{ _hive.base_path }}/{{ hive_file_name }}
+  register: check_hive_install_dir
 
 
-- name: Sanity check for existence of {{ hive_file_name }}.{{ hive.bin_type }} file or {{ hive_file_name }} directory
-  debug: msg="Both {{ hive_file_name }}.{{ hive.bin_type }} file and {{ hive_file_name }} Directory Already Exists"
-  changed_when: hive_tarball_exists.stat.exists == True and hive_install_dir_exists.stat.exists == True
+- name: Sanity check for existence of {{ hive_file_name }}.{{ _hive.bin_type }} file or {{ hive_file_name }} directory
+  debug: msg="Both {{ hive_file_name }}.{{ _hive.bin_type }} file and {{ hive_file_name }} Directory Already Exists"
+  changed_when: check_hive_tarball.stat.exists == True and check_hive_install_dir.stat.exists == True
 
 
 - name: Download Hive Software Binaries
@@ -20,25 +20,25 @@
     url: "{{ item.url }}"
     dest: "{{ item.dest }}"
   with_items:
-    - { url: "{{ hive.download_url }}/hive-{{ hive_version }}/apache-hive-{{ hive_version }}-bin.tar.gz",
-        dest: "{{ hive.base_path }}/apache-hive-{{ hive_version }}-bin.tar.gz" }
-  when: hadoop.download == true and hive_tarball_exists.stat.exists != True
+    - { url: "{{ _hive.download_url }}/hive-{{ hive_version }}/apache-hive-{{ hive_version }}-bin.tar.gz",
+        dest: "{{ _hive.base_path }}/apache-hive-{{ hive_version }}-bin.tar.gz" }
+  when: _hive.download == true and check_hive_tarball.stat.exists != True
 
 
 - name: Copy Apache Hive Tarball from local directory, roles/hive/files
-  copy: src={{ hive_file_name }}.{{ hive.bin_type }} dest={{ hive.base_path }}/{{ hive_file_name }}.{{ hive.bin_type }} mode=0644 owner={{ hadoop.user }} group={{ hadoop.group }}
+  copy: src={{ hive_file_name }}.{{ _hive.bin_type }} dest={{ _hive.base_path }}/{{ hive_file_name }}.{{ _hive.bin_type }} mode=0644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
   register: local_copy_dss
-  when: hadoop.download == false and hive_tarball_exists.stat.exists != True
+  when: _hive.download == false and check_hive_tarball.stat.exists != True
 
 
 - name: Unarchive Apache Hive Tarball
   unarchive:
-    src: "{{ hive.base_path }}/{{ hive_file_name }}.{{ hive.bin_type }}"
-    dest: "{{ hive.base_path }}"
-    owner: "{{ hadoop.user }}"
-    group: "{{ hadoop.group }}"
+    src: "{{ _hive.base_path }}/{{ hive_file_name }}.{{ _hive.bin_type }}"
+    dest: "{{ _hive.base_path }}"
+    owner: "{{ _hadoop.user }}"
+    group: "{{ _hadoop.group }}"
     mode: "0755"
     remote_src: yes
   register: unarchive_hive_tarball
-  when: hive_install_dir_exists.stat.exists == false
+  when: check_hive_install_dir.stat.exists == false
 

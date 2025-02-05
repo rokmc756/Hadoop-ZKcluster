@@ -1,18 +1,44 @@
 ---
 - name: Init HDFS Path
-  shell: su {{ hadoop.user }} -c "hadoop fs -mkdir -p {{ item }}"
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hadoop fs -mkdir -p {{ item }}
+  register: init_hdfs_path
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   with_items:
-    - "{{ hdfs_path }}"
+    - "{{ _hdfs_path }}"
 
 
 - name: Change Authority
-  shell: su {{ hadoop.user }} -c "hadoop fs -chmod -R 777 {{ item }}"
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hadoop fs -chmod -R 777 {{ item }}
+  register: change_authority
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   with_items:
-    - "{{ hdfs_path }}"
+    - "{{ _hdfs_path }}"
 
 
 - name: Init Hive
-  shell: su {{ hadoop.user }} -c "schematool -initSchema -dbType {{ db.type }}"
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup schematool -initSchema -dbType {{ _db.type }}
+  register: init_hive
   async: 300
   poll: 5
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hive_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+    HADOOP_HOME: "{{ hadoop_root_dir }}"
+    HADOOP_PREFIX: "{{ hadoop_root_dir }}"
 
