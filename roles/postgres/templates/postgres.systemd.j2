@@ -1,5 +1,5 @@
 [Unit]
-Description=VMware Postgres Database Server
+Description=Postgres Database Server
 After=network.target
 
 [Service]
@@ -26,9 +26,9 @@ Environment=PGSTARTTIMEOUT=270
 
 Environment=PGDATA={{ pgsql.base_dir }}/data
 
-ExecStart={{ common.pgsql_bin_dir }}/pg_ctl start -D ${PGDATA} -s -w -t ${PGSTARTTIMEOUT}
-ExecStop={{ common.pgsql_bin_dir }}/pg_ctl stop -D ${PGDATA} -s -m fast
-ExecReload={{ common.pgsql_bin_dir }}/pg_ctl reload -D ${PGDATA} -s
+ExecStart={{ _common.pgsql_bin_dir }}/pg_ctl start -D ${PGDATA} -s -w -t ${PGSTARTTIMEOUT}
+ExecStop={{ _common.pgsql_bin_dir }}/pg_ctl stop -D ${PGDATA} -s -m fast
+ExecReload={{ _common.pgsql_bin_dir }}/pg_ctl reload -D ${PGDATA} -s
 
 # Give a reasonable amount of time for the server to start up/shut down.
 # Ideally, the timeout for starting PostgreSQL server should be handled more
@@ -37,3 +37,4 @@ TimeoutSec=300
 
 [Install]
 WantedBy=multi-user.target
+

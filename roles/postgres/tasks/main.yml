@@ -1,64 +1,61 @@
 ---
-# for now fail if it's not a Red Hat based system
-- name: Check OS
+- name: Check OS ( Postgres )
   fail: msg="Not a Red Hat based system!"
   when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS' or  ansible_os_family != 'Rocky'
 
 
 - name: Set Facts for Package Name and List and Network Device/Address Range
   import_tasks: set-facts.yml
-  tags:
-    - install
-    - uninstall
+  tags: install, uninstall, setup, remove, init, uninit, enable, disable, add, create, delete
   when: inventory_hostname in groups['database']
 
 
 - name: Disable Firewalld
   import_tasks: disable-firewall.yml
-  tags: install
-  when: postgres.firewall == true and inventory_hostname in groups['database']
+  tags: disable, install
+  when: (( firewall is defined and firewall == true ) or ( postgres_all is defined and postgres_all == true )) and inventory_hostname in groups['database']
 
 
 - name: Install Common Prerequisties and Postgres RPM Packages For Single Instance
   import_tasks: install-pkgs.yml
-  tags: install
-  when: inventory_hostname in groups['database']
+  tags: setup, install
+  when: (( pkgs is defined and pkgs == true ) or ( postgres_all is defined and postgres_all == true )) and inventory_hostname in groups['database']
 
 
 - name: Initialize Postgres Instance
-  import_tasks: initialize-postgres.yml
-  tags: install
-  when: inventory_hostname in groups['database']
+  import_tasks: init-pgsql.yml
+  tags: init, install
+  when: (( postgres is defined and postgres == true ) or ( postgres_all is defined and postgres_all == true )) and inventory_hostname in groups['database']
 
 
 - name: Enable SSL for Single Postgres
   import_tasks: enable-ssl.yml
-  tags: install
-  when: ssl.enable == true and inventory_hostname in groups['database']
+  tags: enable, install
+  when: (( ssl is defined and ssl == true ) or ( postgres_all is defined and postgres_all == true )) and inventory_hostname in groups['database']
 
 
 - name: Add User into PstgreSQL
   import_tasks: add-users.yml
-  tags: install
-  when: inventory_hostname in groups['database']
+  tags: add, install
+  when: (( user is defined and user == true ) or ( postgres_all is defined and postgres_all == true )) and inventory_hostname in groups['database']
 
 
 - name: Check the Status of Single PostgreSQL
   import_tasks: check-status.yml
   tags: install
-  when: inventory_hostname in groups['database']
+  when: ( postgres_all is defined and postgres_all == true ) and inventory_hostname in groups['database']
 
 
 - name: Uninstall RPM Packages for PostgreSQL
   import_tasks: uninstall.yml
-  tags: uninstall
-  when: inventory_hostname in groups['database']
+  tags: remove, delete, uninstall
+  when: (( postgres is defined and postgres == true ) or ( postgres_all is defined and postgres_all == true )) and inventory_hostname in groups['database']
 
 
 - name: Enable Firewalld
   import_tasks: enable-firewall.yml
-  tags: uninstall
-  when: postgres.firewall == true and inventory_hostname in groups['database']
+  tags: enable, uninstall
+  when: (( firewall is defined and firewall == true ) or ( postgres_all is defined and postgres_all == true )) and inventory_hostname in groups['database']
 
 
 - name: Upgrade RPM Packages for PostgreSQL

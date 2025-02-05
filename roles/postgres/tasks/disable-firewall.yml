@@ -7,7 +7,7 @@
     zone: public
     immediate: yes
   with_items:
-    - '{{ firewall_ports }}'
+    - '{{ _firewall_ports }}'
 
 
 - name: Stop and Disable Firewalld

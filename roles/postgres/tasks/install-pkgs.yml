@@ -1,34 +1,27 @@
 ---
 - name: Alternative Python version
-  become: true
-  become_user: root
   shell: |
     update-alternatives --install /usr/bin/python python {{ yum_python_version }} 1
     alternatives --set python {{ yum_python_version }}
-  register: python_version_alternatives
+  register: alternative_python_version
 
 
 - name: Install Common Prerequisties RPM Packages for Postgres
-  become: true
   package:
     name: "{{ rh_install_pkgs }}"
     state: present
   vars:
     ansible_python_interpreter: "{{ yum_python_version }}"
-  # async: 120
-  # poll: 5
-  # skip_broken: yes
 
 
 - name: Install IPAddress PIP3 Module
-  become: true
-  shell: ( pip3 install ipaddress )
-  register: pip3_ipaddress_installed
+  shell: |
+    pip3 install ipaddress
+  register: install_pip3_ipaddress
   when: hostvars[inventory_hostname].ansible_distribution_major_version|int <= 7
 
 
 - name: Install the PostgreSQL Packages
-  become: true
   package:
     name: "{{ item }}"
     state: present

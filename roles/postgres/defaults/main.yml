@@ -14,7 +14,7 @@ rh8_python_pkgs: "python39,python39-pip,python39-libs,python39-devel"
 rh9_python_pkgs: "python3.11,python3.11-pip,python3.11-libs,python3.11-devel"
 
 delete_file_list:
-  - "/var/lib/pgsql/{{ pgsql.db_name }}"
+  - "/var/lib/pgsql/{{ _pgsql.db_name }}"
   - "/var/lib/pgsql/data"
   - "/var/lib/pgsql/backup"
   - "/var/lib/pgsql/backups"
@@ -32,3 +32,4 @@ delete_file_list:
 # - "/home/postgres/"
 # - "/var/lib/pgsql"
 # - "/var/lib/pgsql/.bash_profile"
+

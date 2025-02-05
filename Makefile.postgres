@@ -1,0 +1,150 @@
+postgres:
+	@if [ "${r}" = "init" ] || [ "${r}" = "uninit" ] || [ "${r}" = "reinit" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to init/uninit/reinit postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to init/uninit/reinit postgres";\
+			fi\
+		else\
+			echo "No actions to init/uninit/reinit postgres";\
+		fi;\
+	elif [ "${r}" = "prepare" ] || [ "${r}" = "format" ] || [ "${r}" = "clean" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to prepare/format/clean postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to prepare/format/clean postgres";\
+			fi\
+		else\
+			echo "No actions to prepare/format/clean postgres";\
+		fi;\
+	elif [ "${r}" = "create" ] || [ "${r}" = "copy" ] || [ "${r}" = "delete" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to create/copy/delete postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to create/copy/delete postgres";\
+			fi\
+		else\
+			echo "No actions to create/copy/delete postgres";\
+		fi;\
+	elif [ "${r}" = "bootstrap" ] || [ "${r}" = "start" ] || [ "${r}" = "stop" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to bootstrap/start/stop postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to bootstrap/start/stop postgres";\
+			fi\
+		else\
+			echo "No actions to bootstrap/start/stop postgres";\
+		fi;\
+	elif [ "${r}" = "enable" ] || [ "${r}" = "disable" ] || [ "${r}" = "config" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to enable/disable/config postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to enable/disable/config postgres";\
+			fi\
+		else\
+			echo "No actions to enable/disable/config postgres";\
+		fi;\
+	elif [ "${r}" = "install" ] || [ "${r}" = "uninstall" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to install/uninstall postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to install/uninstall postgres";\
+			fi\
+		else\
+			echo "No actions to install/uninstall postgres";\
+		fi;\
+	elif [ "${r}" = "setup" ] || [ "${r}" = "add" ] || [ "${r}" = "remove" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to add/setup/remove postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to add/setup/remove postgres";\
+			fi\
+		else\
+			echo "No actions to add/setup/remove postgres";\
+		fi;\
+	elif [ "${r}" = "fetch" ] || [ "${r}" = "disfetch" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to fetch/disfetch postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to fetch/disfetch postgres";\
+			fi\
+		else\
+			echo "No actions to fetch/disfetch postgres";\
+		fi;\
+	elif [ "${r}" = "upgrade" ] || [ "${r}" = "downgrade" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to upgrade/downgrade postgres";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-postgres.yml -e '{postgres_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to upgrade/downgrade postgres";\
+			fi\
+		else\
+			echo "No actions to upgrade/downgrade postgres";\
+		fi;\
+	else\
+		echo "No actions to postgres role";\
+		exit;\
+	fi
+

@@ -161,14 +161,14 @@ hive:
     ipaddr1: "192.168.1.7"
     ipaddr2: "192.168.2.7"
 ~~  snip
-postgres:
+_postgres:
   firewall: false
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 ~~ snip
 ```
 #### 5) The below query file is useful to remove all tables in hive database before running playbook.
@@ -224,7 +224,14 @@ $ make hadoop r=install s=all
 ```
 ## How to Install and Deploy Postgres Database
 ```
-$ make postgres r=install
+$ make postgres r=disable s=firewall
+$ make postgres r=setup s=pkgs
+$ make postgres r=init s=postgres
+$ make postgres r=enable s=ssl
+$ make postgres r=add s=user
+
+or
+$ make postgres r=install s=all
 ```
 ## How to Install and Deploy Hive
 ```
@@ -264,7 +271,11 @@ $ make hive r=uninstall
 ```
 ## How to Uninstall Postgres Database
 ```
-$ make postgres r=uninstall
+$ make postgres r=delete s=pkgs
+$ make postgres r=enable s=firewall
+
+or
+$ make postgres r=uninstall s=all
 ```
 ## How to Uninstall Hadoop
 ```

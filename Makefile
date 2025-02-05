@@ -39,7 +39,7 @@ download:
 	
 	@if [ "${*}" = "java" ] || [ "${*}" = "firewall" ] || [ "${*}" = "hosts" ] ; then\
 		cat setup-temp.yml.tmp | sed -e 's/    - temp/    - ${*}/g' > setup-${*}.yml;\
-	elif [ "${*}" = "hadoop" ] || [ "${*}" = "zookeeper" ]; then\
+	elif [ "${*}" = "hadoop" ] || [ "${*}" = "zookeeper" ] || [ "${*}" = "postgres" ]; then\
 		cat setup-temp.yml.tmp | sed -e 's/    - temp/    - ${*}/g' > setup-${*}.yml;\
 	else\
 		echo "No actions to temp";\

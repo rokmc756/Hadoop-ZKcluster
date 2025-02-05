@@ -5,6 +5,7 @@
     state: stopped
     daemon_reload: yes
   register: stop_postgresql_service
+  ignore_errors: true
   async: 60
   poll: 5
 
@@ -14,6 +15,8 @@
     name: "{{ item }}"
     state: absent
     disable_gpg_check: true
+  register: uninstall_pgsql_pkgs
+  ignore_errors: true
   with_items:
     - postgresql
     - postgresql-server
@@ -25,7 +28,8 @@
   file:
     path: "{{ item }}"
     state: absent
-  register: postgres_config_files_deleted
+  register: delete_postgres_config
+  ignore_errors: true
   with_items: "{{ delete_file_list }}"
 
 
@@ -34,6 +38,8 @@
     name: "{{ rh_uninstall_pkgs }}"
     state: absent
     skip_broken: yes
+  register: uninstall_pkgs
+  ignore_errors: true
   vars:
     ansible_python_interpreter: "{{ yum_python_version }}"
 
@@ -41,15 +47,8 @@
 - name: Reload Systemd Daemon
   systemd:
     daemon_reload: yes
-  register: sysemd_daemon_reloaded
-  async: 60
-  poll: 5
-
-
-- name: Reload Systemd Daemon
-  systemd:
-    daemon_reload: yes
-  register: sysemd_daemon_reloaded
+  register: reload_sysemd_daemon
+  ignore_errors: true
   async: 60
   poll: 5
 
@@ -59,6 +58,7 @@
     /usr/sbin/update-alternatives --install /usr/bin/python python {{ yum_python_version }} 1
     /usr/sbin/alternatives --set python {{ yum_python_version }}
   register: alternatives_python3
+  ignore_errors: true
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky'
 
 

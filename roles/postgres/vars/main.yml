@@ -1,4 +1,4 @@
-pgsql:
+_pgsql:
   major_version: 15
   minor_version: 5
   patch_version: 1
@@ -15,16 +15,16 @@ pgsql:
   base_dir: "/var/lib/pgsql"
 
 
-common:
+_common:
   sudo_user: jomoon
   sudo_group: jomoon
   sudo_user_home_dir: "/home/jomoon"
-  pgsql_pkg_name: "postgres{{ pgsql.major_version }}"
+  pgsql_pkg_name: "postgres{{ _pgsql.major_version }}"
   pgsql_bin_dir: "/usr/bin"
 
 
-ssl:
-  ssl_dir: "{{ pgsql.base_dir }}/certs"
+_ssl:
+  ssl_dir: "{{ _pgsql.base_dir }}/certs"
   ssl_days: 3660
   ssl_country: "KR"
   ssl_state: "Seoul"
@@ -36,7 +36,7 @@ ssl:
   enable: true
 
 
-hive:
+_hive:
   data_path: "/var/lib/postgresql/data"
   pgsql:
     db_name: hive_testdb
@@ -44,7 +44,7 @@ hive:
     db_password: changeme
 
 
-firewall_ports:
+_firewall_ports:
   - "22"
   - "5432"
 
