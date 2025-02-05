@@ -1,5 +1,4 @@
 ---
-# https://github.com/mcsrainbow/ansible-playbook-cdh5/blob/master/roles/cdh5-hive/tasks/main.yml
 - name: Check OS ( Hbase )
   fail: msg="Not a Red Hat based system!"
   when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS' or ansible_os_family != 'Rocky'
@@ -7,40 +6,35 @@
 
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
-  tags: install, uninstall, enable, disable, config
+  tags: install, uninstall, enable, disable, config, init, uninit, setup, remove
 
 
 - name: Disable Firewall
   import_tasks: disable-firewall.yml
-  tags: install
-  when: hbase.firewall == true
+  tags: disable, install
+  when: ( firewall is defined and firewall == true ) or ( hbase_all is defined and hbase_all == true )
 
 
 - name: Install Hbase
   import_tasks: install-hbase.yml
-  tags: install
-  when: install_hbase is defined and install_hbase
+  tags: setup, install
+  when: ( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )
 
 
 - name: Config Hbase
   import_tasks: config-hbase.yml
-  tags: install
-  when: config_hbase is defined and config_hbase
-
-
-#- name: Initialize Hbase
-#  import_tasks: init-hbase.yml
-#  tags: install
-#  when: init_hbase is defined and init_hbase
+  tags: config, install
+  when: ( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )
 
 
 - name: Uninstall Hbase
   import_tasks: uninstall.yml
-  tags: uninstall
+  tags: remove, delete, uninstall
+  when: ( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )
 
 
 - name: Enable Firewall
   import_tasks: enable-firewall.yml
-  tags: uninstall
-  when: hbase.firewall == true
+  tags: enable, uninstall
+  when: ( firewall is defined and firewall == true ) or ( hbase_all is defined and hbase_all == true )
 

@@ -6,18 +6,18 @@
 
 
 - name: Check if Apache Hbase Tarball File Already Exists
-  stat: path={{ hbase.base_path }}/{{ hbase_file_name }}.{{ hbase.bin_type }}
-  register: hbase_tarball_exists
+  stat: path={{ _hbase.base_path }}/{{ hbase_file_name }}.{{ _hbase.bin_type }}
+  register: check_hbase_tarball
 
 
 - name: Check if Apache Hbase Installation Directory Already Exists
-  stat: path={{ hbase.base_path }}/{{ hbase_file_name }}
-  register: hbase_install_dir_exists
+  stat: path={{ _hbase.base_path }}/{{ hbase_file_name }}
+  register: check_hbase_install_dir
 
 
-- name: Sanity Check for Existence of {{ hbase_file_name }}.{{ hbase.bin_type }} File or {{ hbase_file_name }} Directory
-  debug: msg="Both {{ hbase_file_name }}.{{ hbase.bin_type }} File and {{ hbase_file_name }} Directory Already Exists"
-  changed_when: hbase_tarball_exists.stat.exists == True and hbase_install_dir_exists.stat.exists == True
+- name: Sanity Check for Existence of {{ hbase_file_name }}.{{ _hbase.bin_type }} File or {{ hbase_file_name }} Directory
+  debug: msg="Both {{ hbase_file_name }}.{{ _hbase.bin_type }} File and {{ hbase_file_name }} Directory Already Exists"
+  changed_when: check_hbase_tarball.stat.exists == True and check_hbase_install_dir.stat.exists == True
 
 
 - name: Download Hbase Software Binaries
@@ -25,24 +25,25 @@
     url: "{{ item.url }}"
     dest: "{{ item.dest }}"
   with_items:
-    - { url: "{{ hbase.download_url }}/{{ hbase_version }}/hbase-{{ hbase_version }}-bin.tar.gz",
-        dest: "{{ hbase.base_path }}/hbase-{{ hbase_version }}-bin.tar.gz" }
-  when: hbase.download == true and hbase_tarball_exists.stat.exists != True
+    - { url: "{{ _hbase.download_url }}/{{ hbase_version }}/hbase-{{ hbase_version }}-bin.tar.gz",
+        dest: "{{ _hbase.base_path }}/hbase-{{ hbase_version }}-bin.tar.gz" }
+  when: _hbase.download == true and check_hbase_tarball.stat.exists != True
 
 
 - name: Copy Apache Hbase Tarball from Local Directory, roles/hbase/files
-  copy: src={{ hbase_file_name }}.{{ hbase.bin_type }} dest={{ hbase.base_path }}/{{ hbase_file_name }}.{{ hbase.bin_type }} mode=0644 owner={{ hbase.user }} group={{ hbase.group }}
+  copy: src={{ hbase_file_name }}.{{ _hbase.bin_type }} dest={{ _hbase.base_path }}/{{ hbase_file_name }}.{{ _hbase.bin_type }} mode=0644 owner={{ _hbase.user }} group={{ _hbase.group }}
   register: local_copy_dss
-  when: hbase.download == false and hbase_tarball_exists.stat.exists != True
+  when: _hbase.download == false and check_hbase_tarball.stat.exists != True
 
 
 - name: Unarchive Apache Hbase Tarball
   unarchive:
-    src: "{{ hbase.base_path }}/{{ hbase_file_name }}.{{ hbase.bin_type }}"
-    dest: "{{ hbase.base_path }}/"
-    owner: "{{ hbase.user }}"
-    group: "{{ hbase.group }}"
+    src: "{{ _hbase.base_path }}/{{ hbase_file_name }}.{{ _hbase.bin_type }}"
+    dest: "{{ _hbase.base_path }}/"
+    owner: "{{ _hbase.user }}"
+    group: "{{ _hbase.group }}"
     mode: "0755"
     remote_src: yes
   register: unarchive_hbase_tarball
-  when: hbase_install_dir_exists.stat.exists == false
+  when: check_hbase_install_dir.stat.exists == false
+

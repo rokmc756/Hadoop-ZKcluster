@@ -108,59 +108,81 @@ _hadoop:
 ```
 #### 3) Configure version / location to download & install / log_path / data_path of Zookeeper
 ```
-$ vi roles/zookeeper/vars/main.yml
-package_download_path : "/tmp"
-zookeeper:
-  version: 3.8.0
-  installation_path: /usr/local
-  download_zookeeper: false
-  download_mirror: http://apache.rediris.es/zookeeper
-  configuration:
+$ vi group_vars/all.yml
+~~ snip
+_zookeeper:
+  user: zookeeper
+  group: zookeeper
+  major_version: 3
+  minor_version: 9
+  patch_version: 3
+  base_path: /usr/local
+  download: false
+  download_url: http://apache.rediris.es/zookeeper
+  download_path: /tmp
+  config:
     port: 2181
-    log_path: /var/log/zookeeper
-    data_dir: /var/lib/zookeeper
+    log_path: /usr/local/apache-zookeeper/log
+    data_dir: /usr/local/apache-zookeeper/data
     tick_time: 2000
     init_limit: 5
     sync_limit: 2
-    max_client_cnxns: 100
-    max_session_timeout: 180000
-  use_internal_zookeeper: 1
-java:
-  version: 1.8.0.352
-  installation_path: /usr/lib/jvm/java-1.8.0-openjdk
-  build: b08
-  platform: x86_64
-  priority: 100
-#  download_mirror: http://download.oracle.com/otn-pub/java/jdk
-#  download_cookies: "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie"
+  use_internal_zookeeper: false
+  # log_path: /var/log/zookeeper
+  # data_dir: /var/lib/zookeeper
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
+~~ snip
+_jdk:
+  oss:
+    install: true
+    jvm_home: "/usr/lib/jvm"
+    major_version: 1
+    minor_version: 8
+    patch_version: 0
+    # 1.8.0
+    # 11.0.4
+    # 17.0.2
+  oracle:
+    install: false
+    jvm_home: "/usr/lib/jvm"
+    major_version: 13
+    minor_version: 0
+    patch_version: 2
+    download: false
 ~~ snip
 ```
 #### 4) Configure varialbes such as download location, versions, install/config path, informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```
 $ vi group_vars/all.yml
-hive:
-  user: "{{ hadoop.user }}"
-  group: "{{ hadoop.group }}"
-  download: true
+~~ snip
+_hive:
+  user: "{{ _hadoop.user }}"
+  group: "{{ _hadoop.group }}"
+  download: false
   firewall: false
-  major_version: 3
-  minor_version: 1
-  patch_version: 3
+  major_version: 4
+  minor_version: 0
+  patch_version: 1
   bin_type: tar.gz
   download_url: "https://dlcdn.apache.org/hive"
-  base_path: "{{ hadoop.base_path }}"
+  base_path: "{{ _hadoop.base_path }}"
   default_path: "/user/hive"
-  tmp_path: "{{ hadoop.base_path }}/hive/tmp"
+  tmp_path: "{{ _hadoop.base_path }}/hive/tmp"
   server_port: 10000
   hwi_port: 9999
   metastore_port: 9083
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
-~~  snip
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
+~~ snip
 _postgres:
   firewall: false
   net:
@@ -235,7 +257,13 @@ $ make postgres r=install s=all
 ```
 ## How to Install and Deploy Hive
 ```
-$ make hive r=install
+$ make hive r=disable s=firewall
+$ make hive r=setup s=hive
+$ make hive r=config s=hive
+$ make hive r=init s=hive
+
+or
+$ make hive r=install s=all
 ```
 ## How to Install and Deploy Spark
 ```
@@ -267,7 +295,11 @@ $ make spark r=uninstall
 ```
 ## How to uninstall Hive
 ```
-$ make hive r=uninstall
+$ make hive r=delete s=hive
+$ make hive r=enable s=firewall
+
+or
+$ make hive r=uninstall s=all
 ```
 ## How to Uninstall Postgres Database
 ```
