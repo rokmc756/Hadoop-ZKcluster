@@ -10,7 +10,7 @@ The hadoop-zkcluster has been developing based on hadoop-ansible project - https
 The ansible role for zookeepr is added, variables of many roles is integrated into role/hadoop/var/main.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
 
 As the below two variables in group_vars/all.yml is added many hosts could be automatically configured conveniently.
-```
+```yaml
 zkservers_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
 qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
 ```
@@ -30,7 +30,7 @@ Passworless SSH for hadoop, root for ansible hosts may help to control.
 
 ## How to configure ansible-hosts, role/hadoop/var/main.yml to deploy hadoop-zkcluster?
 #### 1) Configure hostname / ip addresses and username to run for ansible-hosts
-```
+```yaml
 $ vi ansible-hosts-rk9
 [all:vars]
 ssh_key_filename="id_rsa"
@@ -68,6 +68,7 @@ rk9-node06 ansible_ssh_host=192.168.2.196 zk_id=6
 [hive]
 rk9-node01 ansible_ssh_host=192.168.2.191 zk_id=1 rm_ids=rm1
 ```
+
 #### 2) Configure user/group, hadoop version and location to download in group_vars/all.yml
 ```yaml
 $ vi group_vars/all.yml
@@ -106,6 +107,7 @@ _hadoop:
     resmgr_admin_port: 8141
 ~~ snip
 ```
+
 #### 3) Configure version / location to download & install / log_path / data_path of Zookeeper
 ```yaml
 $ vi group_vars/all.yml
@@ -156,6 +158,7 @@ _jdk:
     download: false
 ~~ snip
 ```
+
 #### 4) Configure varialbes such as download location, versions, install/config path, informations of postgresql databbase for Hive in role/hive/var/main.yml
 ```yaml
 $ vi group_vars/all.yml
@@ -193,6 +196,7 @@ _postgres:
     ipaddr2: "192.168.2.19"
 ~~ snip
 ```
+
 #### 5) Configure varialbes such as download location, versions, install/config path, informations of HBase
 ```yaml
 $ vi group_vars/all.yml
@@ -216,6 +220,7 @@ _hbase:
     ipaddr2: "192.168.2.19"
 ~~ snip
 ```
+
 #### 6) Configure varialbes such as download location, versions, install/config path, informations of Spark
 ```yaml
 ~~ snip
@@ -246,7 +251,44 @@ _spark:
     ipaddr2: "192.168.2.19"
 ~~ snip
 ```
-#### 7) The below query file is useful to remove all tables in hive database before running playbook.
+
+#### 7) Configure varialbes such as download location, versions, install/config path, informations of Ganglia
+```yaml
+~~ snip
+_ganglia:
+  user: "ganglia"
+  group: "ganglia"
+  base_path: "/var/www"
+  firewall: false
+  web:
+    major_version: 3
+    minor_version: 7
+    patch_version: 2
+    bin_type: tar.gz
+    download: false
+    firewall: false
+    apache_user: apache
+  net:
+    type: "virtual"                # Or Physical
+    gateway: "192.168.0.1"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
+  cluster_name: "Hadoop-ZKcluster"
+  site_name: "FFHaddop"
+  mtu: 9216 # IPv4 maximum transmission unit, 9216 is the maximum for Intel/Cisco hardware
+  upgrade_kernel: no
+
+  # To enable Postfix SMTP through Mandrill (@mandrillapp), set the following variables:
+  # notify_email: notifications@example.com
+  # postfix_domain: example.com
+  # mandrill_username: your_username
+  # mandrill_api_key: your_api_key
+  # Upgrade kernel to 3.13, much improved epoll performance
+~~ snip
+```
+
+#### 8) The below query file is useful to remove all tables in hive database before running playbook.
 ```yaml
 $ vi drop_all_tables.sql
 CREATE FUNCTION drop_all_tables() RETURNS void AS $$
@@ -297,6 +339,7 @@ or
 # For at once
 $ make hadoop r=install s=all
 ```
+
 ## How to Install and Deploy Postgres Database
 ```yaml
 $ make postgres r=disable s=firewall
@@ -308,6 +351,7 @@ $ make postgres r=add s=user
 or
 $ make postgres r=install s=all
 ```
+
 ## How to Install and Deploy Hive
 ```yaml
 $ make hive r=disable s=firewall
@@ -318,6 +362,7 @@ $ make hive r=init s=hive
 or
 $ make hive r=install s=all
 ```
+
 ## How to Install and Deploy HBase
 ```yaml
 $ make hbase r=disable s=firewall
@@ -327,6 +372,7 @@ $ make hbase r=config s=hbase
 or
 $ make hbase r=uninstall s=all
 ```
+
 ## How to Install and Deploy Spark
 ```yaml
 $ make spark r=disable s=firewall
@@ -336,6 +382,7 @@ $ make spark r=config s=spark
 or
 $ make spark r=install s=all
 ```
+
 ## How to Install and Deploy Ganglia
 ```yaml
 $ make ganglia r=disable s=firewall
@@ -353,7 +400,6 @@ $ make ganglia r=install s=all
 $ make deploy
 ```
 
-
 ## How to Uninstall Ganglia
 ```yaml
 $ make ganglia r=remove s=ganglia
@@ -363,6 +409,7 @@ $ make ganglia r=enable s=firewall
 or
 $ make ganglia r=uninstall s=all
 ```
+
 ## How to Uninstall Hbase
 ```yaml
 $ make hbase r=remove s=hbase
@@ -371,6 +418,7 @@ $ make hbase r=enable s=firewall
 or
 $ make hbase r=uninstall s=all
 ```
+
 ## How to Uninstall Spark
 ```yaml
 $ make spark r=delete s=spark
@@ -379,6 +427,7 @@ $ make spark r=enable s=firewall
 or
 $ make spark r=uninstall s=all
 ```
+
 ## How to uninstall Hive
 ```yaml
 $ make hive r=delete s=hive
@@ -387,6 +436,7 @@ $ make hive r=enable s=firewall
 or
 $ make hive r=uninstall s=all
 ```
+
 ## How to Uninstall Postgres Database
 ```yaml
 $ make postgres r=delete s=pkgs
@@ -395,6 +445,7 @@ $ make postgres r=enable s=firewall
 or
 $ make postgres r=uninstall s=all
 ```
+
 ## How to Uninstall Hadoop
 ```yaml
 $ make hadoop r=stop s=hadoop
@@ -414,7 +465,6 @@ $ make hadoop r=uninstall s=all
 $ make destory
 ```
 
-
 ## Planning
 A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
 
@@ -425,4 +475,3 @@ GNU General Public License v3.0
 - https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
 - https://github.com/locp/ansible-role-cassandra
 - https://github.com/wireapp/ansible-cassandra
-
