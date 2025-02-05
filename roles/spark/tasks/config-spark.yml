@@ -1,15 +1,15 @@
 ---
 - name: Create Link to Spark Directory
   file:
-    src: "{{ spark_root_dir }}"
-    dest: "{{ spark.base_path }}/spark"
-    owner: "{{ hadoop.user }}"
-    group: "{{ hadoop.group }}"
+    src: "{{ _spark_root_dir }}"
+    dest: "{{ _spark.base_path }}/spark"
+    owner: "{{ _hadoop.user }}"
+    group: "{{ _hadoop.group }}"
     state: link
 
 
 - name: Copy Spark Slaves
-  template: src={{ item }}.j2 dest={{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }} mode=644 owner={{ spark.user }} group={{ spark.group }}
+  template: src={{ item }}.j2 dest={{ _hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }} mode=644 owner={{ _spark.user }} group={{ _spark.group }}
   with_items:
     - slaves
     - workers
@@ -17,10 +17,10 @@
 
 - name: Copy Spark Config File
   copy:
-    src: "{{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }}.template"
-    dest: "{{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }}"
-    owner: "{{ spark.user }}"
-    group: "{{ spark.group }}"
+    src: "{{ _hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }}.template"
+    dest: "{{ _hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item }}"
+    owner: "{{ _spark.user }}"
+    group: "{{ _spark.group }}"
     mode: '0644'
     remote_src: yes
   with_items:
@@ -31,7 +31,7 @@
 - name: Add Hadoop Master Metrics into Ganglia
   become_user: hadoop
   lineinfile:
-    dest: "{{ hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item.file }}"
+    dest: "{{ _hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item.file }}"
     line: '{{ item.line }}'
   with_items:
     - { file: "spark-defaults.conf", line: "hdfs://localhost:9000/user/hive/warehouse" }
@@ -48,21 +48,19 @@
 #- name: Deploy the Customized Spark log4j Properties
 #  template:
 #    src: "{{ log4j_template_file }}.j2"
-#    dest: "{{ spark.base_path }}/spark-{{ spark_version }}/conf/{{ log4j_template_file }}"
-#    owner: "{{ spark.user }}"
-#    group: "{{ spark.user }}"
+#    dest: "{{ _spark.base_path }}/spark-{{ spark_version }}/conf/{{ log4j_template_file }}"
+#    owner: "{{ _spark.user }}"
+#    group: "{{ _spark.user }}"
 
 
 - name: Start All Spark Services
   shell: |
-    su {{ hadoop.user }} -c '{{ hadoop.base_path }}/{{ spark_file_name }}/sbin/start-all.sh'
+    su {{ _hadoop.user }} -c '{{ _hadoop.base_path }}/{{ spark_file_name }}/sbin/start-all.sh'
   when: inventory_hostname in groups['master']
 
 
-#
 # Need to run the below service without any errors
 #
 # start-history-server.sh
 # start-mesos-shuffle-service.sh
-#
 

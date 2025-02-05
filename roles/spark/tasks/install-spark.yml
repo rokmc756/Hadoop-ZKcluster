@@ -4,7 +4,7 @@
 #- name: Deploy hive-site.xml in spark's conf directory
 #  template:
 #    src: "templates/hive-site.xml.j2"
-#    dest: "{{spark_usr_parent_dir}}/spark-{{spark_version}}/conf/hive-site.xml"
+#    dest: "{{ spark_usr_parent_dir }}/spark-{{ spark_version }}/conf/hive-site.xml"
 #    force: yes
 #  when:
 #   - spark_hive_metastore_db_installed
@@ -13,7 +13,7 @@
 
 #- name: Ensure hive-site.xml removed from spark's conf directory
 #  file:
-#    path: "{{spark_usr_parent_dir}}/spark-{{spark_version}}/conf/hive-site.xml"
+#    path: "{{ spark_usr_parent_dir }}/spark-{{ spark_version }}/conf/hive-site.xml"
 #    state: absent
 #  when:
 # - not spark_hive_metastore_db_installed
@@ -21,12 +21,12 @@
 
 # - name: Create Link to Spark Directory
 #  become: yes
-#  file: src={{ spark.base_path }}/{{ spark_file_name }} dest={{ spark.baseh_path }}/spark state=link owner={{ spark.user }} group={{ spark.user }}
+#  file: src={{ _spark.base_path }}/{{ spark_file_name }} dest={{ _spark.baseh_path }}/spark state=link owner={{ _spark.user }} group={{ _spark.user }}
 
 
 #- name: Configure Spark to Run in Standalone Deploy Mode
 #  become: yes
-#  template: src=spark-env.sh.j2 dest={{ spark.base_path }}/{{ spark_file_name }}/conf/spark-env.sh mode="u=rwx,g=rx,o=rx"
+#  template: src=spark-env.sh.j2 dest={{ _spark.base_path }}/{{ spark_file_name }}/conf/spark-env.sh mode="u=rwx,g=rx,o=rx"
 #  tags: config_spark
 
 
@@ -34,18 +34,18 @@
 # Need to check if it needs
 ###################################################################################################
 # - name: Set Spark Distribution Fact
-#  set_fact: spark_path=spark-{{ spark_version }}-bin-hadoop{{ hadoop.major_version }}
+#  set_fact: spark_path=spark-{{ spark_version }}-bin-hadoop{{ _hadoop.major_version }}
 #
 #- name: Check Spark Downloaded
 #  local_action: >
-#    command test -f {{ spark.temp_dir }}/{{ spark_path }}.tgz
+#    command test -f {{ _spark.temp_dir }}/{{ spark_path }}.tgz
 #  register: spark_downloaded
 #  failed_when: spark_downloaded.rc not in [0, 1]
 #  changed_when: False
 #  run_once: true
 #
 #- name: Download Spark
-#  local_action: get_url url="{{ spark.mirror }}/{{ spark_path }}.tgz" dest="{{ spark.temp_dir }}"
+#  local_action: get_url url="{{ _spark.mirror }}/{{ spark_path }}.tgz" dest="{{ _spark.temp_dir }}"
 #  when: spark_downloaded.rc == 1
 #  run_once: true
 ###################################################################################################
@@ -54,27 +54,26 @@
 
 - name: Ensure that hive-site.xml Should be Removed from Spark's Conf Directory
   file:
-    path: "{{ spark.base_path }}/{{ spark_file_name }}.{{ spark.bin_type }}/conf/hive-site.xml"
+    path: "{{ _spark.base_path }}/{{ spark_file_name }}.{{ _spark.bin_type }}/conf/hive-site.xml"
     state: absent
 #  when:
 # - not spark_hive_metastore_db_installed
 
 
 - name: Check if Apache Spark Tarball File Already Exists
-  stat: path={{ spark.base_path }}/{{ spark_file_name }}.{{ spark.bin_type }}
-  register: spark_tarball_exists
-
-# - debug: msg={{ spark_tarball_exists }}
+  stat: path={{ _spark.base_path }}/{{ spark_file_name }}.{{ _spark.bin_type }}
+  register: check_spark_tarball
+- debug: msg={{ check_spark_tarball }}
 
 
 - name: Check if Apache Spark Installation Directory Already Exists
-  stat: path={{ spark.base_path }}/{{ spark_file_name }}
-  register: spark_install_dir_exists
+  stat: path={{ _spark.base_path }}/{{ spark_file_name }}
+  register: check_spark_install_dir
 
 
 - name: Sanity check for existence of {{ spark_file_name }}.{{ spark.bin_type }} file or {{ spark_file_name }} directory
   debug: msg="Both {{ spark_file_name }}.{{ spark.bin_type }} file and {{ spark_file_name }} Directory Already Exists"
-  changed_when: spark_tarball_exists.stat.exists == True and spark_install_dir_exists.stat.exists == True
+  changed_when: check_spark_tarball.stat.exists == True and check_spark_install_dir.stat.exists == True
 
 
 - name: Download Spark Software Binaries
@@ -82,30 +81,30 @@
     url: "{{ item.url }}"
     dest: "{{ item.dest }}"
   with_items:
-    - { url: "{{ spark.download_url }}/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop.major_version }}.tgz",
-        dest: "{{ spark.base_path }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop.major_version }}.tgz" }
-  when: spark.download == true and spark_tarball_exists.stat.exists != True
+    - { url: "{{ _spark.download_url }}/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-hadoop{{ _hadoop.major_version }}.tgz",
+        dest: "{{ _spark.base_path }}/spark-{{ spark_version }}-bin-hadoop{{ _hadoop.major_version }}.tgz" }
+  when: _spark.download == true and check_spark_tarball.stat.exists != True
 
 
 - name: Copy Apache Spark Tarball from local directory, roles/spark/files
-  copy: src={{ spark_file_name }}.{{ spark.bin_type }} dest={{ spark.base_path }}/{{ spark_file_name }}.{{ spark.bin_type }} mode=0644 owner={{ hadoop.user }} group={{ hadoop.group }}
+  copy: src={{ spark_file_name }}.{{ _spark.bin_type }} dest={{ _spark.base_path }}/{{ spark_file_name }}.{{ _spark.bin_type }} mode=0644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
   register: local_copy_dss
-  when: spark.download == false and spark_tarball_exists.stat.exists != True
+  when: _spark.download == false and check_spark_tarball.stat.exists != True
 
 
 - name: Unarchive Apache Spark Tarball
   unarchive:
-    src: "{{ spark.base_path }}/{{ spark_file_name }}.{{ spark.bin_type }}"
-    dest: "{{ spark.base_path }}"
-    owner: "{{ spark.user }}"
-    group: "{{ spark.group }}"
+    src: "{{ _spark.base_path }}/{{ spark_file_name }}.{{ _spark.bin_type }}"
+    dest: "{{ _spark.base_path }}"
+    owner: "{{ _spark.user }}"
+    group: "{{ _spark.group }}"
     mode: "0755"
     remote_src: yes
   register: unarchive_spark_tarball
-  when: spark_install_dir_exists.stat.exists == false
+  when: check_spark_install_dir.stat.exists == false
 
 
 - name: Install PySpark Pip Module
   shell: |
-    su {{ hadoop.user }} -c 'pip install pyspark'
+    su {{ _hadoop.user }} -c 'pip install pyspark'
 

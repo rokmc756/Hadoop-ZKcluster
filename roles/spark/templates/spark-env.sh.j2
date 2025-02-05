@@ -54,19 +54,19 @@
 # - SPARK_PUBLIC_DNS, to set the public dns name of the master or workers
 
 
-export SPARK_WORKER_CORES="{{ spark.worker.core }}"
-export SPARK_WORKER_MEMORY="{{ spark.worker.memory }}"
+export SPARK_WORKER_CORES="{{ _spark.worker.core }}"
+export SPARK_WORKER_MEMORY="{{ _spark.worker.memory }}"
 export SPARK_MASTER_HOST="{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}"
 export JAVA_HOME="$(dirname $(dirname $(readlink $(readlink $(which javac)))))"
 export PYSPARK_PYTHON="/usr/bin/python"
 export PYSPARK_DRIVER_PYTHON="/usr/bin/python"
-export SPARK_MASTER_OPTS="-Dspark.deploy.defaultCores={{ spark.worker.default_core }}"
-export HADOOP_CONF_DIR="{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop"
-export YARN_CONF_DIR="{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop"
-export PATH="{{ hadoop.base_path }}/{{ spark_file_name }}/bin:$PATH"
+export SPARK_MASTER_OPTS="-Dspark.deploy.defaultCores={{ _spark.worker.default_core }}"
+export HADOOP_CONF_DIR="{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop"
+export YARN_CONF_DIR="{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop"
+export PATH="{{ _hadoop.base_path }}/{{ spark_file_name }}/bin:$PATH"
 
-export SPARK_HOME="{{ hadoop.base_path }}/{{ spark_file_name }}"
-export LD_LIBRARY_PATH="{{ hadoop.base_path }}/hadoop-{{ hadoop_version }}/lib/native:$LD_LIBRARY_PATH"
+export SPARK_HOME="{{ _hadoop.base_path }}/{{ spark_file_name }}"
+export LD_LIBRARY_PATH="{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}/lib/native:$LD_LIBRARY_PATH"
 
 export SPARK_MASTER_WEBUI_PORT=4040
 export SPARK_WORKER_WEBUI_PORT=4040

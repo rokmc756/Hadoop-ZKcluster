@@ -2,35 +2,35 @@
 - name: Stop All Spark Services
   remote_user: root
   shell: |
-    su {{ spark.user }} -c '{{ hadoop.base_path }}/{{ spark_file_name }}/sbin/stop-all.sh'
+    su {{ _spark.user }} -c '{{ _hadoop.base_path }}/{{ spark_file_name }}/sbin/stop-all.sh'
   when: inventory_hostname in groups['master']
 
 
 - name: Uninstall PySpark Pip Module
   shell: |
-    su {{ hadoop.user }} -c 'pip uninstall pyspark -y'
+    su {{ _hadoop.user }} -c 'pip uninstall pyspark -y'
 
 
 - name: Remove Spark Configuration, Environment and Binary
   file:
     path: "{{ item }}"
-    owner: "{{ spark.user }}"
-    group: "{{ spark.group }}"
+    owner: "{{ _spark.user }}"
+    group: "{{ _spark.group }}"
     state: absent
   with_items:
-    - "{{ spark.base_path }}/spark"
-    - "{{ spark.base_path }}/{{ spark_file_name }}.{{ spark.bin_type }}"
+    - "{{ _spark.base_path }}/spark"
+    - "{{ _spark.base_path }}/{{ spark_file_name }}.{{ _spark.bin_type }}"
 
 
 - name: Remove Spark Path
   file:
     path: "{{ item }}"
-    owner: "{{ spark.user }}"
-    group: "{{ spark.group }}"
+    owner: "{{ _spark.user }}"
+    group: "{{ _spark.group }}"
     state: absent
     mode: 0755
   with_items:
-    - "{{ spark.base_path }}/{{ spark_file_name }}"
+    - "{{ _spark.base_path }}/{{ spark_file_name }}"
     - "/tmp/spark-hadoop-org.apache.spark.deploy.history.HistoryServer-1.pid"
     - "/tmp/spark-hadoop-org.apache.spark.deploy.master.Master-1.pid"
     - "/tmp/spark-hadoop-org.apache.spark.deploy.mesos.MesosClusterDispatcher-1.pid"
