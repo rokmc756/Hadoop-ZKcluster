@@ -1,0 +1,15 @@
+---
+- name: Start YARN resource manager
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup yarn-daemon.sh start resourcemanager
+  register: start_yarn_rm
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/sbin:/usr/local/bin:{{ ansible_env.PATH }}"
+
+# the ResourceManager service on DataNodes are usually not started at this time
+# and needs to be started manually
+

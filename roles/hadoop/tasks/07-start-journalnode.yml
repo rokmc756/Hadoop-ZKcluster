@@ -1,0 +1,14 @@
+---
+- name: Start Journalnode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hdfs --daemon start journalnode
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+
+# shell: su {{ _hadoop.user }} -c "hdfs --daemon start journalnode"
+# su {{ _hadoop.user }} -c "hadoop-daemon.sh start journalnode"
+

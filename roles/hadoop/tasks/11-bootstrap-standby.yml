@@ -1,0 +1,12 @@
+---
+- name: Start HDFS
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hdfs namenode -bootstrapStandby
+  register: start_hdfs
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+

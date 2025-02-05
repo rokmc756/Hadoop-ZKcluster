@@ -3,31 +3,31 @@
     - name: Download Hadoop Software Binaries and Save the into Ansible Files Directory
       become: true
       vars:
-        hadoop_download_version: "{{ hadoop.major_version }}.{{ hadoop.minor_version }}.{{ hadoop.patch_version }}"
-        hive_download_version: "{{ hive.major_version }}.{{ hive.minor_version }}.{{ hive.patch_version }}"
-        hbase_download_version: "{{ hbase.major_version }}.{{ hbase.minor_version }}.{{ hbase.patch_version }}"
-        spark_download_version: "{{ spark.major_version }}.{{ spark.minor_version }}.{{ spark.patch_version }}"
-        zookeeper_download_version: "{{ zookeeper.major_version }}.{{ zookeeper.minor_version }}.{{ zookeeper.patch_version }}"
-        impala_download_version: "{{ impala.major_version }}.{{ impala.minor_version }}.{{ impala.patch_version }}"
-        cassandra_download_version: "{{ cassandra.major_version }}.{{ cassandra.minor_version }}.{{ cassandra.patch_version }}"
+        hadoop_download_version: "{{ _hadoop.major_version }}.{{ _hadoop.minor_version }}.{{ _hadoop.patch_version }}"
+        hive_download_version: "{{ _hive.major_version }}.{{ _hive.minor_version }}.{{ _hive.patch_version }}"
+        hbase_download_version: "{{ _hbase.major_version }}.{{ _hbase.minor_version }}.{{ _hbase.patch_version }}"
+        spark_download_version: "{{ _spark.major_version }}.{{ _spark.minor_version }}.{{ _spark.patch_version }}"
+        zookeeper_download_version: "{{ _zookeeper.major_version }}.{{ _zookeeper.minor_version }}.{{ _zookeeper.patch_version }}"
+        impala_download_version: "{{ _impala.major_version }}.{{ _impala.minor_version }}.{{ _impala.patch_version }}"
+        cassandra_download_version: "{{ _cassandra.major_version }}.{{ _cassandra.minor_version }}.{{ _cassandra.patch_version }}"
         local_dir: "/home/jomoon/Hadoop-ZKcluster"
       get_url:
         url: "{{ item.url }}"
         dest: "{{ item.dest }}"
       with_items:
-        - { url: "{{ hadoop.download_url }}/hadoop-{{ hadoop_download_version }}/hadoop-{{ hadoop_download_version }}.tar.gz",
+        - { url: "{{ _hadoop.download_url }}/hadoop-{{ hadoop_download_version }}/hadoop-{{ hadoop_download_version }}.tar.gz",
             dest: "{{ local_dir }}/roles/hadoop/files/hadoop-{{ hadoop_download_version }}.tar.gz" }
-        - { url: "{{ hive.download_url }}/hive-{{ hive_download_version }}/apache-hive-{{ hive_download_version }}-bin.tar.gz",
+        - { url: "{{ _hive.download_url }}/hive-{{ hive_download_version }}/apache-hive-{{ hive_download_version }}-bin.tar.gz",
             dest: "{{ local_dir }}/roles/hive/files/apache-hive-{{ hive_download_version }}-bin.tar.gz" }
-        - { url: "{{ hbase.download_url }}/{{ hbase_download_version }}/hbase-{{ hbase_download_version }}-bin.tar.gz",
+        - { url: "{{ _hbase.download_url }}/{{ hbase_download_version }}/hbase-{{ hbase_download_version }}-bin.tar.gz",
             dest: "{{ local_dir }}/roles/hbase/files/hbase-{{ hbase_download_version }}-bin.tar.gz" }
-        - { url: "{{ spark.download_url }}/spark-{{ spark_download_version }}/spark-{{ spark_download_version }}-bin-hadoop{{ hadoop.major_version }}.tgz",
-            dest: "{{ local_dir }}/roles/spark/files/spark-{{ spark_download_version }}-bin-hadoop{{ hadoop.major_version }}.tgz" }
-        - { url: "{{ zookeeper.download_url }}/zookeeper-{{ zookeeper_download_version }}/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz",
+        - { url: "{{ _spark.download_url }}/spark-{{ spark_download_version }}/spark-{{ spark_download_version }}-bin-hadoop{{ _hadoop.major_version }}.tgz",
+            dest: "{{ local_dir }}/roles/spark/files/spark-{{ spark_download_version }}-bin-hadoop{{ _hadoop.major_version }}.tgz" }
+        - { url: "{{ _zookeeper.download_url }}/zookeeper-{{ zookeeper_download_version }}/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz",
             dest: "{{ local_dir }}/roles/zookeeper/files/apache-zookeeper-{{ zookeeper_download_version }}-bin.tar.gz" }
-        - { url: "{{ impala.download_url }}/{{ impala_download_version }}/apache-impala-{{ impala_download_version }}.tar.gz",
+        - { url: "{{ _impala.download_url }}/{{ impala_download_version }}/apache-impala-{{ impala_download_version }}.tar.gz",
             dest: "{{ local_dir }}/roles/impala/files/apache-impala-{{ impala_download_version }}.tar.gz" }
-        - { url: "{{ cassandra.download_url }}/{{ cassandra_download_version }}/apache-cassandra-{{ cassandra_download_version }}-bin.tar.gz",
+        - { url: "{{ _cassandra.download_url }}/{{ cassandra_download_version }}/apache-cassandra-{{ cassandra_download_version }}-bin.tar.gz",
             dest: "{{ local_dir }}/roles/cassandra/files/apache-cassandra-{{ cassandra_download_version }}-bin.tar.gz" }
       tags: download
 

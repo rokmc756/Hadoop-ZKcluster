@@ -1,7 +1,9 @@
+---
 ansible_ssh_pass: "changeme"
 ansible_become_pass: "changeme"
 
-hadoop:
+
+_hadoop:
   user: hadoop
   group: hadoop
   domain: "jtest.pivotal.io"
@@ -18,9 +20,9 @@ hadoop:
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
   dashboard:
     port: 9870
   dfs:
@@ -33,14 +35,18 @@ hadoop:
     resmgr_webapp_port: 8088
     resmgr_tracker_port: 8025
     resmgr_admin_port: 8141
+  vms:
+    rk9: [ "rk9-freeipa", "rk9-node01", "rk9-node02", "rk9-node03", "rk9-node04", "rk9-node05", "rk9-node06", "rk9-node07" ]
+    ubt24: [ "rk9-freeipa", "ubt24-node01", "ubt24-node02", "ubt24-node03", "ubt24-node04", "ubt24-node05", "ubt24-node06", "ubt24-node07" ]
+  debug_opt: ""  # --debug
 
 
-zookeeper:
+_zookeeper:
   user: zookeeper
   group: zookeeper
   major_version: 3
   minor_version: 9
-  patch_version: 2
+  patch_version: 3
   base_path: /usr/local
   download: false
   download_url: http://apache.rediris.es/zookeeper
@@ -58,50 +64,50 @@ zookeeper:
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 
 
-hive:
-  user: "{{ hadoop.user }}"
-  group: "{{ hadoop.group }}"
+_hive:
+  user: "{{ _hadoop.user }}"
+  group: "{{ _hadoop.group }}"
   download: false
   firewall: false
-  major_version: 3
-  minor_version: 1
-  patch_version: 3
+  major_version: 4
+  minor_version: 0
+  patch_version: 1
   bin_type: tar.gz
   download_url: "https://dlcdn.apache.org/hive"
-  base_path: "{{ hadoop.base_path }}"
+  base_path: "{{ _hadoop.base_path }}"
   default_path: "/user/hive"
-  tmp_path: "{{ hadoop.base_path }}/hive/tmp"
+  tmp_path: "{{ _hadoop.base_path }}/hive/tmp"
   server_port: 10000
   hwi_port: 9999
   metastore_port: 9083
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 
 
-spark:
+_spark:
   worker:
     core: 6
     memory: "6G"
     default_core: 4
   download: false
   firewall: false
-  user: "{{ hadoop.user }}"
-  group: "{{ hadoop.group }}"
+  user: "{{ _hadoop.user }}"
+  group: "{{ _hadoop.group }}"
   major_version: 3
   minor_version: 5
-  patch_version: 2
+  patch_version: 4
   bin_type: tgz
   download_url: "https://archive.apache.org/dist/spark"
-  base_path: "{{ hadoop.base_path }}"
+  base_path: "{{ _hadoop.base_path }}"
   master_work_port: 7077
   worker_work_port: 7078
   master_ui_port: 8080
@@ -109,31 +115,31 @@ spark:
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 
 
-hbase:
-  user: "{{ hadoop.user }}"
-  group: "{{ hadoop.group }}"
-  base_path: "{{ hadoop.base_path }}"
+_hbase:
+  user: "{{ _hadoop.user }}"
+  group: "{{ _hadoop.group }}"
+  base_path: "{{ _hadoop.base_path }}"
   download: false
   firewall: false
   major_version: 2
   minor_version: 6
-  patch_version: 0
+  patch_version: 1
   bin_type: tar.gz
   download_url: "https://archive.apache.org/dist/hbase"
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 
 
-ganglia:
+_ganglia:
   user: "ganglia"
   group: "ganglia"
   base_path: "/var/www"
@@ -149,13 +155,14 @@ ganglia:
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
   cluster_name: "Hadoop-ZKcluster"
   site_name: "FFHaddop"
   mtu: 9216 # IPv4 maximum transmission unit, 9216 is the maximum for Intel/Cisco hardware
   upgrade_kernel: no
+
   # To enable Postfix SMTP through Mandrill (@mandrillapp), set the following variables:
   # notify_email: notifications@example.com
   # postfix_domain: example.com
@@ -164,23 +171,23 @@ ganglia:
   # Upgrade kernel to 3.13, much improved epoll performance
 
 
-postgres:
+_postgres:
   firewall: false
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 
 
-impala:
+_impala:
   user: "hadoop"
   group: "hadoop"
-  base_path: "{{ hadoop.base_path }}"
+  base_path: "{{ _hadoop.base_path }}"
   major_version: 4
   minor_version: 4
-  patch_version: 0
+  patch_version: 1
   bin_type: tar.gz
   download: false
   firewall: false
@@ -188,18 +195,18 @@ impala:
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 
 
-cassandra:
+_cassandra:
   user: "hadoop"
   group: "hadoop"
-  base_path: "{{ hadoop.base_path }}"
+  base_path: "{{ _hadoop.base_path }}"
   major_version: 4
   minor_version: 1
-  patch_version: 6
+  patch_version: 8
   bin_type: tar.gz
   download: false
   firewall: false
@@ -207,15 +214,15 @@ cassandra:
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 
 
-kudu:
+_kudu:
   user: "hadoop"
   group: "hadoop"
-  base_path: "{{ hadoop.base_path }}"
+  base_path: "{{ _hadoop.base_path }}"
   major_version: 1
   minor_version: 9
   patch_version: 0
@@ -226,12 +233,12 @@ kudu:
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
-    ipaddr0: "192.168.0.7"
-    ipaddr1: "192.168.1.7"
-    ipaddr2: "192.168.2.7"
+    ipaddr0: "192.168.0.19"
+    ipaddr1: "192.168.1.19"
+    ipaddr2: "192.168.2.19"
 
 
-jdk:
+_jdk:
   oss:
     install: true
     jvm_home: "/usr/lib/jvm"
@@ -254,4 +261,10 @@ vmware:
   esxi_hostname: "192.168.0.231"
   esxi_username: "root"
   esxi_password: "Changeme34#$"
+
+
+kvm:
+  hostname: "192.168.0.101"
+  username: "root"
+  password: "changeme"
 

@@ -1,6 +1,0 @@
----
-- name: Format Namenode
-  shell: |
-    su {{ hadoop.user }} -c "hdfs namenode -format" <<EOF
-    y
-    EOF

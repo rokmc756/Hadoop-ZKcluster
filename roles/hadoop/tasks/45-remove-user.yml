@@ -1,0 +1,26 @@
+---
+#- name: Delete Public Key
+#  file:
+#    path: "{{ _hadoop.base_path }}/.ssh/id_rsa"
+#    state: absent
+
+
+#- name: Kill Processes Hold On User Directory
+#  become_user: root
+#  shell: |
+#    {{ item }}{{ _hadoop.user }}
+#  register: kill_user_processes
+#  ignore_errors: true
+#  # until: kill_user_processes is succeeded
+#  # retries: 3
+#  with_items:
+#    - "nohup pkill -U "
+#    - "nohup fuser -k /home/"
+#  args:
+#    executable: /bin/bash
+#    chdir: "{{ _hadoop.base_path }}"
+#  environment:
+#    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+
+- debug: msg={{ "Let's Remove User" }}
+

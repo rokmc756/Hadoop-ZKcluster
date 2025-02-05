@@ -3,23 +3,22 @@
   alternatives:
     link: /usr/bin/java
     name: java
-    path: /usr/lib/jvm/jre-{{ jre_version }}-openjdk/bin/java
+    path: /usr/lib/jvm/jre-17-openjdk/bin/java
     priority: -10
   when:
-    - jdk.oracle.install == false
+    - hostvars[inventory_hostname].ansible_distribution_major_version|int >= 8
+    - _jdk.oss.install == true
 
-#  - hostvars[inventory_hostname].ansible_distribution_major_version|int >= 8
 
-
-#- name: Correct Java Version Selected
-#  alternatives:
-#    link: /usr/bin/java
-#    name: java
-#    path: /usr/lib/jvm/jre-1.8.0-openjdk/bin/java
-#    priority: -10
-#  when:
-#    - hostvars[inventory_hostname].ansible_distribution_major_version|int < 8
-#    - jdk.oracle.install == false
+- name: Correct Java Version Selected
+  alternatives:
+    link: /usr/bin/java
+    name: java
+    path: /usr/lib/jvm/jre-1.8.0-openjdk/bin/java
+    priority: -10
+  when:
+    - hostvars[inventory_hostname].ansible_distribution_major_version|int < 8
+    - _jdk.oss.install == true
 
 
 - name: Correct Java Version Selected
@@ -29,9 +28,8 @@
     path: /usr/java/jdk-{{ oracle_java_version }}/bin/java
     priority: -10
   when:
-    - jdk.oracle.install == true
-    # - hostvars[inventory_hostname].ansible_distribution_major_version|int <= 8
-    # path: /usr/lib/jvm/jdk-{{ oracle_java_version }}-oracle-x64/bin/java
+    - hostvars[inventory_hostname].ansible_distribution_major_version|int <= 8
+    - _jdk.oracle.install == true
 
 
 - name: Copy Java Home Script

@@ -1,0 +1,20 @@
+---
+- name: Check Public Key
+  shell: "chown -R {{ _hadoop.user }}.{{ _hadoop.group }} /home/{{ _hadoop.user }}"
+  ignore_errors: true
+
+
+- name: Check Public Key
+  shell: "ls /home/{{ _hadoop.user }}/.ssh|grep '.pub' |wc -l"
+  register: key_exist
+  ignore_errors: true
+
+
+- name: Generate Public key
+  user:
+    name: "{{ _hadoop.user }}"
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+  when: "key_exist.stdout == '0' and generate_key"
+

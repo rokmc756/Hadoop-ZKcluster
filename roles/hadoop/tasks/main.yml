@@ -1,168 +1,162 @@
 ---
-#- name: Create Hadoop Path
-#  file:
-#    path: "{{ item }}"
-#    owner: "{{ hadoop.user }}"
-#    group: "{{ hadoop.group }}"
-#    state: directory
-#    mode: 0755
-#  with_items:
-#    - "{{ create_path }}"
-#  tags: install
-#  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-
-
-# for now fail if it's not a Red Hat based system
-- name: Check OS ( GPDB )
+- name: Check OS ( Hadoop )
   fail: msg="Not a Red Hat based system!"
   when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS'  ansible_os_family != 'Rocky'
 
 
 - name: Set Facts for Network and Packages Informations for Linux Distribution
   import_tasks: set-facts.yml
-  tags:
-    - install
-    - uninstall
+  tags: setup, install, uninstall, deploy, destroy, enable, disable, create, delete, add, remove, fetch, disfetch, config, format, bootstrap, start, stop
 
 
-- name: Disable Firewalld on All Nodes
-  import_tasks: disable-firewall.yml
-  tags: install
-  when: hadoop.firewall == true and ( inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers'] )
-  # when: ( open_firewall is defined and open_firewall ) or ( disable_firewall is defined and disable_firewall )
+###########################################################################################################################################################
+# Hadoop Installation
+###########################################################################################################################################################
+#
+- name: Disable Firewall
+  import_tasks: 01-disable-firewall.yml
+  tags: disable, install
+  when: (( firewall is defined and firewall == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Install User on All Nodes
-  import_tasks: install-user.yml
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-  tags: install
-  # when: add_user is defined and add_user
+  import_tasks: 02-create-public-ssh-key.yml
+  tags: create, add, install
+  when: (( user is defined and user == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Fetch Public Key on All Nodes
-  import_tasks: fetch-public-key.yml
-  when: ( generate_key is defined and generate_key == true ) and ( inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers'] )
-  tags: install
+  import_tasks: 03-fetch-public-key.yml
+  tags: fetch, install
+  when: (( key is defined and key == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Authorize User with Public Key on All Nodes
-  import_tasks: authorized.yml
-  when: ( generate_key is defined and generate_key == true ) and ( inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers'] )
-  tags: install
+  import_tasks: 04-add-public-key.yml
+  tags: add, install
+  when: (( key is defined and key == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Install Hadoop on All Nodes
-  import_tasks: install-hadoop.yml
-  when: install_hadoop is defined and install_hadoop == true and ( inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers'] )
-  tags: install
+- name: Deploy Hadoop
+  import_tasks: 05-install-hadoop.yml
+  tags: setup, deploy, install
+  when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Config Haddop on All Nodes
-  import_tasks: config-hadoop.yml
-  when: ( config_hadoop is defined and config_hadoop == true ) and ( inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers'] )
-  tags: install
+- name: Config Hadoop
+  import_tasks: 06-config-hadoop.yml
+  tags: config, install
+  when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Start Journalnode on All Nodes
-  import_tasks: start-journalnode.yml
-  when: ( start_journalnode is defined and start_journalnode == true ) and ( inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers'] )
-  tags: install
+- name: Start Journalnode
+  import_tasks: 07-start-journalnode.yml
+  tags: start, install
+  when: (( journal is defined and journal == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Format Namenode on Master
-  import_tasks: format-namenode.yml
-  when: ( format_namenode is defined and format_namenode == true ) and inventory_hostname in groups['master']
-  tags: install
+  import_tasks: 08-format-namenode.yml
+  tags: format, install
+  when: (( master is defined and master == true ) or ( hadoop_all is defined and hadoop_all == true ))  and inventory_hostname in groups['master']
 
 
 - name: Start Namenode on Master
-  import_tasks: start-namenode.yml
-  when: ( start_namenode is defined and start_namenode == true ) and inventory_hostname in groups['master']
-  tags: install
+  import_tasks: 09-start-namenode.yml
+  tags: start, install
+  when: (( master is defined and master == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Copy Metadata from Master to Standby Master
-  import_tasks: copy-metadata.yml
-  when: ( copy_metadata is defined and copy_metadata == true ) and inventory_hostname in groups['master']
-  tags: install
+  import_tasks: 10-copy-metadata.yml
+  tags: copy, install
+  when: (( metadata is defined and metadata == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Bootstrap Namenode on Standby Master
-  import_tasks: bootstrap-standby.yml
-  when: ( bootstrap_standby is defined and bootstrap_standby == true ) and inventory_hostname in groups['standby']
-  tags: install
+  import_tasks: 11-bootstrap-standby.yml
+  tags: bootstrap, install
+  when: (( standby is defined and standby == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['standby']
 
 
 - name: Start Namenode on Standby Master
-  import_tasks: start-namenode.yml
-  when: ( start_namenode is defined and start_namenode == true ) and inventory_hostname in groups['standby']
-  tags: install
+  import_tasks: 09-start-namenode.yml
+  tags: start, install
+  when: (( standby is defined and standby == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['standby']
 
 
 - name: Start Datanodes on Worker Nodes
-  import_tasks: start-datanode.yml
-  when: ( start_datanode is defined and start_datanode == true ) and inventory_hostname in groups['workers']
-  tags: install
+  import_tasks: 12-start-datanode.yml
+  tags: start, install
+  when: (( datanode is defined and datanode == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['workers']
 
 
 - name: Format ZKFC on Master Node
-  import_tasks: format-zkfc.yml
-  when: ( format_zkfc is defined and format_zkfc == true ) and inventory_hostname in groups['master']
-  tags: install
+  import_tasks: 13-format-zkfc.yml
+  tags: format, install
+  when: (( zkfc is defined and zkfc == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Start ZKFC on Master Node
-  import_tasks: start-zkfc.yml
-  when: ( start_zkfc is defined and start_zkfc == true ) and inventory_hostname in groups['master']
-  tags: install
+  import_tasks: 14-start-zkfc.yml
+  tags: start, install
+  when: (( zkfc is defined and zkfc == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Start ZKFC on Standby Master Node
-  import_tasks: start-zkfc.yml
-  when: ( start_zkfc is defined and start_zkfc == true ) and inventory_hostname in groups['standby']
-  tags: install
+  import_tasks: 14-start-zkfc.yml
+  tags: start, install
+  when: (( zkfc is defined and zkfc == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['standby']
 
 
 - name: Start YARN on Standby Master Node
-  import_tasks: start-yarn.yml
-  when: ( start_yan is defined and start_yan == true ) and inventory_hostname in groups['standby']
-  tags: install
+  import_tasks: 15-start-yarn.yml
+  tags: start, install
+  when: (( yarn is defined and yarn == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['standby']
 
 
 - name: Start YARN Resource Manager on Worker Nodes
-  import_tasks: start-yarn-resource-manager.yml
-  when: ( start_yan_resource_manager is defined and start_yan_resource_manager == true ) and inventory_hostname in groups['workers']
-  tags: install
+  import_tasks: 16-start-yarn-resource-manager.yml
+  tags: start, install
+  when: (( yrm is defined and yrm == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['workers']
 
 
-# Uninstall Hadoop Installation
-- name: Uninstall Hadoop on All Nodes
-  import_tasks: uninstall-hadoop.yml
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-  tags: uninstall
+- name: Stop Hadoop
+  import_tasks: 41-stop-hadoop.yml
+  tags: stop, uninstall
+  when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Uninstall Authorized on All Nodes
-  import_tasks: uninstall-authorized.yml
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-  tags: uninstall
+###########################################################################################################################################################
+# Hadoop Uninstallation
+###########################################################################################################################################################
+#
+- name: Remove Hadoop Config
+  import_tasks: 42-remove-hadoop-config.yml
+  tags: remove, uninstall
+  when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Uninstall Fetch Public Key on All Nodes
-  import_tasks: uninstall-fetch-public-key.yml
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-  tags: uninstall
+- name: Remove Public Key
+  import_tasks: 43-remove-public-key.yml
+  tags: remove, uninstall
+  when: (( key is defined and key == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Uninstall User on All Nodes
-  import_tasks: uninstall-user.yml
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers']
-  tags: uninstall
+- name: Remove Public Key
+  import_tasks: 44-uninstall-fetch-public-key.yml
+  tags: remove, uninstall
+  when: (( key is defined and key == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
+
+
+- name: Remove User on All Nodes
+  import_tasks: 45-remove-user.yml
+  tags: remove, uninstall
+  when: (( user is defined and user == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Enable Firewalld
-  import_tasks: enable-firewall.yml
-  when: hadoop.firewall == true and ( inventory_hostname in groups['master'] or inventory_hostname in groups['standby'] or inventory_hostname in groups['workers'] )
-  tags: uninstall
+  import_tasks: 46-enable-firewall.yml
+  tags: enable, uninstall
+  when: (( firewall is defined and firewall == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
-# when: ( open_firewall is defined and open_firewall ) or ( disable_firewall is defined and disable_firewall )

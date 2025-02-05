@@ -1,3 +1,0 @@
----
-- name: Start Namenode
-  shell: su {{ hadoop.user }} -c "hdfs --daemon start namenode"  #  su {{ user }} -c "hadoop-daemon.sh start namenode"

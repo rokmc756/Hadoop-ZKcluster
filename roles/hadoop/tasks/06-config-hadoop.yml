@@ -1,0 +1,37 @@
+---
+- name: Create Link to Hadoop Directory
+  file:
+    src: "{{ hadoop_root_dir }}"
+    dest: "{{ _hadoop.base_path }}/hadoop"
+    owner: "{{ _hadoop.user }}"
+    group: "{{ _hadoop.group }}"
+    state: link
+
+
+- name: Copy core-site.xml
+  template: src=core-site.xml dest={{ config.path }} mode=644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
+
+
+- name: Copy hdfs-site.xml
+  template: src=hdfs-site.xml dest={{ config.path }} mode=644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
+
+
+- name: Copy mapred-site.xml
+  template: src=mapred-site.xml dest={{ config.path }} mode=644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
+
+
+- name: Copy yarn-site.xml
+  template: src=yarn-site.xml dest={{ config.path }} mode=644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
+
+
+- name: Copy Hadoop Workers Config
+  template: src=workers dest={{ config.path }} mode=644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
+
+
+- name: Copy Hadoop Env Script
+  template: src=hadoop_env.sh dest=/etc/profile.d/ mode=755
+
+
+- name: Set Hadoop Env
+  shell: source /etc/profile.d/hadoop_env.sh
+

@@ -1,0 +1,18 @@
+---
+- name: Remove Haddop Directories for Configuration, Log, Data and Journal
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "{{ config.path }}"
+  - "{{ config.tmp }}"
+  - "{{ config.dfs_name }}"
+  - "{{ config.dfs_data }}"
+  - "{{ config.log_path }}"
+  - "{{ config.journalnode_path }}"
+  - "{{ _hadoop.base_path }}/hadoop"
+  - "{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}"
+  - "/etc/profile.d/hadoop_env.sh"
+  - "/tmp/hadoop-hadoop-journalnode.pid"
+  - "/tmp/hadoop-hadoop-namenode.pid"
+  - "/tmp/hadoop-hadoop-datanode.pid"

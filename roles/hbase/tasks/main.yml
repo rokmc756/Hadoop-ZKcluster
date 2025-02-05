@@ -7,9 +7,7 @@
 
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
-  tags:
-    - install
-    - uninstall
+  tags: install, uninstall, enable, disable, config
 
 
 - name: Disable Firewall
