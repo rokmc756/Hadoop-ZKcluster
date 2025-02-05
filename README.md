@@ -69,7 +69,7 @@ rk9-node06 ansible_ssh_host=192.168.2.196 zk_id=6
 rk9-node01 ansible_ssh_host=192.168.2.191 zk_id=1 rm_ids=rm1
 ```
 #### 2) Configure user/group, hadoop version and location to download in group_vars/all.yml
-```
+```yaml
 $ vi group_vars/all.yml
 ~~snip
 _hadoop:
@@ -107,7 +107,7 @@ _hadoop:
 ~~ snip
 ```
 #### 3) Configure version / location to download & install / log_path / data_path of Zookeeper
-```
+```yaml
 $ vi group_vars/all.yml
 ~~ snip
 _zookeeper:
@@ -157,7 +157,7 @@ _jdk:
 ~~ snip
 ```
 #### 4) Configure varialbes such as download location, versions, install/config path, informations of postgresql databbase for Hive in role/hive/var/main.yml
-```
+```yaml
 $ vi group_vars/all.yml
 ~~ snip
 _hive:
@@ -194,7 +194,7 @@ _postgres:
 ~~ snip
 ```
 #### 5) The below query file is useful to remove all tables in hive database before running playbook.
-```
+```yaml
 $ vi drop_all_tables.sql
 CREATE FUNCTION drop_all_tables() RETURNS void AS $$
 DECLARE
@@ -216,12 +216,12 @@ select drop_all_tables();```
 ```
 
 ## Run to remove tables in a specific database
-```
+```yaml
 $ psql -h 192.168.2.196 -U hive_user -d hive_testdb -p 5432 -f drop_all_tables.sql
 ```
 
 ## How to Install and Deploy Hadoop Cluster
-```
+```yaml
 $ make hadoop r=disable s=firewall
 $ make hadoop r=create s=user
 $ make hadoop r=fetch s=key
@@ -245,7 +245,7 @@ or
 $ make hadoop r=install s=all
 ```
 ## How to Install and Deploy Postgres Database
-```
+```yaml
 $ make postgres r=disable s=firewall
 $ make postgres r=setup s=pkgs
 $ make postgres r=init s=postgres
@@ -256,7 +256,7 @@ or
 $ make postgres r=install s=all
 ```
 ## How to Install and Deploy Hive
-```
+```yaml
 $ make hive r=disable s=firewall
 $ make hive r=setup s=hive
 $ make hive r=config s=hive
@@ -265,36 +265,49 @@ $ make hive r=init s=hive
 or
 $ make hive r=install s=all
 ```
-## How to Install and Deploy Spark
+## How to Install and Deploy HBase
+```yaml
+$ make hbase r=disable s=firewall
+$ make hbase r=setup s=hbase
+$ make hbase r=config s=hbase
+
+or
+$ make hbase r=uninstall s=all
 ```
+## How to Install and Deploy Spark
+```yaml
 $ make spark r=install
 ```
 ## How to Install and Deploy Ganglia
-```
+```yaml
 $ make ganglia r=install
 ```
 
 
 ## How to Deploy All Software Components for Hadoop at Once
-```
+```yaml
 $ make deploy
 ```
 
 
 ## How to Uninstall Ganglia
-```
+```yaml
 $ make ganglia r=uninstall
 ```
 ## How to Uninstall Hbase
-```
-$ make hbase r=uninstall
+```yaml
+$ make hbase r=remove s=hbase
+$ make hbase r=enable s=firewall
+
+or
+$ make hbase r=uninstall s=all
 ```
 ## How to Uninstall Spark
-```
+```yaml
 $ make spark r=uninstall
 ```
 ## How to uninstall Hive
-```
+```yaml
 $ make hive r=delete s=hive
 $ make hive r=enable s=firewall
 
@@ -302,7 +315,7 @@ or
 $ make hive r=uninstall s=all
 ```
 ## How to Uninstall Postgres Database
-```
+```yaml
 $ make postgres r=delete s=pkgs
 $ make postgres r=enable s=firewall
 
@@ -310,7 +323,7 @@ or
 $ make postgres r=uninstall s=all
 ```
 ## How to Uninstall Hadoop
-```
+```yaml
 $ make hadoop r=stop s=hadoop
 $ make hadoop r=remove s=hadoop
 $ make hadoop r=remove s=key
@@ -324,7 +337,7 @@ $ make hadoop r=uninstall s=all
 ```
 
 ## How to Destroy All Software Components for Hadoop at Once
-```
+```yaml
 $ make destory
 ```
 
