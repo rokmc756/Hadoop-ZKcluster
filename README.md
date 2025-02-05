@@ -338,9 +338,15 @@ $ make spark r=install s=all
 ```
 ## How to Install and Deploy Ganglia
 ```yaml
-$ make ganglia r=install
-```
+$ make ganglia r=disable s=firewall
+$ make ganglia r=setup s=monitor
+$ make ganglia r=setup s=gmetad
+$ make ganglia r=setup s=web
+$ make ganglia r=config s=metrics
 
+or
+$ make ganglia r=install s=all
+```
 
 ## How to Deploy All Software Components for Hadoop at Once
 ```yaml
@@ -350,7 +356,12 @@ $ make deploy
 
 ## How to Uninstall Ganglia
 ```yaml
-$ make ganglia r=uninstall
+$ make ganglia r=remove s=ganglia
+$ make ganglia r=remove s=metrics
+$ make ganglia r=enable s=firewall
+
+or
+$ make ganglia r=uninstall s=all
 ```
 ## How to Uninstall Hbase
 ```yaml
