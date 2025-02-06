@@ -1,0 +1,6 @@
+---
+- name: Uninstall Common Prerequisties Packages
+  package:
+    name: "{{ rh_install_pkgs }}"
+    state: absent
+

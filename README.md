@@ -378,6 +378,7 @@ $ make hbase r=uninstall s=all
 $ make spark r=disable s=firewall
 $ make spark r=setup s=spark
 $ make spark r=config s=spark
+$ make spark r=start s=spark
 
 or
 $ make spark r=install s=all
@@ -421,6 +422,7 @@ $ make hbase r=uninstall s=all
 
 ## How to Uninstall Spark
 ```yaml
+$ make spark r=stop s=spark
 $ make spark r=delete s=spark
 $ make spark r=enable s=firewall
 
@@ -459,6 +461,15 @@ $ make hadoop r=enable s=firewall
 or
 For at once
 $ make hadoop r=uninstall s=all
+```
+
+## How to Start and Stop Hadoop Service
+```yaml
+$ make hadoop r=start s=hdfs
+
+or
+
+$ make hadoop r=stop s=hdfs
 ```
 
 ## How to Destroy All Software Components for Hadoop at Once

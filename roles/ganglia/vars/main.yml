@@ -54,3 +54,7 @@ _hadoop_slave_metrics2_properties:
   - { regexp: "^maptask.sink.ganglia.servers=*", line: "maptask.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649" }
   - { regexp: "^reducetask.sink.ganglia.servers=*", line: "reducetask.sink.ganglia.servers={{ hostvars[groups['master'][0]].ansible_hostname }}:8649" }
 
+
+_firewall_ports:
+  - "80"
+

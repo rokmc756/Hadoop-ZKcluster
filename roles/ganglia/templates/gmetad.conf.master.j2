@@ -72,8 +72,8 @@ rrd_rootdir "/var/lib/ganglia/rrds"
 # tag with this name.
 # default: unspecified
 # gridname "MyGrid"
-# gridname "{{ ganglia.site_name | capitalize }}"
-gridname "{{ ganglia.site_name }}"
+# gridname "{{ _ganglia.site_name | capitalize }}"
+gridname "{{ _ganglia.site_name }}"
 
 #
 #-------------------------------------------------------------------------------

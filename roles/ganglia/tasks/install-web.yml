@@ -20,7 +20,7 @@
 
 - name: Create HTTP Authentication for Ganglia
   shell: |
-    htpasswd -b -c /etc/httpd/auth.basic ganglia-admin changeme
+    htpasswd -b -c /etc/httpd/auth.basic admin changeme
 
 
 - name: Provide Directory with A New default SELinux Context

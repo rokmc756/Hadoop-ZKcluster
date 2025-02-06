@@ -161,4 +161,14 @@
   when: (( firewall is defined and firewall == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
+- name: Start Hadoop
+  import_tasks: ext/start-hadoop.yml
+  tags: start
+  when: ( hdfs is defined and hdfs == true ) and inventory_hostname not in groups['database']
+
+
+- name: Stop Hadoop
+  import_tasks: ext/stop-hadoop.yml
+  tags: stop
+  when: ( hdfs is defined and hdfs == true ) and inventory_hostname not in groups['database']
 
