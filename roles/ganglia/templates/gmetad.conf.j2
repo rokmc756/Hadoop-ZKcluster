@@ -40,12 +40,12 @@
 # data_source "my grid" 50 1.3.4.7:8655 grid.org:8651 grid-backup.org:8651
 # data_source "another source" 1.3.4.7:8655  1.3.4.8
 
-# data_source "Hadoop" {{ hostvars[groups["master"][0]][_netdev]['ipv4']['address']|default(hostvars[groups["master"][0]][_netdev]['ipv4']['address']) }} {{ hostvars[groups["standby"][0]][_netdev]['ipv4']['address']|default(hostvars[groups["standby"][0]][_netdev]['ipv4']['address']) }}
-data_source "Hadoop-ZKcluster" {{ hostvars[groups["master"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["standby"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][1]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][2]][_netdev]['ipv4']['address'] }}:8649
+# data_source "Hadoop-ZKcluster" {{ hostvars[groups["master"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["standby"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][1]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][2]][_netdev]['ipv4']['address'] }}:8649
+data_source "Hadoop" {{ hostvars[groups["master"][0]][_netdev]['ipv4']['address']|default(hostvars[groups["master"][0]][_netdev]['ipv4']['address']) }} {{ hostvars[groups["standby"][0]][_netdev]['ipv4']['address']|default(hostvars[groups["standby"][0]][_netdev]['ipv4']['address']) }}
 setuid_username "ganglia"
 rrd_rootdir "/var/lib/ganglia/rrds"
 
-#
+
 # Round-Robin Archives
 # You can specify custom Round-Robin archives here (defaults are listed below)
 #
