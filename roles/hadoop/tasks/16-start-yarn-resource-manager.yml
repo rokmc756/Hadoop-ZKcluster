@@ -13,3 +13,13 @@
 # the ResourceManager service on DataNodes are usually not started at this time
 # and needs to be started manually
 
+- name: Print the URL of HBase Web UI
+  debug:
+    msg: "{{ item }}"
+  with_items:
+    - "Hadoop Namenode Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:50070"
+    - "YARN Resource Manager Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:8480"
+    - "MapReduce JobHistory Server Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:19888"
+  when: inventory_hostname in groups['master']
+  # 8480 Journal Node
+

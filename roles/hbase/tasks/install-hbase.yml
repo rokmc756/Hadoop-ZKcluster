@@ -47,3 +47,15 @@
   register: unarchive_hbase_tarball
   when: check_hbase_install_dir.stat.exists == false
 
+
+- name: Change Permission of Apache Hbase Directory
+  file:
+    path: "{{ item.dir }}"
+    state: "{{ item.state }}"
+    mode: "{{ item.perm }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    recurse: "{{ item.recurse }}"
+  with_items:
+    - { state: "directory", perm: "0755", recurse: "yes", dir: "{{ hbase_root_dir }}", owner: "{{ _hbase.user }}", group: "{{ _hbase.group }}" }
+

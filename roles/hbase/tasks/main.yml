@@ -7,34 +7,35 @@
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
   tags: install, uninstall, enable, disable, config, init, uninit, setup, remove
+  when: inventory_hostname not in groups['database']
 
 
-- name: Disable Firewall
-  import_tasks: disable-firewall.yml
-  tags: disable, install
-  when: ( firewall is defined and firewall == true ) or ( hbase_all is defined and hbase_all == true )
+#- name: Disable Firewall
+#  import_tasks: disable-firewall.yml
+#  tags: disable, install
+#  when: (( firewall is defined and firewall == true ) or ( hbase_all is defined and hbase_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Install Hbase
   import_tasks: install-hbase.yml
   tags: setup, install
-  when: ( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )
+  when: (( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Config Hbase
   import_tasks: config-hbase.yml
   tags: config, install
-  when: ( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )
+  when: (( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Uninstall Hbase
   import_tasks: uninstall.yml
   tags: remove, delete, uninstall
-  when: ( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )
+  when: (( hbase is defined and hbase == true ) or ( hbase_all is defined and hbase_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Enable Firewall
-  import_tasks: enable-firewall.yml
-  tags: enable, uninstall
-  when: ( firewall is defined and firewall == true ) or ( hbase_all is defined and hbase_all == true )
+#- name: Enable Firewall
+#  import_tasks: enable-firewall.yml
+#  tags: enable, uninstall
+#  when: (( firewall is defined and firewall == true ) or ( hbase_all is defined and hbase_all == true )) and inventory_hostname not in groups['database']
 

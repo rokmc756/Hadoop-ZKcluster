@@ -1,5 +1,5 @@
 ---
-- name: Stop Hbasse Cluster
+- name: Stop Hbase Cluster
   become_user: "{{ _hbase.user }}"
   shell: |
     nohup {{ hbase_root_dir }}/bin/stop-hbase.sh

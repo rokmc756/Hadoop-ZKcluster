@@ -1,7 +1,7 @@
 ---
 - name: Create Link to Spark Directory
   file:
-    src: "{{ _spark_root_dir }}"
+    src: "{{ spark_root_dir }}"
     dest: "{{ _spark.base_path }}/spark"
     owner: "{{ _hadoop.user }}"
     group: "{{ _hadoop.group }}"
@@ -25,11 +25,10 @@
     remote_src: yes
   with_items:
     - "spark-defaults.conf"
-  #  - "spark-env.sh"
 
 
 - name: Add Hadoop Master Metrics into Ganglia
-  become_user: hadoop
+  become_user: "{{ _spark.user }}"
   lineinfile:
     dest: "{{ _hadoop.base_path }}/{{ spark_file_name }}/conf/{{ item.file }}"
     line: '{{ item.line }}'
@@ -51,16 +50,4 @@
 #    dest: "{{ _spark.base_path }}/spark-{{ spark_version }}/conf/{{ log4j_template_file }}"
 #    owner: "{{ _spark.user }}"
 #    group: "{{ _spark.user }}"
-
-
-- name: Start All Spark Services
-  shell: |
-    su {{ _hadoop.user }} -c '{{ _hadoop.base_path }}/{{ spark_file_name }}/sbin/start-all.sh'
-  when: inventory_hostname in groups['master']
-
-
-# Need to run the below service without any errors
-#
-# start-history-server.sh
-# start-mesos-shuffle-service.sh
 

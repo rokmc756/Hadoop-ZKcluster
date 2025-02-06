@@ -1,5 +1,4 @@
 ---
-# For now fail if it's not a Red Hat based system
 - name: Check OS ( Ganglia )
   fail: msg="Not a Red Hat based system!"
   when: ansible_os_family != 'RedHat' or ansible_os_family != 'CentOS' or ansible_os_family != 'Rocky'
@@ -8,12 +7,13 @@
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
   tags: install, uninstall, enable, disable, config, create, delete, setup, remove
+  when: inventory_hostname not in groups['database']
 
 
-- name: Disable Firewall
-  import_tasks: disable-firewall.yml
-  tags: disable, install
-  when: (( firewall is defined and firewall == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
+#- name: Disable Firewall
+#  import_tasks: disable-firewall.yml
+#  tags: disable, install
+#  when: (( firewall is defined and firewall == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Install Ganglia Monitor
@@ -52,8 +52,8 @@
   when: (( metrics is defined and metrics == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Enable Firewall
-  import_tasks: enable-firewall.yml
-  tags: enable, uninstall
-  when: (( firewall is defined and firewall == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
+#- name: Enable Firewall
+#  import_tasks: enable-firewall.yml
+#  tags: enable, uninstall
+#  when: (( firewall is defined and firewall == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 

@@ -1,6 +1,3 @@
-#- name: Unzip Spark
-#  shell: "tar -xvf {{ download_path }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop_version }}.tgz -C {{ spark_path }} --strip-components=1"
-
 #- name: Deploy hive-site.xml in spark's conf directory
 #  template:
 #    src: "templates/hive-site.xml.j2"
@@ -17,39 +14,6 @@
 #    state: absent
 #  when:
 # - not spark_hive_metastore_db_installed
-
-
-# - name: Create Link to Spark Directory
-#  become: yes
-#  file: src={{ _spark.base_path }}/{{ spark_file_name }} dest={{ _spark.baseh_path }}/spark state=link owner={{ _spark.user }} group={{ _spark.user }}
-
-
-#- name: Configure Spark to Run in Standalone Deploy Mode
-#  become: yes
-#  template: src=spark-env.sh.j2 dest={{ _spark.base_path }}/{{ spark_file_name }}/conf/spark-env.sh mode="u=rwx,g=rx,o=rx"
-#  tags: config_spark
-
-
-###################################################################################################
-# Need to check if it needs
-###################################################################################################
-# - name: Set Spark Distribution Fact
-#  set_fact: spark_path=spark-{{ spark_version }}-bin-hadoop{{ _hadoop.major_version }}
-#
-#- name: Check Spark Downloaded
-#  local_action: >
-#    command test -f {{ _spark.temp_dir }}/{{ spark_path }}.tgz
-#  register: spark_downloaded
-#  failed_when: spark_downloaded.rc not in [0, 1]
-#  changed_when: False
-#  run_once: true
-#
-#- name: Download Spark
-#  local_action: get_url url="{{ _spark.mirror }}/{{ spark_path }}.tgz" dest="{{ _spark.temp_dir }}"
-#  when: spark_downloaded.rc == 1
-#  run_once: true
-###################################################################################################
-
 
 
 - name: Ensure that hive-site.xml Should be Removed from Spark's Conf Directory
@@ -71,8 +35,8 @@
   register: check_spark_install_dir
 
 
-- name: Sanity check for existence of {{ spark_file_name }}.{{ spark.bin_type }} file or {{ spark_file_name }} directory
-  debug: msg="Both {{ spark_file_name }}.{{ spark.bin_type }} file and {{ spark_file_name }} Directory Already Exists"
+- name: Sanity check for existence of {{ spark_file_name }}.{{ _spark.bin_type }} file or {{ spark_file_name }} directory
+  debug: msg="Both {{ spark_file_name }}.{{ _spark.bin_type }} file and {{ spark_file_name }} Directory Already Exists"
   changed_when: check_spark_tarball.stat.exists == True and check_spark_install_dir.stat.exists == True
 
 
@@ -104,7 +68,26 @@
   when: check_spark_install_dir.stat.exists == false
 
 
+- name: Change Permission of Apache Spark Directory
+  file:
+    path: "{{ item.dir }}"
+    state: "{{ item.state }}"
+    mode: "{{ item.perm }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    recurse: "{{ item.recurse }}"
+  with_items:
+    - { state: "directory", perm: "0755", recurse: "yes", dir: "{{ spark_root_dir }}", owner: "{{ _hbase.user }}", group: "{{ _hbase.group }}" }
+
+
 - name: Install PySpark Pip Module
+  become_user: "{{ _spark.user }}"
   shell: |
-    su {{ _hadoop.user }} -c 'pip install pyspark'
+    pip install pyspark
+  register: start_pyspark_pip
+  args:
+    executable: /bin/bash
+    chdir: "{{ _spark.base_path }}"
+  environment:
+    PATH: "{{ spark_root_dir }}/sbin:{{ spark_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
 

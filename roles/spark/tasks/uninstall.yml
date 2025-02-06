@@ -1,14 +1,13 @@
 ---
-- name: Stop All Spark Services
-  remote_user: root
-  shell: |
-    su {{ _spark.user }} -c '{{ _hadoop.base_path }}/{{ spark_file_name }}/sbin/stop-all.sh'
-  when: inventory_hostname in groups['master']
-
-
 - name: Uninstall PySpark Pip Module
+  become_user: "{{ _spark.user }}"
   shell: |
-    su {{ _hadoop.user }} -c 'pip uninstall pyspark -y'
+    pip uninstall pyspark -y
+  args:
+    executable: /bin/bash
+    chdir: "{{ _spark.base_path }}"
+  environment:
+    PATH: "{{ spark_root_dir }}/sbin:{{ spark_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
 
 
 - name: Remove Spark Configuration, Environment and Binary
@@ -37,3 +36,4 @@
     - "/mtp/spark-hadoop-org.apache.spark.deploy.worker.Worker-1.pid"
     - "/tmp/spark-hadoop-org.apache.spark.sql.connect.service.SparkConnectServer-1.pid"
     - "/etc/profile.d/spark-env.sh"
+
