@@ -42,3 +42,14 @@
   register: unarchive_hive_tarball
   when: check_hive_install_dir.stat.exists == false
 
+
+- name: Change Permission of Apache Hive Directory
+  file:
+    path: "{{ item.dir }}"
+    state: "{{ item.state }}"
+    mode: "{{ item.perm }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    recurse: "{{ item.recurse }}"
+  with_items:
+    - { state: "directory", perm: "0755", recurse: "yes", dir: "{{ hive_root_dir }}", owner: "{{ _hive.user }}", group: "{{ _hive.group }}" }

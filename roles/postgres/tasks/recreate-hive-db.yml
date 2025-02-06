@@ -1,0 +1,29 @@
+---
+- name: Install Psycopg2-Binary Pip module
+  become_user: postgres
+  shell: |
+    pip install psycopg2-binary
+  register: install_psycopg2_pip_module
+
+
+- name: Drop the Hive Database
+  become_user: postgres
+  postgresql_db: name={{ _hive.pgsql.db_name }}
+       template='template0'
+       state=absent
+       login_unix_socket=/tmp
+  register: drop_database
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3"
+
+
+- name: Create the Hive Database
+  become_user: postgres
+  postgresql_db: name={{ _hive.pgsql.db_name }}
+       template='template0'
+       state=present
+       login_unix_socket=/tmp
+  register: create_database
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3"
+

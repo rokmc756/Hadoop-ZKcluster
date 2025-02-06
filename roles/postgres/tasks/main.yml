@@ -46,6 +46,12 @@
   when: ( postgres_all is defined and postgres_all == true ) and inventory_hostname in groups['database']
 
 
+- name: Recreate Hive Database
+  import_tasks: recreate-hive-db.yml
+  tags: recreate, uninstall
+  when: ( hivedb is defined and hivedb == true ) and inventory_hostname in groups['database']
+
+
 - name: Uninstall RPM Packages for PostgreSQL
   import_tasks: uninstall.yml
   tags: remove, delete, uninstall

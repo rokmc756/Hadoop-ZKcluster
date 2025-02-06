@@ -121,16 +121,16 @@
   when: (( yrm is defined and yrm == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname in groups['workers']
 
 
+###########################################################################################################################################################
+# Hadoop Uninstallation
+###########################################################################################################################################################
+#
 - name: Stop Hadoop
   import_tasks: 41-stop-hadoop.yml
   tags: stop, uninstall
   when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-###########################################################################################################################################################
-# Hadoop Uninstallation
-###########################################################################################################################################################
-#
 - name: Remove Hadoop Config
   import_tasks: 42-remove-hadoop-config.yml
   tags: remove, uninstall
@@ -159,4 +159,6 @@
   import_tasks: 46-enable-firewall.yml
   tags: enable, uninstall
   when: (( firewall is defined and firewall == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
+
+
 

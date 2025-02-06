@@ -91,6 +91,13 @@ _hive:
     ipaddr0: "192.168.0.19"
     ipaddr1: "192.168.1.19"
     ipaddr2: "192.168.2.19"
+  jdbc:
+    pgsql:
+      download_url: "https://jdbc.postgresql.org/download"
+      major_version: 42
+      minor_version: 7
+      patch_version: 5
+      bin_type: jar
 
 
 _spark:

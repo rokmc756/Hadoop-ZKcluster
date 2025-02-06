@@ -60,10 +60,3 @@
   with_items: "{{ ansible_all_ipv4_addresses }}"
   when: "item | ansible.utils.ipaddr( pgsql_network_range )"
 
-
-#- debug: msg={{ rh_install_pkgs }}
-#- debug: msg={{ rh_uninstall_pkgs }}
-#- debug: msg={{ pgsql_pkg_name }}
-#- debug: msg={{ pgsql_network_range }}
-#- debug: msg={{ pgsql_ip_addr_range }}
-

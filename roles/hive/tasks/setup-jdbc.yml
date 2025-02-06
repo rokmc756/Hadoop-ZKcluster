@@ -1,0 +1,17 @@
+---
+- name: Install PostgreSQL JDBC Driver
+  package:
+    name: postgresql-jdbc
+    state: present
+  register: install_pgsql_jdbc_driver
+
+
+- name: Copy PostgreSQL JDBC Driver
+  copy:
+    src: "{{ pgsql_jdbc_file_name }}.{{ _hive.jdbc.pgsql.bin_type }}"
+    dest: "{{ hive_root_dir }}/lib/{{ hive_file_name }}.{{ _hive.jdbc.pgsql.bin_type }}"
+    mode: "0644"
+    owner: "{{ _hadoop.user }}"
+    group: "{{ _hadoop.group }}"
+  register: copy_pgsql_jdbc
+

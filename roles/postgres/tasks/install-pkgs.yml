@@ -33,5 +33,6 @@
   with_items:
     - postgresql
     - postgresql-server
+    - postgresql-jdbc
     - python3-psycopg2
 

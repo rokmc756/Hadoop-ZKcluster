@@ -10,6 +10,7 @@
         zookeeper_download_version: "{{ _zookeeper.major_version }}.{{ _zookeeper.minor_version }}.{{ _zookeeper.patch_version }}"
         impala_download_version: "{{ _impala.major_version }}.{{ _impala.minor_version }}.{{ _impala.patch_version }}"
         cassandra_download_version: "{{ _cassandra.major_version }}.{{ _cassandra.minor_version }}.{{ _cassandra.patch_version }}"
+        pgsql_jdbc_download_version: "{{ _hive.jdbc.pgsql.major_version }}.{{ _hive.jdbc.pgsql.minor_version }}.{{ _hive.jdbc.pgsql.patch_version }}"
         local_dir: "/home/jomoon/Hadoop-ZKcluster"
       get_url:
         url: "{{ item.url }}"
@@ -29,5 +30,10 @@
             dest: "{{ local_dir }}/roles/impala/files/apache-impala-{{ impala_download_version }}.tar.gz" }
         - { url: "{{ _cassandra.download_url }}/{{ cassandra_download_version }}/apache-cassandra-{{ cassandra_download_version }}-bin.tar.gz",
             dest: "{{ local_dir }}/roles/cassandra/files/apache-cassandra-{{ cassandra_download_version }}-bin.tar.gz" }
+        - { url: "{{ _hive.jdbc.pgsql.download_url }}/{{ pgsql_jdbc_download_version }}/postgresql-{{ pgsql_jdbc_download_version }}.jar",
+            dest: "{{ local_dir }}/roles/hive/files/postgresql-{{ pgsql_jdbc_download_version }}.jar" }
       tags: download
+
+
+# wget https://jdbc.postgresql.org/download/postgresql-42.7.5.jar
 

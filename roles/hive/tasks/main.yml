@@ -8,25 +8,30 @@
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
   tags: install, uninstall, enable, disable, setup, remove, config, init, uninit
-  when: inventory_hostname in groups['hive']
 
 
-- name: Disable Firewall
-  import_tasks: disable-firewall.yml
-  tags: disable, install
-  when: (( firewall is defined and firewall == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
+#- name: Disable Firewall
+#  import_tasks: disable-firewall.yml
+#  tags: disable, install
+#  when: (( firewall is defined and firewall == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
 
 
 - name: Install Hive
   import_tasks: install-hive.yml
   tags: setup, install
-  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
+  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Config Hive
   import_tasks: config-hive.yml
   tags: config, install
-  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
+  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname not in groups['database']
+
+
+- name: Setup JDBC
+  import_tasks: setup-jdbc.yml
+  tags: setup, install
+  when: (( jdbc is defined and jdbc == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Initialize Hive
@@ -38,11 +43,11 @@
 - name: Uninstall Hive
   import_tasks: uninstall.yml
   tags: delete, remove, uninstall
-  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
+  when: (( hive is defined and hive == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Enable Firewall
-  import_tasks: enable-firewall.yml
-  tags: enable, uninstall
-  when: (( firewall is defined and firewall == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname in groups['hive']
+#- name: Enable Firewall
+#  import_tasks: enable-firewall.yml
+#  tags: enable, uninstall
+#  when: (( firewall is defined and firewall == true ) or ( hive_all is defined and hive_all == true )) and inventory_hostname not in groups['database']
 

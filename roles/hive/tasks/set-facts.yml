@@ -19,6 +19,8 @@
     hive_file_name: "apache-hive-{{ _hive.major_version }}.{{ _hive.minor_version }}.{{ _hive.patch_version }}-bin"
     hive_root_dir: "{{ _hive.base_path }}/apache-hive-{{ _hive.major_version }}.{{ _hive.minor_version }}.{{ _hive.patch_version }}-bin"
     hadoop_root_dir: "{{ _hadoop.base_path }}/hadoop-{{ _hadoop.major_version }}.{{ _hadoop.minor_version }}.{{ _hadoop.patch_version }}"
+    pgsql_jdbc_version: "{{ _hive.jdbc.pgsql.major_version }}.{{ _hive.jdbc.pgsql.minor_version }}.{{ _hive.jdbc.pgsql.patch_version }}"
+    pgsql_jdbc_file_name: "postgresql-{{ _hive.jdbc.pgsql.major_version }}.{{ _hive.jdbc.pgsql.minor_version }}.{{ _hive.jdbc.pgsql.patch_version }}"
 
 
 - name: Set Default Network Device and Address

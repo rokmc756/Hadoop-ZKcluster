@@ -24,3 +24,10 @@
     - "{{ _hive.base_path }}/hive"
     - "{{ _hive.base_path }}/{{ hive_file_name }}"
 
+
+- name: Uninstall PostgreSQL JDBC Driver
+  package:
+    name: postgresql-jdbc
+    state: absent
+  register: Uninstall_pgsql_jdbc_driver
+

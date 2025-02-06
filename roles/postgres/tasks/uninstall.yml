@@ -1,5 +1,5 @@
 ---
-- name: Stop Systemd Service for PostgreSQL
+- name: Stop PostgreSQL Systemd Service
   systemd:
     name: postgresql
     state: stopped
@@ -20,11 +20,12 @@
   with_items:
     - postgresql
     - postgresql-server
+    - postgresql-jdbc
   vars:
     ansible_python_interpreter: "{{ yum_python_version }}"
 
 
-- name: Delete Configuration Files and Data Directory for PostgreSQL
+- name: Delete PostgreSQL Configuration Files and Data Directory
   file:
     path: "{{ item }}"
     state: absent
@@ -33,7 +34,7 @@
   with_items: "{{ delete_file_list }}"
 
 
-- name: Uninstall Prerequesties RPM Packages for Postgres
+- name: Uninstall PostgreSQL Prerequesties Packages
   package:
     name: "{{ rh_uninstall_pkgs }}"
     state: absent
@@ -60,5 +61,4 @@
   register: alternatives_python3
   ignore_errors: true
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky'
-
 

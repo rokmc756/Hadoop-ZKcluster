@@ -430,6 +430,7 @@ $ make spark r=uninstall s=all
 
 ## How to uninstall Hive
 ```yaml
+$ make postgres r=recreate s=hivedb
 $ make hive r=delete s=hive
 $ make hive r=enable s=firewall
 
