@@ -1,0 +1,20 @@
+---
+- name: Start and Enable Firewalld
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+
+- name: Open Firewall Ports
+  firewalld:
+    port: '{{ item }}/tcp'
+    permanent: true
+    state: enabled
+    zone: public
+    immediate: yes
+  with_items:
+    - '{{ _firewall_ports }}'
+
+# https://stackoverflow.com/questions/27729010/how-to-configure-apache-spark-random-worker-ports-for-tight-firewalls
+# https://spark.apache.org/docs/latest/configuration.html#networking

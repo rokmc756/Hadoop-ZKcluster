@@ -1,0 +1,11 @@
+---
+_download_url: "https://dlcdn.apache.org/spark/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-hadoop{{ _hadoop.major_version }}.tgz"
+
+_firewall_ports:
+  - "{{ _spark.master_work_port }}"
+  - "{{ _spark.worker_work_port }}"
+  - "{{ _spark.master_ui_port }}"
+  - "{{ _spark.worker_ui_port }}"
+  - 8480
+  - 8481
+

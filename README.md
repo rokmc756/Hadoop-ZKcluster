@@ -477,10 +477,9 @@ $ make destory
 ```
 
 ## Planning
-* A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
-* hdfs getconf -secondaryNameNodes
-~~~
-Incorrect configuration: secondary namenode address dfs.namenode.secondary.http-address is not configured.
+- [ ] A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
+- [ ] hdfs getconf -secondaryNameNodes : Incorrect configuration: secondary namenode address dfs.namenode.secondary.http-address is not configured.
+- [ ] Need to fix issue that starting gmond got network(eth2) failed
 ~~~
 
 ## License

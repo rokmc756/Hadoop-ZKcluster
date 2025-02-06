@@ -13,7 +13,7 @@
   async: 30
   poll: 0
   notify:
-    - Waiting for Server to Come Back after Restart
+    - Waiting for Server to Come Back after Reboot
   when: disable_selinux.reboot_required == true
 
 
@@ -21,7 +21,7 @@
 
 
 - name: Check if SELinux has been disabled in Configurtion File
-  command: grep SELINUX /etc/sysconfig/selinux
+  command: grep SELINUX /etc/selinux/config
   register: sevalue
 - debug: msg={{ sevalue }}
   when: print_debug == true

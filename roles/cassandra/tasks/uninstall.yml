@@ -1,0 +1,39 @@
+---
+- name: Uninstall PySpark Pip Module
+  become_user: "{{ _spark.user }}"
+  shell: |
+    pip uninstall pyspark -y
+  args:
+    executable: /bin/bash
+    chdir: "{{ _spark.base_path }}"
+  environment:
+    PATH: "{{ spark_root_dir }}/sbin:{{ spark_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+
+
+- name: Remove Spark Configuration, Environment and Binary
+  file:
+    path: "{{ item }}"
+    owner: "{{ _spark.user }}"
+    group: "{{ _spark.group }}"
+    state: absent
+  with_items:
+    - "{{ _spark.base_path }}/spark"
+    - "{{ _spark.base_path }}/{{ spark_file_name }}.{{ _spark.bin_type }}"
+
+
+- name: Remove Spark Path
+  file:
+    path: "{{ item }}"
+    owner: "{{ _spark.user }}"
+    group: "{{ _spark.group }}"
+    state: absent
+    mode: 0755
+  with_items:
+    - "{{ _spark.base_path }}/{{ spark_file_name }}"
+    - "/tmp/spark-hadoop-org.apache.spark.deploy.history.HistoryServer-1.pid"
+    - "/tmp/spark-hadoop-org.apache.spark.deploy.master.Master-1.pid"
+    - "/tmp/spark-hadoop-org.apache.spark.deploy.mesos.MesosClusterDispatcher-1.pid"
+    - "/mtp/spark-hadoop-org.apache.spark.deploy.worker.Worker-1.pid"
+    - "/tmp/spark-hadoop-org.apache.spark.sql.connect.service.SparkConnectServer-1.pid"
+    - "/etc/profile.d/spark-env.sh"
+

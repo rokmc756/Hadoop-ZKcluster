@@ -1,0 +1,56 @@
+---
+- name: Check if Apache Cassandra Tarball File Already Exists
+  stat: path={{ _cassandra.base_path }}/{{ cassandra_file_name }}.{{ _cassandra.bin_type }}
+  register: check_cassandra_tarball
+- debug: msg={{ check_cassandra_tarball }}
+
+
+- name: Check if Apache Cassandra Installation Directory Already Exists
+  stat: path={{ _cassandra.base_path }}/{{ cassandra_file_name }}
+  register: check_cassandra_install_dir
+
+
+- name: Sanity check for existence of {{ cassandra_file_name }}.{{ _cassandra.bin_type }} file or {{ cassandra_file_name }} directory
+  debug: msg="Both {{ cassandra_file_name }}.{{ _cassandra.bin_type }} file and {{ cassandra_file_name }} Directory Already Exists"
+  changed_when: check_cassandra_tarball.stat.exists == True and check_cassandra_install_dir.stat.exists == True
+
+
+- name: Download Cassandra Software Binaries
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { url: "{{ _cassandra.download_url }}/apache-cassandra-{{ cassandra_version }}/cassandra-{{ cassandra_version }}-bin-hadoop{{ _hadoop.major_version }}.tgz",
+        dest: "{{ _cassandra.base_path }}/apache-cassandra-{{ cassandra_version }}-bin-hadoop{{ _hadoop.major_version }}.tgz" }
+  when: _cassandra.download == true and check_cassandra_tarball.stat.exists != True
+
+
+- name: Copy Apache Cassandra Tarball from local directory, roles/cassandra/files
+  copy: src={{ cassandra_file_name }}.{{ _cassandra.bin_type }} dest={{ _cassandra.base_path }}/{{ cassandra_file_name }}.{{ _cassandra.bin_type }} mode=0644 owner={{ _hadoop.user }} group={{ _hadoop.group }}
+  register: local_copy_dss
+  when: _cassandra.download == false and check_cassandra_tarball.stat.exists != True
+
+
+- name: Unarchive Apache Cassandra Tarball
+  unarchive:
+    src: "{{ _cassandra.base_path }}/{{ cassandra_file_name }}.{{ _cassandra.bin_type }}"
+    dest: "{{ _cassandra.base_path }}"
+    owner: "{{ _cassandra.user }}"
+    group: "{{ _cassandra.group }}"
+    mode: "0755"
+    remote_src: yes
+  register: unarchive_cassandra_tarball
+  when: check_cassandra_install_dir.stat.exists == false
+
+
+- name: Change Permission of Apache Cassandra Directory
+  file:
+    path: "{{ item.dir }}"
+    state: "{{ item.state }}"
+    mode: "{{ item.perm }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    recurse: "{{ item.recurse }}"
+  with_items:
+    - { state: "directory", perm: "0755", recurse: "yes", dir: "{{ cassandra_root_dir }}", owner: "{{ _cassandra.user }}", group: "{{ _cassandra.group }}" }
+

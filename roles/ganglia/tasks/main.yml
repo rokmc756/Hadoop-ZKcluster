@@ -46,19 +46,19 @@
 
 
 - name: Uninstall Ganglia Web
-  import_tasks: uninstall-ganglia-web.yml
+  import_tasks: uninstall-web.yml
   tags: delete, remove, uninstall
   when: (( web is defined and web == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname in groups['database']
 
 
-- name: Uninstall Ganglia Workers
-  import_tasks: uninstall.yml
+- name: Uninstall Ganglia GMond
+  import_tasks: uninstall-gmond.yml
   tags: delete, remove, uninstall
   when: (( gmond is defined and gmond == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Remove Hadoop Metrics
-  import_tasks: remove-hadoop-metrics.yml
+- name: Uninstall Hadoop Metrics
+  import_tasks: uninstall-hadoop-metrics.yml
   tags: remove, delete, uninstall
   when: (( metrics is defined and metrics == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname not in groups['database']
 
@@ -75,15 +75,22 @@
   when: (( firewall is defined and firewall == true ) or ( ganglia_all is defined and ganglia_all == true )) and inventory_hostname in groups['database']
 
 
-- name: Enable SELinux
+- name: Install Common Prerequisties Packages
+  package:
+    name: selinux-policy-targeted
+    state: present
+  register: install_common_deps_pkgs
+
+
+- name: Enable SELinux ( Enabling SELinux got Network(eth2) Failed )
   import_tasks: ext/enable-selinux.yml
   tags: enable, install
-  when: ( selinux is defined and selinux == true ) or ( ganglia_all is defined and ganglia_all == true )
+  when: ( selinux is defined and selinux == true ) and inventory_hostname in groups['database']
 
 
 - name: Disable SELinux
   import_tasks: ext/disable-selinux.yml
-  tags: disable, install
+  tags: disable, uninstall
   when: ( selinux is defined and selinux == true ) and inventory_hostname in groups['database']
 
 

@@ -88,4 +88,5 @@
     PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   when: inventory_hostname in groups['master']
 - debug: msg={{ get_all_service_state }}
+  when: print_debug == true and inventory_hostname in groups['master']
 

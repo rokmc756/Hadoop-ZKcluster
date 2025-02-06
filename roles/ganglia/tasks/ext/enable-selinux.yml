@@ -1,4 +1,11 @@
 ---
+- name: Install Common Prerequisties Packages
+  package:
+    name: selinux-policy-targeted
+    state: present
+  register: install_common_deps_pkgs
+
+
 - name: Enabling SELinux to be Required
   selinux:
     state: permissive
@@ -14,7 +21,7 @@
   async: 30
   poll: 0
   notify:
-    - Waiting for Server to Come Back after Restart
+    - Waiting for Server to Come Back after Reboot
   when: enable_selinux.reboot_required == true
 
 
@@ -22,7 +29,7 @@
 
 
 - name: Check if SELinux has been enabled in Configurtion File
-  command: grep SELINUX /etc/sysconfig/selinux
+  command: grep SELINUX /etc/selinux/config
   register: sevalue
 - debug: msg={{ sevalue }}
   when: print_debug == true

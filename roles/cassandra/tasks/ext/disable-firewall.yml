@@ -1,0 +1,17 @@
+---
+- name: Close Firewall Ports
+  firewalld:
+    port: '{{ item }}/tcp'
+    permanent: true
+    state: disabled
+    zone: public
+    immediate: yes
+  with_items:
+    - '{{ _firewall_ports }}'
+
+
+- name: Stop and Disable Firewalld
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no

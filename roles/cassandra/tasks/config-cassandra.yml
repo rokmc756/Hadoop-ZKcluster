@@ -1,0 +1,53 @@
+---
+- name: Create Link to Cassandra Directory
+  file:
+    src: "{{ cassandra_root_dir }}"
+    dest: "{{ _cassandra.base_path }}/cassandra"
+    owner: "{{ _hadoop.user }}"
+    group: "{{ _hadoop.group }}"
+    state: link
+
+
+- name: Copy Cassandra Slaves
+  template: src={{ item }}.j2 dest={{ _hadoop.base_path }}/{{ cassandra_file_name }}/conf/{{ item }} mode=644 owner={{ _cassandra.user }} group={{ _cassandra.group }}
+  with_items:
+    - slaves
+    - workers
+
+
+- name: Copy Cassandra Config File
+  copy:
+    src: "{{ _hadoop.base_path }}/{{ cassandra_file_name }}/conf/{{ item }}.template"
+    dest: "{{ _hadoop.base_path }}/{{ cassandra_file_name }}/conf/{{ item }}"
+    owner: "{{ _cassandra.user }}"
+    group: "{{ _cassandra.group }}"
+    mode: '0644'
+    remote_src: yes
+  with_items:
+    - "cassandra-defaults.conf"
+
+
+- name: Add Hadoop Master Metrics into Ganglia
+  become_user: "{{ _cassandra.user }}"
+  lineinfile:
+    dest: "{{ _hadoop.base_path }}/{{ cassandra_file_name }}/conf/{{ item.file }}"
+    line: '{{ item.line }}'
+  with_items:
+    - { file: "cassandra-defaults.conf", line: "hdfs://localhost:9000/user/hive/warehouse" }
+
+
+- name: Copy Cassandra Env Script
+  template: src=cassandra-env.sh.j2 dest=/etc/profile.d/cassandra-env.sh mode=755 owner=root group=root
+
+
+- name: Set Cassandra Env
+  shell: source /etc/profile.d/cassandra-env.sh
+
+
+#- name: Deploy the Customized cassandra log4j Properties
+#  template:
+#    src: "{{ log4j_template_file }}.j2"
+#    dest: "{{ _cassandra.base_path }}/cassandra-{{ cassandra_version }}/conf/{{ log4j_template_file }}"
+#    owner: "{{ _cassandra.user }}"
+#    group: "{{ _cassandra.user }}"
+

@@ -20,12 +20,9 @@
 - name: Stop Hadoop
   import_tasks: ext/stop-hadoop.yml
   when: inventory_hostname not in groups['database']
-  # tags: stop
-  # when: ( hdfs is defined and hdfs == true ) and inventory_hostname not in groups['database']
+
 
 - name: Start Hadoop
   import_tasks: ext/start-hadoop.yml
   when: inventory_hostname not in groups['database']
-  # tags: start
-  # when: ( hdfs is defined and hdfs == true ) and inventory_hostname not in groups['database']
 

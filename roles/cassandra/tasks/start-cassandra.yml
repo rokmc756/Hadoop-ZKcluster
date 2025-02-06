@@ -1,0 +1,29 @@
+---
+- name: Start All Spark Services
+  become_user: "{{ _spark.user }}"
+  shell: |
+    {{ spark_root_dir }}/sbin/{{ item }}
+  register: start_spark_service
+  args:
+    executable: /bin/bash
+    chdir: "{{ _spark.base_path }}"
+  environment:
+    PATH: "{{ spark_root_dir }}/sbin:{{ spark_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  with_items:
+    - "start-master.sh"
+    - "start-workers.sh"
+    - "start-mesos-shuffle-service.sh"
+    - "start-thriftserver.sh"
+
+
+- name: Print the URL of HBase Web UI
+  debug:
+    msg: "Spark Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:4040"
+
+# 8480 Journal Node
+#
+# Need to run the below service without any errors
+#
+# start-history-server.sh
+# start-connect-server.sh
+

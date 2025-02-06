@@ -8,5 +8,5 @@ rh9_dep_pkgs: "tk"
 
 rh7_python_pkgs: "tcl"
 rh8_python_pkgs: "tcl"
-rh9_python_pkgs: "tcl,selinux-policy-targeted,python3-mod_wsgi,httpd-devel"
+rh9_python_pkgs: "tcl,python3-mod_wsgi,httpd-devel"
 
