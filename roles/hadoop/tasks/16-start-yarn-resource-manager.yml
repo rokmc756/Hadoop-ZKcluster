@@ -17,8 +17,10 @@
   debug:
     msg: "{{ item }}"
   with_items:
-    - "Hadoop Namenode Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:50070"
-    - "YARN Resource Manager Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:8480"
+    - "Hadoop Master Namenode Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:50070"
+    - "Hadoop Standby Namenode Web UI with http://{{ hostvars[groups['standby'][0]][_netdev]['ipv4']['address'] }}:50070"
+    - "Master YARN Resource Manager Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:8480"
+    - "Standby YARN Resource Manager Web UI with http://{{ hostvars[groups['standby'][0]][_netdev]['ipv4']['address'] }}:8480"
     - "MapReduce JobHistory Server Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:19888"
   when: inventory_hostname in groups['master']
   # 8480 Journal Node

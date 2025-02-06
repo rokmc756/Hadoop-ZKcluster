@@ -1,0 +1,135 @@
+---
+- name: Start and Enable Zookeeper
+  systemd:
+    name: zookeeper
+    state: started
+    enabled: yes
+  when: inventory_hostname not in groups['database']
+
+
+- name: Start Master Namenode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hdfs --daemon start namenode
+  register: start_namenode
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['master']
+
+
+- name: Copy Metadata to Standby Master
+  become_user: "{{ _hadoop.user }}"
+  synchronize:
+    src:  "{{ item }}"
+    dest: "{{ item }}"
+    rsync_opts:
+      - "-e ssh"    # "-e ssh -i ~/.ssh/id_rsa.pub"
+  delegate_to: "{{ hostvars[groups['standby'][0]]['ansible_hostname'] }}"
+  with_items:
+    - "{{ _hadoop.base_path }}/dfs/data"
+  when: inventory_hostname in groups['master']
+
+
+#- name: Bootstrap Standby Master
+#  become_user: "{{ _hadoop.user }}"
+#  shell: |
+#    nohup hdfs namenode -bootstrapStandby
+#  register: start_standby_master
+#  args:
+#    executable: /bin/bash
+#    chdir: "{{ _hadoop.base_path }}"
+#  environment:
+#    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+#  when: inventory_hostname in groups['standby']
+
+
+- name: Start Standby Namenode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hdfs --daemon start namenode
+  register: start_namenode
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['standby']
+
+
+- name: Start Data Nodes
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hdfs --daemon start datanode
+  register: start_datanode
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['workers']
+
+
+- name: Start the ZKFC in Master Namenode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hdfs --daemon start zkfc
+  register: format_master_zk
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['master']
+
+
+- name: Start the ZKFC in Standby Namenode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup hdfs --daemon start zkfc
+  register: format_standby_zk
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['standby']
+
+
+- name: Start YARN in Standby Namenode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup start-yarn.sh
+  register: start_yarn
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/sbin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['standby']
+
+
+- name: Start YARN Resource Manager in All Worker Nodes
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    nohup yarn-daemon.sh start resourcemanager
+  register: start_yarn_rm
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/sbin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['workers']
+
+
+- name: Print the URL of Hadoop Web UI
+  debug:
+    msg: "{{ item }}"
+  with_items:
+    - "Hadoop Namenode Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:50070"
+    - "YARN Resource Manager Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:8480"
+    - "MapReduce JobHistory Server Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:19888"
+  when: inventory_hostname in groups['master']
+

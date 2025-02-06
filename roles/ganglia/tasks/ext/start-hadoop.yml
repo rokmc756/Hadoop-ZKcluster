@@ -7,103 +7,85 @@
   when: inventory_hostname not in groups['database']
 
 
-- name: Start Master Namenode
+- name: Start All Hadoop Service
   become_user: "{{ _hadoop.user }}"
   shell: |
-    nohup hdfs --daemon start namenode
-  register: start_namenode
-  args:
-    executable: /bin/bash
-    chdir: "{{ _hadoop.base_path }}"
-  environment:
-    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  when: inventory_hostname in groups['master']
-
-
-- name: Start Standby Namenode
-  become_user: "{{ _hadoop.user }}"
-  shell: |
-    nohup hdfs --daemon start namenode
-  register: start_namenode
-  args:
-    executable: /bin/bash
-    chdir: "{{ _hadoop.base_path }}"
-  environment:
-    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  when: inventory_hostname in groups['standby']
-
-
-- name: Start Data Nodes
-  become_user: "{{ _hadoop.user }}"
-  shell: |
-    nohup hdfs --daemon start datanode
-  register: start_datanode
-  args:
-    executable: /bin/bash
-    chdir: "{{ _hadoop.base_path }}"
-  environment:
-    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  when: inventory_hostname in groups['workers']
-
-
-- name: Start the ZKFC in Master Namenode
-  become_user: "{{ _hadoop.user }}"
-  shell: |
-    nohup hdfs --daemon start zkfc
-  register: format_master_zk
-  args:
-    executable: /bin/bash
-    chdir: "{{ _hadoop.base_path }}"
-  environment:
-    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  when: inventory_hostname in groups['master']
-
-
-- name: Start the ZKFC in Standby Namenode
-  become_user: "{{ _hadoop.user }}"
-  shell: |
-    nohup hdfs --daemon start zkfc
-  register: format_standby_zk
-  args:
-    executable: /bin/bash
-    chdir: "{{ _hadoop.base_path }}"
-  environment:
-    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
-  when: inventory_hostname in groups['standby']
-
-
-- name: Start YARN in Standby Namenode
-  become_user: "{{ _hadoop.user }}"
-  shell: |
-    nohup start-yarn.sh
-  register: start_yarn
+    {{ hadoop_root_dir }}/sbin/start-all.sh
+  register: start_all_hadoop_service
   args:
     executable: /bin/bash
     chdir: "{{ _hadoop.base_path }}"
   environment:
     PATH: "{{ hadoop_root_dir }}/sbin:/usr/local/bin:{{ ansible_env.PATH }}"
-  when: inventory_hostname in groups['standby']
+  when: inventory_hostname in groups['master']
 
 
-- name: Start YARN Resource Manager in All Worker Nodes
+- name: Leave Safemode
   become_user: "{{ _hadoop.user }}"
   shell: |
-    nohup yarn-daemon.sh start resourcemanager
-  register: start_yarn_rm
+    {{ hadoop_root_dir }}/bin/hdfs dfsadmin -safemode leave
+  register: leave_safemode
   args:
     executable: /bin/bash
     chdir: "{{ _hadoop.base_path }}"
   environment:
-    PATH: "{{ hadoop_root_dir }}/sbin:/usr/local/bin:{{ ansible_env.PATH }}"
-  when: inventory_hostname in groups['workers']
-
-
-- name: Print the URL of Hadoop Web UI
-  debug:
-    msg: "{{ item }}"
-  with_items:
-    - "Hadoop Namenode Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:50070"
-    - "YARN Resource Manager Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:8480"
-    - "MapReduce JobHistory Server Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:19888"
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   when: inventory_hostname in groups['master']
+
+
+- name: Check Active Namenode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    hdfs haadmin -getAllServiceState | grep active | awk '{print $1}' | cut -d ':' -f 1
+  register: check_active_namenode
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['master']
+
+
+- name: Switch Standby Namenode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    cat <<EOF | hdfs haadmin -transitionToStandby nn2 --forcemanual
+    y
+    EOF
+  register: switch_standby_namenode
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['master'] and hostvars[groups['master'][0]].ansible_hostname not in check_active_namenode.stdout
+
+
+- name: Switch Active Namenode
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    cat <<EOF | hdfs haadmin -transitionToActive nn1 --forcemanual
+    y
+    EOF
+  register: switch_active_namenode
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['master'] and hostvars[groups['master'][0]].ansible_hostname not in check_active_namenode.stdout
+
+
+- name: Get All Service State
+  become_user: "{{ _hadoop.user }}"
+  shell: |
+    hdfs haadmin -getAllServiceState
+  register: get_all_service_state
+  args:
+    executable: /bin/bash
+    chdir: "{{ _hadoop.base_path }}"
+  environment:
+    PATH: "{{ hadoop_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  when: inventory_hostname in groups['master']
+- debug: msg={{ get_all_service_state }}
 

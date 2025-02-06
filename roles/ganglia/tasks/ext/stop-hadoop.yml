@@ -1,24 +1,9 @@
 ---
-- name: Stop the ZKFC
+- name: Stop All Hadoop Service
   become_user: "{{ _hadoop.user }}"
   shell: |
-    nohup hadoop-daemon.sh stop zkfc
-  register: stop_master_zkfs
-  ignore_errors: true
-  args:
-    executable: /bin/bash
-    chdir: "{{ _hadoop.base_path }}"
-  environment:
-    PATH: "{{ hadoop_root_dir }}/sbin:/usr/local/bin:{{ ansible_env.PATH }}"
-  when: inventory_hostname in groups['master']
-
-
-- name: Stop the All Hadoop Services
-  become_user: "{{ _hadoop.user }}"
-  shell: |
-    nohup stop-all.sh
-  register: stop_all_hdfs_service
-  ignore_errors: true
+    {{ hadoop_root_dir }}/sbin/stop-all.sh
+  register: stop_all_hadoop_service
   args:
     executable: /bin/bash
     chdir: "{{ _hadoop.base_path }}"
@@ -32,7 +17,5 @@
     name: zookeeper
     state: stopped
     enabled: no
-  register: stop_zookeeper
-  ignore_errors: true
   when: inventory_hostname not in groups['database']
 

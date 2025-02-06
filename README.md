@@ -463,12 +463,11 @@ For at once
 $ make hadoop r=uninstall s=all
 ```
 
-## How to Start and Stop Hadoop Service
+# How to Start and Stop Hadoop Service
 ```yaml
 $ make hadoop r=start s=hdfs
 
 or
-
 $ make hadoop r=stop s=hdfs
 ```
 
@@ -478,12 +477,18 @@ $ make destory
 ```
 
 ## Planning
-A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
+* A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
+* hdfs getconf -secondaryNameNodes
+~~~
+Incorrect configuration: secondary namenode address dfs.namenode.secondary.http-address is not configured.
+~~~
 
 ## License
 GNU General Public License v3.0
+
 
 ## References
 - https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
 - https://github.com/locp/ansible-role-cassandra
 - https://github.com/wireapp/ansible-cassandra
+
