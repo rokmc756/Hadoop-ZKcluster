@@ -30,6 +30,7 @@ There are two issues in maintaining consistency in the HDFS High Availability cl
 Active and Standby NameNode should always be in sync with each other, i.e. They should have the same metadata. This will allow us to restore the Hadoop cluster to the same namespace state where it got crashed and therefore, will provide us to have fast failover.
 There should be only one active NameNode at a time because two active NameNode will lead to corruption of the data. This kind of scenario is termed as a split-brain scenario where a cluster gets divided into smaller cluster, each one believing that it is the only active cluster. To avoid such scenarios fencing is done. Fencing is a process of ensuring that only one NameNode remains active at a particular time.
 ~~~
+
 ### Implementation of HA Architecture
 ~~~
 Now, you know that in HDFS HA Architecture, we have two NameNodes running at the same time. So, we can implement the Active and Standby NameNode configuration in following two ways:
@@ -38,13 +39,10 @@ Using Quorum Journal Nodes
 Shared Storage using NFS
 Let us understand these two ways of implementation taking one at a time
 ~~~
-#### 1. Using Quorum Journal Nodes
-
+#### Using Quorum Journal Nodes
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png" width="70%" height="70%">
 </p>
-
-
 ~~~
 The standby NameNode and the active NameNode keep in sync with each other through a separate group of nodes or daemons -called JournalNodes.
 The JournalNodes follows the ring topology where the nodes are connected to each other to form a ring.
@@ -56,6 +54,7 @@ This makes the current namespace state synchronized with the state before failov
 The IP Addresses of both the NameNodes are available to all the DataNodes and they send their heartbeats and block location information to both the NameNode.
 This provides a fast failover (less down time) as the StandbyNode has an updated information about the block location in the cluster.
 ~~~
+
 ### Fencing of NameNode
 ~~~
 Now, as discussed earlier, it is very important to ensure that there is only one Active NameNode at a time. So, fencing is a process to ensure this very property in a cluster. 
@@ -64,7 +63,8 @@ The JournalNodes performs this fencing by allowing only one NameNode to be the w
 The Standby NameNode takes over the responsibility of writing to the JournalNodes and forbid any other NameNode to remain active.
 Finally, the new Active NameNode can perform its activities safely.
 ~~~
-#### 2. Using Shared Storage
+
+#### Using Shared Storage
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/Shared-Storage-HDFS-HA-Architecture-Edureka-768x344.png" width="70%" height="70%">
 </p>
@@ -86,9 +86,14 @@ Failover is a procedure by which a system automatically transfers control to sec
 1) Graceful Failover: In this case, we manually initiate the failover for routine maintenance.
 2) Automatic Failover: In this case, the failover is initiated automatically in case of NameNode failure (unplanned event).
 
-Apache Zookeeper is a service that provides the automatic failover capability in HDFS High Availabilty cluster. It maintains small amounts of coordination data, informs clients of changes in that data, and monitors clients for failures. Zookeeper maintains a session with the NameNodes. In case of failure, the session will expire and the Zookeeper will inform other NameNodes to initiate the failover process. In case of NameNode failure, other passive NameNode can take a lock in Zookeeper stating that it wants to become the next Active NameNode.
-The ZookeerFailoverController (ZKFC) is a Zookeeper client that also monitors and manages the NameNode status. Each of the NameNode runs a ZKFC also. ZKFC is responsible for monitoring the health of the NameNodes periodically.
-Now that you have understood what is High Availability in a Hadoop cluster, it’s time to set it up. To set up High Availability in Hadoop cluster you have to use Zookeeper in all the nodes.
+Apache Zookeeper is a service that provides the automatic failover capability in HDFS High Availabilty cluster.
+It maintains small amounts of coordination data, informs clients of changes in that data, and monitors clients for failures.
+Zookeeper maintains a session with the NameNodes. In case of failure, the session will expire and the Zookeeper will inform other NameNodes to initiate the failover process.
+In case of NameNode failure, other passive NameNode can take a lock in Zookeeper stating that it wants to become the next Active NameNode.
+The ZookeerFailoverController (ZKFC) is a Zookeeper client that also monitors and manages the NameNode status. Each of the NameNode runs a ZKFC also.
+ZKFC is responsible for monitoring the health of the NameNodes periodically.
+Now that you have understood what is High Availability in a Hadoop cluster,
+it’s time to set it up. To set up High Availability in Hadoop cluster you have to use Zookeeper in all the nodes.
 
 The daemons in Active NameNode are:
 * Zookeeper
