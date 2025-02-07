@@ -1,0 +1,12 @@
+---
+- name: Create Users
+  shell: |
+    cqlsh -u cassandra -p {{ _cassandra.password }} \
+    -e "CREATE ROLE {{ item.name }} WITH SUPERUSER = {{ item.su }} AND LOGIN = {{ item.login }} AND PASSWORD = '{{ item.password }}';"
+  register: create_users
+  environment:
+    PATH: "{{ cassandra_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  with_items: "{{ _cassandra.users }}"
+- debug: msg={{ create_users }}
+  when: print_debug == true
+

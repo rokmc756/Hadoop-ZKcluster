@@ -1,0 +1,6 @@
+
+
+# 
+$ nodetool resetlocalschema
+
+

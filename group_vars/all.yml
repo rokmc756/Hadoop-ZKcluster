@@ -209,16 +209,31 @@ _impala:
 
 
 _cassandra:
-  user: "hadoop"
-  group: "hadoop"
-  base_path: "{{ _hadoop.base_path }}"
+  cluster_name: "Jack Cassandra"
+  user: "cassandra"
+  group: "cassandra"
+  password: "changeme"
+  users:
+    - { name: "jomoon", password: "changeme", su: "true", login: "true" }
+    - { name: "romoon", password: "changeme", su: "false", login: "false" }
+    - { name: "komoon", password: "changeme", su: "true", login: "false" }
+    - { name: "somoon", password: "changeme", su: "false", login: "true" }
+  user_home: "/home/cassandra"
+  base_path: "/usr/local"
   major_version: 4
   minor_version: 1
   patch_version: 8
   bin_type: tar.gz
+  force_clean: false
   download: false
   firewall: false
   download_url: "https://archive.apache.org/dist/cassandra"
+  download_path: /tmp
+  dir:
+    base: /csdr_data
+    commit: /csdr_data/cassandra/commitlog
+    data: /csdr_data/cassandra/data
+    logs: /csdr_data/cassandra/logs
   net:
     type: "virtual"                # Or Physical
     gateway: "192.168.0.1"
@@ -250,9 +265,9 @@ _jdk:
   oss:
     install: true
     jvm_home: "/usr/lib/jvm"
-    major_version: 1
-    minor_version: 8
-    patch_version: 0
+    major_version: 11
+    minor_version: 0
+    patch_version: 4
     # 1.8.0
     # 11.0.4
     # 17.0.2

@@ -1,0 +1,81 @@
+- name: Create Cassandra Group
+  group: name=cassandra state=present
+
+
+- name: Create Cassandra User
+  user: name=cassandra group=cassandra
+
+
+- name: Check Cassandra Package
+  stat: path={{ _cassandra.download_path }}/{{ cassandra_package_name }}
+  register: cassandra_package_exists
+
+
+- name: Download Cassandra Tar file if Not Downloaded
+  get_url: url={{ _cassandra.download_url }}/cassandra-{{ cassandra_version }}/{{ cassandra_package_name }} dest={{ _cassandra.download_path }}
+  when: not cassandra_package_exists.stat.exists
+
+
+- name: Unarchive Cassandra Package
+  unarchive: src={{ _cassandra.download_path }}/{{ cassandra_package_name }} dest={{ _cassandra.base_path }} copy=no
+
+
+- name: Delete Package Downloaded if Needed
+  file: path={{ _cassandra.download_path }}/{{ cassandra_package_name }} state=absent
+  when: force_cleanup is defined and force_cleanup == "True"
+
+
+- name: Check if Any Version of cassandra is Already Linked
+  stat: path={{ _cassandra.base_path }}/apache-cassandra
+  register: cassandra_symlink_created
+- debug: msg={{ cassandra_symlink_created }}
+
+
+- name: Repoint Symlink to New Cassandra Version
+  become_user: root
+  file:
+    dest: "{{ _cassandra.base_path }}/apache-cassandra"
+    src: "{{ _cassandra.base_path }}/apache-cassandra-{{ cassandra_version }}-bin"
+    state: link
+  when: not cassandra_symlink_created.stat.exists
+
+
+- name: Set Cassandra Data Directory
+  file: path={{ _cassandra.config.data_dir }} state=directory owner=cassandra group=cassandra
+
+
+- name: Set Cassandra Log Directory
+  file: path={{ _cassandra.config.log_path }} state=directory owner=cassandra group=cassandra
+
+
+- name: Set Cassandra Configuration
+  template: src=templates/cassandra.config.j2 dest={{ cassandra_application_path }}/conf/zoo.cfg force=yes
+  notify: Restart cassandra
+
+
+- name: Set Cassandra Data Directory
+  file: path={{ _cassandra.config.data_dir }} state=directory owner=cassandra group=cassandra
+
+
+- name: Set Cassandra myid Configuration
+  template: src=templates/cassandra.myid.j2 dest={{ _cassandra.config.data_dir }}/myid force=yes
+  notify: Restart cassandra
+
+
+- name: Start Cassandra
+  template: src=cassandra.systemd.j2 dest=/etc/systemd/system/cassandra.service owner=root group=root mode=644 force=yes
+
+
+- name: Reload Systemd Daemon
+  shell: "systemctl daemon-reload"
+  notify: Restart cassandra
+
+
+- name: Insert Executable Binary Path into .bashrc for Cassandra
+  lineinfile:
+    path: "{{ item }}"
+    line: "export PATH={{ cassandra_application_path }}/bin:{{ cassandra_application_path }}/sbin:$PATH"
+  with_items:
+    - "/home/{{ _cassandra.user }}/.bashrc"
+    - "/root/.bashrc"
+

@@ -3,7 +3,7 @@
   set_fact:
     netdev0: "{{ ansible_interfaces | map('regex_replace', '^', 'ansible_') | map('extract', vars) | selectattr('ipv4', 'defined') | selectattr('ipv4.address', 'match', _cassandra.net.ipaddr0 ) | map(attribute='device') | first }}"
     netdev2: "{{ ansible_interfaces | map('regex_replace', '^', 'ansible_') | map('extract', vars) | selectattr('ipv4', 'defined') | selectattr('ipv4.address', 'match', _cassandra.net.ipaddr2 ) | map(attribute='device') | first }}"
-    # netdev1: "{{ ansible_interfaces | map('regex_replace', '^', 'ansible_') | map('extract', vars) | selectattr('ipv4', 'defined') | selectattr('ipv4.address', 'match', cassandra.net.ipaddr1 ) | map(attribute='device') | first }}"
+    # netdev1: "{{ ansible_interfaces | map('regex_replace', '^', 'ansible_') | map('extract', vars) | selectattr('ipv4', 'defined') | selectattr('ipv4.address', 'match', _cassandra.net.ipaddr1 ) | map(attribute='device') | first }}"
 
 
 - name: Get IP Address from Network Device Name
@@ -13,12 +13,21 @@
     # ipaddr1: "{{ hostvars[inventory_hostname]['ansible_'~netdev1].ipv4.address }}"
 
 
-- name: Define Fact for cassandra Version
+- name: Define Fact for Kafka/cassandra Version
   set_fact:
-    cassandra_file_name: "cassandra-{{ _cassandra.major_version }}.{{ _cassandra.minor_version }}.{{ _cassandra.patch_version }}-bin-hadoop{{ _hadoop.major_version }}"
-    cassandra_root_dir: "{{ _cassandra.base_path }}/cassandra-{{ _cassandra.major_version }}.{{ _cassandra.minor_version }}.{{ _cassandra.patch_version }}-bin-hadoop{{ _hadoop.major_version }}"
     hadoop_version: "{{ _hadoop.major_version }}.{{ _hadoop.minor_version }}.{{ _hadoop.patch_version }}"
     cassandra_version: "{{ _cassandra.major_version }}.{{ _cassandra.minor_version }}.{{ _cassandra.patch_version }}"
+
+
+- name: Set Kafka/cassandra Package Name and Application Path
+  set_fact:
+    hadoop_file_name: "hadoop-{{ hadoop_version }}"
+    hadoop_package_name: "hadoop-{{ hadoop_version }}.tar.gz"
+    hadoop_application_path: "{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}"
+    cassandra_file_name: "apache-cassandra-{{ cassandra_version }}-bin"
+    cassandra_package_name: "apache-cassandra-{{ cassandra_version }}-bin.tar.gz"
+    cassandra_application_path: "{{ _cassandra.base_path }}/apache-cassandra-{{ cassandra_version }}"
+    cassandra_root_dir: "{{ _cassandra.base_path }}/apache-cassandra-{{ _cassandra.major_version }}.{{ _cassandra.minor_version }}.{{ _cassandra.patch_version }}"
 
 
 - name: Set Default Network Device and Address
@@ -26,4 +35,11 @@
     netdev: "{{ netdev2 }}"
     _netdev: "ansible_{{ netdev2 }}"
     _ipaddr: "{{ ipaddr2 }}"
+
+
+- name: Define Variables for All Cassandra IP Addresses with Service Ports
+  set_fact:
+    all_cassandra_ipaddrs1: "{{ groups['zk_servers'] | map('extract', hostvars, [_netdev, 'ipv4', 'address']) | join(',') }}"
+    all_cassandra_ipaddrs2: "{{ groups['zk_servers'] | map('extract', hostvars, [_netdev, 'ipv4', 'address']) | map('regex_replace', '$', ':7000') | join(',') }}"
+  when: inventory_hostname not in groups['database']
 

@@ -1,4 +1,3 @@
----
 - name: Reload and Stop Systemd Service of Cassandra
   systemd:
     name: "cassandra"
@@ -13,15 +12,14 @@
     state: absent
   ignore_errors: true
   with_items:
-    - "/home/cassandra/.cassandra/cqlsh"
-    - "{{ _cassandra.base_path }}/apache-cassandra"
-    - "{{ _cassandra.base_path }}/{{ cassandra_package_name }}"
+    - "{{ _cassandra.config.data_dir }}/myid"
+    - "{{ cassandra_application_path }}/conf/zoo.cfg"
+    - "{{ _cassandra.config.log_path }}"
+    - "{{ _cassandra.config.data_dir }}"
+    - "{{ _cassandra.config.data_dir }}"
     - "{{ _cassandra.base_path }}/apache-cassandra-{{ cassandra_version }}"
+    - "{{ _cassandra.base_path }}/apache-cassandra"
     - "{{ _cassandra.download_path }}/{{ cassandra_package_name }}"
-    - "{{ _cassandra.dir.data }}"
-    - "{{ _cassandra.dir.commit }}"
-    - "{{ _cassandra.dir.logs }}"
-    - "{{ _cassandra.dir.base }}"
     - "/etc/systemd/system/cassandra.service"
 
 
@@ -42,7 +40,7 @@
   ignore_errors: true
 
 
-- name: Remove a Line Including PATH Variable
+- name: Remove a Line Including PATH Variablefor Cassandra
   lineinfile:
     path: "{{ item }}"
     regexp: "^export PATH=(.*)cassandra(.*)PATH$"

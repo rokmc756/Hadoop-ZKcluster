@@ -6,41 +6,36 @@
 
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
-  tags: install, uninstall, setup, remove, config, create, delete, start, stop
+  tags: install, uninstall, add, setup, remove, config, create, delete, start, stop
   when: inventory_hostname not in groups['database']
 
 
-- name: Install Cassandra
-  import_tasks: install-cassandra.yml
+- name: Setup Cassandra
+  import_tasks: install.yml
   tags: setup, install
-  when: (( cassandra is defined and cassandra == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname not in groups['database']
+  when: (( bin is defined and bin == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Config Cassandra
-  import_tasks: config-cassandra.yml
-  tags: config, install
-  when: (( cassandra is defined and cassandra == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname not in groups['database']
+- name: Add Users
+  import_tasks: add-users.yml
+  tags: add, create, install
+  when: (( users is defined and users == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname in groups['master']
 
 
-- name: Start Cassandra
-  import_tasks: start-cassandra.yml
-  tags: start, install
-  when: (( cassandra is defined and cassandra == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname in groups['master']
+- name: Delete Users
+  import_tasks: delete-users.yml
+  tags: remove, delete, uninstall
+  when: (( users is defined and users == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname in groups['master']
 
 
-- name: Stop Cassandra
-  import_tasks: stop-cassandra.yml
-  tags: stop, uninstall
-  when: (( cassandra is defined and cassandra == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname in groups['master']
+- name: Disable Cassandra Users
+  import_tasks: disable-cassandra-user.yml
+  tags: disable
+  when: (( admin is defined and admin == true ) and inventory_hostname in groups['master']
 
 
-- name: Uninstall Cassandra
+- name: Remove Cassandra
   import_tasks: uninstall.yml
-  tags: delete, remove, uninstall
-  when: (( cassandra is defined and cassandra == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname not in groups['database']
-
-
-# https://about-cassandra.com/install-apache-cassandra-via-tarball/
-# https://github.com/wireapp/ansible-cassandra
-# https://www.pythian.com/blog/technical-track/an-introductory-guide-on-deploying-cassandra-database-using-ansible
+  tags: remove, uninstall
+  when: (( bin is defined and bin == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname not in groups['database']
 

@@ -1,0 +1,12 @@
+---
+- name: Delete Users
+  shell: |
+    cqlsh -u cassandra -p {{ _cassandra.password }} \
+    -e "DROP USER IF EXISTS {{ item.name }};"
+  register: delete_users
+  environment:
+    PATH: "{{ cassandra_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  with_items: "{{ _cassandra.users }}"
+- debug: msg={{ delete_users }}
+  when: print_debug == true
+

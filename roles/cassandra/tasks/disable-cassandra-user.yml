@@ -1,0 +1,12 @@
+---
+- name: Disable Cassandra User
+  shell: |
+    cqlsh -u {{ item.name }} -p {{ item.password }} \
+    -e "ALTER ROLE cassandra WITH SUPERUSER = false AND LOGIN = false;"
+  register: disable_cassandra_user
+  environment:
+    PATH: "{{ cassandra_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+  with_items: "{{ _cassandra.users[0] }}"
+- debug: msg={{ disable_cassandra_user }}
+  when: print_debug == true
+
