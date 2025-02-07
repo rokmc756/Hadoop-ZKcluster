@@ -1,0 +1,22 @@
+---
+- name: Install Latest PassLib with Pip
+  pip: name=passlib state=present
+
+
+- name: Create Cassandra Group
+  group:
+    name: "{{ _cassandra.group }}"
+    state: present
+
+
+- name: Create Cassandra User
+  user:
+    name: "{{ _cassandra.user }}"
+    password: "{{ _cassandra.password | password_hash('sha512') }}"
+    createhome: yes
+    shell: /bin/bash
+    generate_ssh_key: no
+    groups: "{{ _cassandra.group }}"
+    append: yes
+    state: present
+

@@ -301,6 +301,7 @@ $ make hadoop r=stop s=hdfs
 - roles/hive/README.md
 - role/hbase/README.md
 - role/spark/README.md
+- role/cassandra/README.md
 - role/ganglia/README.md
 
 

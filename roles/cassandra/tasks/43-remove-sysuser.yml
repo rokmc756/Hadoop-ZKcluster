@@ -1,0 +1,30 @@
+---
+- name: Kill Processes Hold On User Directory
+  become: true
+  shell: |
+    {{ item }}{{ _cassandra.user }}
+    sleep 3
+  register: kill_user_processes
+  ignore_errors: true
+  until: kill_user_processes is succeeded
+  retries: 3
+  with_items:
+    - "nohup pkill -U "
+    - "nohup fuser -k /home/"
+
+
+- name: Remove Cassandra User
+  user: name={{ _cassandra.user }} state=absent remove=yes
+  ignore_errors: true
+
+
+- name: Remove Cassandra Group
+  group: name={{ _cassandra.group }} state=absent
+  ignore_errors: true
+
+
+- name: Remove Cassandra Home Directory
+  file: path={{ _cassandra.user_home }} state=absent
+  ignore_errors: true
+
+

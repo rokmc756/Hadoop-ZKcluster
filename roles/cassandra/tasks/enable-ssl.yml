@@ -93,4 +93,6 @@
     - "v3.ext"
 
 # https://cassandra.apache.org/doc/stable/cassandra/operating/security.html
+# https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/configuration/secureSSLCertWithCA.html
+# https://dzone.com/articles/setting-up-a-cassandra-cluster-with-ssl
 

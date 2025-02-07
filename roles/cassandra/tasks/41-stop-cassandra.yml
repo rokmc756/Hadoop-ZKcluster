@@ -1,0 +1,8 @@
+---
+- name: Reload and Stop Systemd Service of Cassandra
+  systemd:
+    name: "cassandra"
+    enabled: no
+    state: stopped
+  ignore_errors: true
+

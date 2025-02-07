@@ -1,8 +1,22 @@
 ---
+- name: Enable Cassandra User
+  shell: |
+    cqlsh -u {{ _cassandra.users.0.name }} -p {{ _cassandra.users.0.password  }} \
+    -e "ALTER ROLE cassandra WITH SUPERUSER = true AND LOGIN = true;"
+  register: enable_cassandra_user
+  environment:
+    PATH: "{{ cassandra_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
+- debug: msg={{ enable_cassandra_user }}
+  when: print_debug == true
+
+
+- pause:
+    seconds: 20
+
+
 - name: Delete Users
   shell: |
-    cqlsh -u cassandra -p {{ _cassandra.password }} \
-    -e "DROP USER IF EXISTS {{ item.name }};"
+    cqlsh -u {{ _cassandra.user }} -p {{ _cassandra.password }} -e "DROP USER IF EXISTS {{ item.name }};"
   register: delete_users
   environment:
     PATH: "{{ cassandra_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"

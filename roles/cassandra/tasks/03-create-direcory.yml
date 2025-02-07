@@ -1,0 +1,24 @@
+---
+- name: Create Cassandra User Hidden Directory
+  file: path={{ _cassandra.user_home }}/.cassandra state=directory owner={{ _cassandra.user }} group={{ _cassandra.group }}
+
+
+- name: Create Cassandra Base Data Directory
+  file: path={{ _cassandra.dir.base }} state=directory owner={{ _cassandra.user }} group={{ _cassandra.group }}
+
+
+- name: Create Cassandra Commit Log Directory
+  file: path={{ _cassandra.dir.commit }} state=directory owner={{ _cassandra.user }} group={{ _cassandra.group }}
+
+
+- name: Create Cassandra Log Directory
+  file: path={{ _cassandra.dir.logs }} state=directory owner={{ _cassandra.user }} group={{ _cassandra.group }}
+
+
+- name: Create Cassandra Data Directory
+  file: path={{ _cassandra.dir.data }} state=directory owner={{ _cassandra.user }} group={{ _cassandra.group }}
+
+
+- name: Create Cassandra CDC Raw Data Directory
+  file: path={{ _cassandra.dir.data }}/cdc_raw state=directory owner={{ _cassandra.user }} group={{ _cassandra.group }}
+

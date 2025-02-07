@@ -63,21 +63,21 @@ temp:
 		else\
 			echo "No actions to bootstrap/start/stop temp";\
 		fi;\
-	elif [ "${r}" = "enable" ] || [ "${r}" = "disable" ] || [ "${r}" = "config" ]; then\
+	elif [ "${r}" = "enable" ] || [ "${r}" = "disable" ] || [ "${r}" = "config" ] || [ "${r}" = "change" ]; then\
 		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
 			if [ -z ${c} ];  then\
 				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-temp.yml -e '{"${s}": True}' --tags='${r}';\
 			else\
-				echo "No actions to enable/disable/config temp";\
+				echo "No actions to enable/disable/config/change temp";\
 			fi\
 		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
 			if [ -z ${c} ];  then\
 				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-temp.yml -e '{temp_all: True}' --tags='${r}';\
 			else\
-				echo "No actions to enable/disable/config temp";\
+				echo "No actions to enable/disable/config/change temp";\
 			fi\
 		else\
-			echo "No actions to enable/disable/config temp";\
+			echo "No actions to enable/disable/config/change temp";\
 		fi;\
 	elif [ "${r}" = "install" ] || [ "${r}" = "uninstall" ]; then\
 		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\

@@ -1,4 +1,6 @@
-https://docs.datastax.com/en/cassandra-oss/3.x/cassandra/install/installRecommendSettings.html
+# https://docs.datastax.com/en/cassandra-oss/3.x/cassandra/install/installRecommendSettings.html
+# https://docs.datastax.com/en/dse/6.9/managing/configure/recommended-settings.html
+# https://cassandra.apache.org/doc/latest/cassandra/getting-started/production.html
 
 
 About Apache Cassandra

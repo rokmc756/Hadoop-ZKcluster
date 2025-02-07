@@ -95,7 +95,7 @@
   template: src=cqlsh.j2 dest=/home/cassandra/.cassandra/cqlsh mode=0644 owner={{ _cassandra.user }} group={{ _cassandra.group }} force=yes
 
 
-- name: Copy Cassandra Systemd
+- name: Start Cassandra
   template: src=cassandra.systemd.j2 dest=/etc/systemd/system/cassandra.service owner=root group=root mode=644 force=yes
 
 
