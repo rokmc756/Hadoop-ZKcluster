@@ -8,7 +8,6 @@ The intention of this playbook is to deploy Hadoop Cluster quickly in order to r
 
 ## Hadoop-ZKcluster Architecture
 ### HDFS HA Architecture:
-~~~
 Let us understand that how HDFS HA Architecture solved this critical problem of NameNode availability:
 The HA architecture solved this problem of NameNode availability by allowing us to have two NameNodes in an active/passive configuration.
 So, we have two running NameNodes at the same time in a High Availability cluster:
@@ -19,7 +18,6 @@ Standby/Passive NameNode.
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png" width="70%" height="70%">
 </p>
-~~~
 If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time.
 The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster.
 Therefore, with the StandbyNode, we can have automatic failover whenever a NameNode crashes (unplanned event) or we can have a graceful (manually initiated)
@@ -29,21 +27,17 @@ There are two issues in maintaining consistency in the HDFS High Availability cl
 
 Active and Standby NameNode should always be in sync with each other, i.e. They should have the same metadata. This will allow us to restore the Hadoop cluster to the same namespace state where it got crashed and therefore, will provide us to have fast failover.
 There should be only one active NameNode at a time because two active NameNode will lead to corruption of the data. This kind of scenario is termed as a split-brain scenario where a cluster gets divided into smaller cluster, each one believing that it is the only active cluster. To avoid such scenarios fencing is done. Fencing is a process of ensuring that only one NameNode remains active at a particular time.
-~~~
 
 ### Implementation of HA Architecture
-~~~
 Now, you know that in HDFS HA Architecture, we have two NameNodes running at the same time. So, we can implement the Active and Standby NameNode configuration in following two ways:
 
 Using Quorum Journal Nodes
 Shared Storage using NFS
 Let us understand these two ways of implementation taking one at a time
-~~~
 #### Using Quorum Journal Nodes
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png" width="70%" height="70%">
 </p>
-~~~
 The standby NameNode and the active NameNode keep in sync with each other through a separate group of nodes or daemons -called JournalNodes.
 The JournalNodes follows the ring topology where the nodes are connected to each other to form a ring.
 The JournalNode serves the request coming to it and copies the information into other nodes in the ring.This provides fault tolerance in case of JournalNode failure.
@@ -53,22 +47,18 @@ During failover, the StandbyNode makes sure that it has updated its meta data in
 This makes the current namespace state synchronized with the state before failover.
 The IP Addresses of both the NameNodes are available to all the DataNodes and they send their heartbeats and block location information to both the NameNode.
 This provides a fast failover (less down time) as the StandbyNode has an updated information about the block location in the cluster.
-~~~
 
 ### Fencing of NameNode
-~~~
 Now, as discussed earlier, it is very important to ensure that there is only one Active NameNode at a time. So, fencing is a process to ensure this very property in a cluster. 
 
 The JournalNodes performs this fencing by allowing only one NameNode to be the writer at a time.
 The Standby NameNode takes over the responsibility of writing to the JournalNodes and forbid any other NameNode to remain active.
 Finally, the new Active NameNode can perform its activities safely.
-~~~
 
 #### Using Shared Storage
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/Shared-Storage-HDFS-HA-Architecture-Edureka-768x344.png" width="70%" height="70%">
 </p>
-~~~
 The StandbyNode and the active NameNode keep in sync with each other by using a shared storage device.
 The active NameNode logs the record of any modification done in its namespace to an EditLog present in this shared storage.
 The StandbyNode reads the changes made to the EditLogs in this shared storage and applies it to its own namespace.
@@ -78,10 +68,8 @@ The administrator must configure at least one fencing method to avoid a split-br
 The system may employ a range of fencing mechanisms. It may include killing of the NameNode’s process and revoking its access to the shared storage directory.
 As a last resort, we can fence the previously active NameNode with a technique known as STONITH, or “shoot the other node in the head”.
 STONITH uses a specialized power distribution unit to forcibly power down the NameNode machine.
-~~~
 
 ### Automatic Failover
-~~~
 Failover is a procedure by which a system automatically transfers control to secondary system when it detects a fault or failure. There are two types of failover:
 1) Graceful Failover: In this case, we manually initiate the failover for routine maintenance.
 2) Automatic Failover: In this case, the failover is initiated automatically in case of NameNode failure (unplanned event).
@@ -111,7 +99,6 @@ The daemons in DataNode are:
 * Zookeeper
 * JournalNode
 * DataNode
-~~~
 
 ## Where is Haddop Zookeeper from and what / how is it changed?
 The hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
