@@ -16,7 +16,7 @@ So, we have two running NameNodes at the same time in a High Availability cluste
 Active NameNode
 Standby/Passive NameNode.
 ~~~
-<center><img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png" width="70%" height="70%"></center>
+<img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png" width="70%" height="70%" align="center">
 ~~~
 If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time.
 The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster.
