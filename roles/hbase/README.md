@@ -22,7 +22,7 @@ _hbase:
 ~~ snip
 ```
 
-### How to Install and Deploy HBase
+### How to Install or Deploy HBase
 ```yaml
 $ make hbase r=disable s=firewall
 $ make hbase r=setup s=hbase
@@ -32,7 +32,7 @@ or
 $ make hbase r=uninstall s=all
 ```
 
-### How to Uninstall Hbase
+### How to Uninstall or Destroy Hbase
 ```yaml
 $ make hbase r=remove s=hbase
 $ make hbase r=enable s=firewall

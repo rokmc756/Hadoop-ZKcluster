@@ -30,7 +30,7 @@ _spark:
 ~~ snip
 ```
 
-## Install and Deploy Spark
+### Install or Deploy Spark
 ```yaml
 $ make spark r=disable s=firewall
 $ make spark r=setup s=spark
@@ -41,7 +41,7 @@ or
 $ make spark r=install s=all
 ```
 
-### Uninstall and Destroy Spark
+### Uninstall or Destroy Spark
 ```yaml
 $ make spark r=stop s=spark
 $ make spark r=delete s=spark

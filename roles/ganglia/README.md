@@ -1,4 +1,4 @@
-### Configure Hostname / IP Addresses and Username to Run in ansible-hosts
+### Configure Hostname / IP Addresses and Username to Run in ansible-hosts-rk9-ganglia
 ```yaml
 $ vi ansible-hosts-rk9-ganglia
 [all:vars]
