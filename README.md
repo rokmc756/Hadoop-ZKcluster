@@ -14,7 +14,6 @@ So, we have two running NameNodes at the same time in a High Availability cluste
 
 Active NameNode
 Standby/Passive NameNode.
-~~~
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png" width="70%" height="70%">
 </p>
