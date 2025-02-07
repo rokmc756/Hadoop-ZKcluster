@@ -17,7 +17,7 @@ Active NameNode
 Standby/Passive NameNode.
 ~~~
 # ![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png)
-<img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png" width="100%" height="100%">
+<img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png" width="80%" height="80%">
 ~~~
 If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time.
 The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster.
