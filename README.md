@@ -6,7 +6,7 @@ The intention of this playbook is to deploy Hadoop Cluster quickly in order to r
 It implements HDFS HA architecture described at the below link and Hadoop-ZKcluster Architecture and you could see details about how it works.
 * https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
-### HDFS HA Architecture:
+### HDFS HA Architecture
 The HDFS HA Architecture solve critical problem of NameNode availability by allowing us to have two NameNodes in an active/passive configuration.
 So, there are two running NameNodes at the same time in a High Availability cluster:
 * Active NameNode
