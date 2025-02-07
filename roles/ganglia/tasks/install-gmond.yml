@@ -17,7 +17,7 @@
 
 
 - name: Configure gmond.conf In /etc/ganglia/gmond.conf
-  template: src=gmond.conf.slave.j2 dest=/etc/ganglia/gmond.conf owner=root group=root mode=0644
+  template: src=gmond.conf.j2 dest=/etc/ganglia/gmond.conf owner=root group=root mode=0644
   notify:
     - Start Gmond
 

@@ -1,6 +1,4 @@
-# This is an example of a Ganglia Meta Daemon configuration file
-#                http://ganglia.sourceforge.net/
-#
+# {{ ansible_managed }}
 #
 #-------------------------------------------------------------------------------
 # Setting the debug_level to 1 will keep daemon in the forground and
@@ -37,15 +35,17 @@
 # (the default gmond port) is assumed.
 # default: There is no default value
 #
+
 # data_source "my cluster" 10 localhost  my.machine.edu:8649  1.2.3.5:8655
 # data_source "my grid" 50 1.3.4.7:8655 grid.org:8651 grid-backup.org:8651
 # data_source "another source" 1.3.4.7:8655  1.3.4.8
 
-data_source "Haddop-ZKcluster" 10 {{ hostvars[groups["master"][0]].ansible_hostname }}:8649 {{ hostvars[groups["standby"][0]].ansible_hostname }}:8649 {{ groups['workers'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', ':8649') | join(' ') }}
+# data_source "Hadoop-ZKcluster" {{ hostvars[groups["master"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["standby"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][0]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][1]][_netdev]['ipv4']['address'] }}:8649 {{ hostvars[groups["workers"][2]][_netdev]['ipv4']['address'] }}:8649
+data_source "Hadoop" {{ hostvars[groups["master"][0]][_netdev]['ipv4']['address']|default(hostvars[groups["master"][0]][_netdev]['ipv4']['address']) }} {{ hostvars[groups["standby"][0]][_netdev]['ipv4']['address']|default(hostvars[groups["standby"][0]][_netdev]['ipv4']['address']) }}
 setuid_username "ganglia"
 rrd_rootdir "/var/lib/ganglia/rrds"
 
-#
+
 # Round-Robin Archives
 # You can specify custom Round-Robin archives here (defaults are listed below)
 #
@@ -71,9 +71,8 @@ rrd_rootdir "/var/lib/ganglia/rrds"
 # The name of this Grid. All the data sources above will be wrapped in a GRID
 # tag with this name.
 # default: unspecified
-# gridname "MyGrid"
-# gridname "{{ _ganglia.site_name | capitalize }}"
-gridname "{{ _ganglia.site_name }}"
+
+gridname "{{ _ganglia.site_name|capitalize }}"
 
 #
 #-------------------------------------------------------------------------------
@@ -162,3 +161,4 @@ case_sensitive_hostnames 0
 # Number of milliseconds gmetad will wait for a response from the graphite server
 # default: 500
 # carbon_timeout 500
+

@@ -5,7 +5,7 @@
     dest: "{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop/hadoop-metrics2.properties"
     line: '{{ item.line }}'
   with_items: "{{ _hadoop_master_metrics2_properties }}"
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby']
+  when: inventory_hostname in groups['master']
 
 
 - name: Add Hadoop Slave Metrics into Ganglia
@@ -14,7 +14,7 @@
     dest: "{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}/etc/hadoop/hadoop-metrics2.properties"
     line: '{{ item.line }}'
   with_items: "{{ _hadoop_slave_metrics2_properties }}"
-  when: inventory_hostname in groups['workers']
+  when: inventory_hostname in groups['standby']
 
 
 - name: Stop Hadoop

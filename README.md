@@ -1,5 +1,5 @@
 ## WHat is Hadoop Zookeeper Cluster
-The hadoop-zkcluster is ansible playbook to deploy Hadoop/Hive and Zookeeper cluster on Baremetal, Virtual Machines and Cloud Infrastructure.
+The Hadoop-ZKcluster is Ansible Playbook to Deploy Hadoop and Zookeeper Cluster and Hbase/Hive/Spark/Ganglia on Baremetal, Virtual Machines and Cloud Infrastructure.
 It implements HDFS HA architecture described at the below doc and you could see details about how it works.
 * https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
@@ -315,7 +315,7 @@ select drop_all_tables();```
 $ psql -h 192.168.2.196 -U hive_user -d hive_testdb -p 5432 -f drop_all_tables.sql
 ```
 
-## How to Install and Deploy Hadoop Cluster
+## How to Install and Deploy Hadoop Zookeeper Cluster
 ```yaml
 $ make hadoop r=disable s=firewall
 $ make hadoop r=create s=user
@@ -387,7 +387,8 @@ $ make spark r=install s=all
 ## How to Install and Deploy Ganglia
 ```yaml
 $ make ganglia r=disable s=firewall
-$ make ganglia r=setup s=monitor
+$ make ganglia r=setup s=pkgs
+$ make ganglia r=setup s=gmond
 $ make ganglia r=setup s=gmetad
 $ make ganglia r=setup s=web
 $ make ganglia r=config s=metrics
@@ -403,9 +404,13 @@ $ make deploy
 
 ## How to Uninstall Ganglia
 ```yaml
-$ make ganglia r=remove s=ganglia
+$ make ganglia r=remove s=web
+$ make ganglia r=remove s=gmetad
+$ make ganglia r=remove s=gmond
 $ make ganglia r=remove s=metrics
+$ make ganglia r=remove s=pkgs
 $ make ganglia r=enable s=firewall
+$ make ganglia r=disable s=selinux
 
 or
 $ make ganglia r=uninstall s=all

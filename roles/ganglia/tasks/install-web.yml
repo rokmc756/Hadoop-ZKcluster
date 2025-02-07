@@ -1,6 +1,4 @@
-# Reference Under Ganglia Web 3.5.12 Version
 # https://github.com/analytically/hadoop-ansible/blob/master/roles/ganglia_web/tasks/main.yml
-
 - name: Install Ganglia Web Dependencies
   package: name={{ item }}
   with_items:
@@ -20,16 +18,17 @@
 
 - name: Create HTTP Authentication for Ganglia
   shell: |
-    htpasswd -b -c /etc/httpd/auth.basic admin changeme
+    htpasswd -b -c /etc/httpd/auth.basic {{ _ganglia.web.user }} {{ _ganglia.web.password }}
 
 
-#- name: Provide Directory with A New default SELinux Context
-#  shell: |
-#    semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/ganglia(/.*)?"
-#    setsebool -P httpd_can_network_connect 1
-#  register: httpd_selinux_context
-#    # Apply the Default Context to the Directory
-#    # restorecon -R /var/lib/ganglia-web
+- name: Provide Directory with A New default SELinux Context
+  shell: |
+    semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/ganglia(/.*)?"
+    setsebool -P httpd_can_network_connect 1
+  register: httpd_selinux_context
+#
+# Apply the Default Context to the Directory
+# restorecon -R /var/lib/ganglia-web
 
 
 #- name: Change File Permissions and Ownership

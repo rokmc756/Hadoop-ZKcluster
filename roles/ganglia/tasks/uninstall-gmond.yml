@@ -19,7 +19,7 @@
     - hddtemp
 
 
-- name: Delete /etc/ganglia/gmond.conf
+- name: Delete Gmond and RRD Config Files
   file:
     path: "{{ item }}"
     state: absent
@@ -28,6 +28,7 @@
     - "/etc/ganglia/gmond.conf"
     - "/usr/local/sbin/device-metrics.php"
     - "/etc/cron.d/device-metrics"
+    - "/var/lib/ganglia/rrds/"
 
 
 - name: Reload Systemd Daemon

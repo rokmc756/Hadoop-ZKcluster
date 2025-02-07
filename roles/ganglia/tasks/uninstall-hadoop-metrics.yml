@@ -6,7 +6,7 @@
     regexp: "{{ item.regexp }}"
     state: absent
   with_items: "{{ _hadoop_master_metrics2_properties }}"
-  when: inventory_hostname in groups['master'] or inventory_hostname in groups['standby']
+  when: inventory_hostname in groups['master']
 
 
 - name: Delete Hadoop Slave Metrics into Ganglia
@@ -16,30 +16,15 @@
     regexp: "{{ item.regexp }}"
     state: absent
   with_items: "{{ _hadoop_slave_metrics2_properties }}"
-  when: inventory_hostname in groups['workers']
-
-
-#- name: Stop All Hadoop Services on Master
-#  remote_user: root
-#  shell: su {{ _hadoop.user }} -c "{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}/sbin/stop-all.sh"
-#  when: inventory_hostname in groups['master']
-
-
-#- name: Start All Hadoop Services on Master
-#  remote_user: root
-#  shell: su {{ _hadoop.user }} -c "{{ _hadoop.base_path }}/hadoop-{{ hadoop_version }}/sbin/start-all.sh"
-#  when: inventory_hostname in groups['master']
+  when: inventory_hostname in groups['standby']
 
 
 - name: Stop Hadoop
   import_tasks: ext/stop-hadoop.yml
   when: inventory_hostname not in groups['database']
-  # tags: stop
-  # when: ( hdfs is defined and hdfs == true ) and inventory_hostname not in groups['database']
+
 
 - name: Start Hadoop
   import_tasks: ext/start-hadoop.yml
   when: inventory_hostname not in groups['database']
-  # tags: start
-  # when: ( hdfs is defined and hdfs == true ) and inventory_hostname not in groups['database']
 

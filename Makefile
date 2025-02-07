@@ -34,12 +34,13 @@ download:
 
 # For All Roles
 %:
-	@ln -sf ansible-hosts-rk9 ansible-hosts;
 	@cat Makefile.tmp  | sed -e 's/temp/${*}/g' > Makefile.${*}
 	
-	@if [ "${*}" = "java" ] || [ "${*}" = "firewall" ] || [ "${*}" = "hosts" ] ; then\
+	@if [ "${*}" = "ganglia" ]; then\
+		ln -sf ansible-hosts-rk9-ganglia ansible-hosts;\
 		cat setup-temp.yml.tmp | sed -e 's/    - temp/    - ${*}/g' > setup-${*}.yml;\
-	elif [ "${*}" = "hadoop" ] || [ "${*}" = "zookeeper" ] || [ "${*}" = "hive" ] || [ "${*}" = "postgres" ] || [ "${*}" = "spark" ] || [ "${*}" = "hbase" ] || [ "${*}" = "ganglia" ]; then\
+	elif [ "${*}" != "ganglia" ]; then\
+		ln -sf ansible-hosts-rk9 ansible-hosts;\
 		cat setup-temp.yml.tmp | sed -e 's/    - temp/    - ${*}/g' > setup-${*}.yml;\
 	else\
 		echo "No actions to temp";\
