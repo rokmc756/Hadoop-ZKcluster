@@ -23,7 +23,7 @@
 
 
 - name: Setup Cassandra Directory
-  import_tasks: 03-create-direcory.yml
+  import_tasks: 03-create-directory.yml
   tags: create, setup, install
   when: (( dir is defined and dir == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname not in groups['database']
 
