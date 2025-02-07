@@ -56,7 +56,7 @@ _ganglia:
 ~~ snip
 ```
 
-### Install and Deploy Ganglia
+### Install or Deploy Ganglia
 ```yaml
 $ make ganglia r=disable s=firewall
 $ make ganglia r=setup s=pkgs
@@ -69,7 +69,7 @@ or
 $ make ganglia r=install s=all
 ```
 
-### Uninstall Ganglia
+### Uninstall or Destroy Ganglia
 ```yaml
 $ make ganglia r=remove s=web
 $ make ganglia r=remove s=gmetad
@@ -82,3 +82,10 @@ $ make ganglia r=disable s=selinux
 or
 $ make ganglia r=uninstall s=all
 ```
+
+### Start and Stop All Hadoop Services
+```yaml
+$ make ganglia r=start s=hdfs
+$ make ganglia r=stop s=hdfs
+```
+
