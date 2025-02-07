@@ -1,35 +1,119 @@
-## WHat is Hadoop Zookeeper Cluster
+## WHat is Hadoop-ZKcluster
 The Hadoop-ZKcluster is Ansible Playbook to Deploy Hadoop and Zookeeper Cluster and Hbase/Hive/Spark/Ganglia on Baremetal, Virtual Machines and Cloud Infrastructure.
-It implements HDFS HA architecture described at the below doc and you could see details about how it works.
+It implements HDFS HA architecture described at the below link and Hadoop-ZKcluster Architecture and you could see details about how it works.
 * https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
 The intention of this playbook is to deploy Hadoop Cluster quickly in order to reproduce or simulate issues which occurs between Greenplum Database and PXF.
 
 
 ## Hadoop-ZKcluster Architecture
-![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png)
-![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png)
-![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/Shared-Storage-HDFS-HA-Architecture-Edureka-768x344.png)
+### HDFS HA Architecture:
+~~~
+Let us understand that how HDFS HA Architecture solved this critical problem of NameNode availability:
+The HA architecture solved this problem of NameNode availability by allowing us to have two NameNodes in an active/passive configuration.
+So, we have two running NameNodes at the same time in a High Availability cluster:
 
+Active NameNode
+Standby/Passive NameNode.
+~~~
+![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png)
+~~~
+If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time.
+The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster.
+Therefore, with the StandbyNode, we can have automatic failover whenever a NameNode crashes (unplanned event) or we can have a graceful (manually initiated)
+failover during the maintenance period. 
+
+There are two issues in maintaining consistency in the HDFS High Availability cluster:
+
+Active and Standby NameNode should always be in sync with each other, i.e. They should have the same metadata. This will allow us to restore the Hadoop cluster to the same namespace state where it got crashed and therefore, will provide us to have fast failover.
+There should be only one active NameNode at a time because two active NameNode will lead to corruption of the data. This kind of scenario is termed as a split-brain scenario where a cluster gets divided into smaller cluster, each one believing that it is the only active cluster. To avoid such scenarios fencing is done. Fencing is a process of ensuring that only one NameNode remains active at a particular time.
+~~~
+### Implementation of HA Architecture
+~~~
+Now, you know that in HDFS HA Architecture, we have two NameNodes running at the same time. So, we can implement the Active and Standby NameNode configuration in following two ways:
+
+Using Quorum Journal Nodes
+Shared Storage using NFS
+Let us understand these two ways of implementation taking one at a time
+~~~
+#### 1. Using Quorum Journal Nodes
+![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png)
+~~~
+The standby NameNode and the active NameNode keep in sync with each other through a separate group of nodes or daemons -called JournalNodes.
+The JournalNodes follows the ring topology where the nodes are connected to each other to form a ring.
+The JournalNode serves the request coming to it and copies the information into other nodes in the ring.This provides fault tolerance in case of JournalNode failure.
+The active NameNode is responsible for updating the EditLogs (metadata information) present in the JournalNodes.
+The StandbyNode reads the changes made to the EditLogs in the JournalNode and applies it to its own namespace in a constant manner.
+During failover, the StandbyNode makes sure that it has updated its meta data information from the JournalNodes before becoming the new Active NameNode.
+This makes the current namespace state synchronized with the state before failover.
+The IP Addresses of both the NameNodes are available to all the DataNodes and they send their heartbeats and block location information to both the NameNode.
+This provides a fast failover (less down time) as the StandbyNode has an updated information about the block location in the cluster.
+~~~
+### Fencing of NameNode
+~~~
+Now, as discussed earlier, it is very important to ensure that there is only one Active NameNode at a time. So, fencing is a process to ensure this very property in a cluster. 
+
+The JournalNodes performs this fencing by allowing only one NameNode to be the writer at a time.
+The Standby NameNode takes over the responsibility of writing to the JournalNodes and forbid any other NameNode to remain active.
+Finally, the new Active NameNode can perform its activities safely.
+~~~
+#### 2. Using Shared Storage
+![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/Shared-Storage-HDFS-HA-Architecture-Edureka-768x344.png)
+~~~
+The StandbyNode and the active NameNode keep in sync with each other by using a shared storage device.
+The active NameNode logs the record of any modification done in its namespace to an EditLog present in this shared storage.
+The StandbyNode reads the changes made to the EditLogs in this shared storage and applies it to its own namespace.
+Now, in case of failover, the StandbyNode updates its metadata information using the EditLogs in the shared storage at first.
+Then, it takes the responsibility of the Active NameNode. This makes the current namespace state synchronized with the state before failover.
+The administrator must configure at least one fencing method to avoid a split-brain scenario.
+The system may employ a range of fencing mechanisms. It may include killing of the NameNode’s process and revoking its access to the shared storage directory.
+As a last resort, we can fence the previously active NameNode with a technique known as STONITH, or “shoot the other node in the head”.
+STONITH uses a specialized power distribution unit to forcibly power down the NameNode machine.
+~~~
+
+### Automatic Failover
+~~~
+Failover is a procedure by which a system automatically transfers control to secondary system when it detects a fault or failure. There are two types of failover:
+1) Graceful Failover: In this case, we manually initiate the failover for routine maintenance.
+2) Automatic Failover: In this case, the failover is initiated automatically in case of NameNode failure (unplanned event).
+
+Apache Zookeeper is a service that provides the automatic failover capability in HDFS High Availabilty cluster. It maintains small amounts of coordination data, informs clients of changes in that data, and monitors clients for failures. Zookeeper maintains a session with the NameNodes. In case of failure, the session will expire and the Zookeeper will inform other NameNodes to initiate the failover process. In case of NameNode failure, other passive NameNode can take a lock in Zookeeper stating that it wants to become the next Active NameNode.
+The ZookeerFailoverController (ZKFC) is a Zookeeper client that also monitors and manages the NameNode status. Each of the NameNode runs a ZKFC also. ZKFC is responsible for monitoring the health of the NameNodes periodically.
+Now that you have understood what is High Availability in a Hadoop cluster, it’s time to set it up. To set up High Availability in Hadoop cluster you have to use Zookeeper in all the nodes.
+
+The daemons in Active NameNode are:
+* Zookeeper
+* Zookeeper Fail Over controller
+* JournalNode
+* NameNode
+
+The daemons in Standby NameNode are:
+* Zookeeper
+* Zookeeper Fail Over controller
+* JournalNode
+* NameNode
+
+The daemons in DataNode are:
+* Zookeeper
+* JournalNode
+* DataNode
+~~~
 
 ## Where is Haddop Zookeeper from and what / how is it changed?
 The hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
 The ansible role for zookeepr is added, variables of many roles is integrated into role/hadoop/var/main.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
 
-As the below two variables in group_vars/all.yml is added many hosts could be automatically configured conveniently.
-```yaml
-zkservers_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_fqdn']) | map('regex_replace', '$', ':2181') | join(',') }}"
-qjournal_list: "{{ groups['all'] | map('extract', hostvars, ['ansible_hostname']) | map('regex_replace', '$', '.jtest.pivotal.io:8485') | join(';') }}"
-```
-In role of haddop a few playbooks are added / modified to start hdfs services and seperate whether these are defined or not in deploly-hadoop-zookeeper.yml playbook.
 
 ## Supported versions of Platform and OS
 These are only confirmed as the latest version currently and other version will be done or added soon or later
 * CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
 * openjdk-1.8 and 1.11 and 1.17
 * Hadoop 3.3.1 ~ 6
-* Hive 3.1.2
-* ansible-zookeeper 3.7.0
+* Hive 4.0.1
+* Hbase 2.6.0
+* Spark 3.5.4
+* Ganglia
+* Zookeeper 3.9.3
 
 ## Prerequiste
 Use DNS Server or update /etc/hosts for all servers.
@@ -164,6 +248,11 @@ _jdk:
     patch_version: 2
     download: false
 ~~ snip
+```
+
+## Download All Software Binaries
+```yaml
+$ make download
 ```
 
 ## How to Install and Deploy Hadoop Zookeeper Cluster
