@@ -1,26 +1,23 @@
 ## WHat is Hadoop-ZKcluster
 The Hadoop-ZKcluster is Ansible Playbook to Deploy Hadoop and Zookeeper Cluster and Hbase/Hive/Spark/Ganglia on Baremetal, Virtual Machines and Cloud Infrastructure.
+The intention of this playbook is to deploy Hadoop Cluster quickly in order to reproduce or simulate issues which occurs between Greenplum Database and PXF.
+
+## Hadoop-ZKcluster Architecture
 It implements HDFS HA architecture described at the below link and Hadoop-ZKcluster Architecture and you could see details about how it works.
 * https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
-The intention of this playbook is to deploy Hadoop Cluster quickly in order to reproduce or simulate issues which occurs between Greenplum Database and PXF.
-
-
-## Hadoop-ZKcluster Architecture
 ### HDFS HA Architecture:
-Let us understand that how HDFS HA Architecture solved this critical problem of NameNode availability:
-The HA architecture solved this problem of NameNode availability by allowing us to have two NameNodes in an active/passive configuration.
-So, we have two running NameNodes at the same time in a High Availability cluster:
-
-Active NameNode
-Standby/Passive NameNode.
+The HDFS HA Architecture solve critical problem of NameNode availability by allowing us to have two NameNodes in an active/passive configuration.
+So, there are two running NameNodes at the same time in a High Availability cluster:
+* Active NameNode
+* Standby/Passive NameNode.
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/HDFS-HA-Architecture-Edureka-768x473.png" width="70%" height="70%">
 </p>
-If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time.
-The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster.
-Therefore, with the StandbyNode, we can have automatic failover whenever a NameNode crashes (unplanned event) or we can have a graceful (manually initiated)
-failover during the maintenance period. 
+If one NameNode goes down, the other NameNode can take over the responsibility and therefore, reduce the cluster down time.\
+The standby NameNode serves the purpose of a backup NameNode (unlike the Secondary NameNode) which incorporate failover capabilities to the Hadoop cluster.\
+Therefore, with the StandbyNode, we can have automatic failover whenever a NameNode crashes (unplanned event) or we can have a graceful (manually initiated)\
+failover during the maintenance period.\
 
 There are two issues in maintaining consistency in the HDFS High Availability cluster:
 
