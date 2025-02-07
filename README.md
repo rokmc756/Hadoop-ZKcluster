@@ -39,7 +39,12 @@ Shared Storage using NFS
 Let us understand these two ways of implementation taking one at a time
 ~~~
 #### 1. Using Quorum Journal Nodes
-![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png)
+
+<p align="center">
+<img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png" width="70%" height="70%">
+</p>
+
+
 ~~~
 The standby NameNode and the active NameNode keep in sync with each other through a separate group of nodes or daemons -called JournalNodes.
 The JournalNodes follows the ring topology where the nodes are connected to each other to form a ring.
@@ -60,7 +65,9 @@ The Standby NameNode takes over the responsibility of writing to the JournalNode
 Finally, the new Active NameNode can perform its activities safely.
 ~~~
 #### 2. Using Shared Storage
-![alt text](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/Shared-Storage-HDFS-HA-Architecture-Edureka-768x344.png)
+<p align="center">
+<img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/Shared-Storage-HDFS-HA-Architecture-Edureka-768x344.png" width="70%" height="70%">
+</p>
 ~~~
 The StandbyNode and the active NameNode keep in sync with each other by using a shared storage device.
 The active NameNode logs the record of any modification done in its namespace to an EditLog present in this shared storage.
