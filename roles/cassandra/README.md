@@ -1,3 +1,13 @@
+### Architecture
+- https://www.scylladb.com/glossary/apache-cassandra-architecture/
+- https://cassandra.apache.org/_/cassandra-basics.html
+- https://www.yugabyte.com/blog/apache-cassandra-architecture-how-it-works-lightweight-transactions/
+- https://cassandra.link/post/cassandra-architecture-tutorial-or-simplilearn
+- https://medium.com/@brunocrt/the-distributed-architecture-behind-cassandra-database-fba8b5cc4785
+- https://www.learnovita.com/cassandra-architecture-tutorial
+
+
+
 ### Configure Varialbes such as Download Location, Versions, Install/Config Path, Informations
 ```yaml
 $ vi group_vars/all.yml
