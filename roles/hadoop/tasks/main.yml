@@ -40,13 +40,13 @@
 - name: Deploy Hadoop
   import_tasks: 05-install-hadoop.yml
   tags: setup, deploy, install
-  when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
+  when: (( service is defined and service == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Config Hadoop
   import_tasks: 06-config-hadoop.yml
   tags: config, install
-  when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
+  when: (( service is defined and service == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Start Journalnode
@@ -128,13 +128,13 @@
 - name: Stop Hadoop
   import_tasks: 41-stop-hadoop.yml
   tags: stop, uninstall
-  when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
+  when: (( service is defined and service == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Remove Hadoop Config
   import_tasks: 42-remove-hadoop-config.yml
   tags: remove, uninstall
-  when: (( hadoop is defined and hadoop == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
+  when: (( config is defined and config == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Remove Public Key

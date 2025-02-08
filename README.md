@@ -257,8 +257,8 @@ $ make hadoop r=disable s=firewall
 $ make hadoop r=create s=user
 $ make hadoop r=fetch s=key
 $ make hadoop r=add s=key
-$ make hadoop r=setup s=hadoop
-$ make hadoop r=config s=hadoop
+$ make hadoop r=setup s=serivce
+$ make hadoop r=config s=serivce
 $ make hadoop r=start s=journal
 $ make hadoop r=format s=master
 $ make hadoop r=start s=master
@@ -278,8 +278,8 @@ $ make hadoop r=install s=all
 
 ## How to Uninstall Hadoop
 ```yaml
-$ make hadoop r=stop s=hadoop
-$ make hadoop r=remove s=hadoop
+$ make hadoop r=stop s=service
+$ make hadoop r=remove s=config
 $ make hadoop r=remove s=key
 $ make hadoop r=remove s=user
 $ make hadoop r=remove s=user
