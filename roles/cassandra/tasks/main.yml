@@ -47,25 +47,25 @@
 
 
 - name: Change Cassandra Password
-  import_tasks: change-admin-password.yml
+  import_tasks: ext/change-admin-password.yml
   tags: change, install
   when: (( passwd is defined and passwd == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Add Cassandra Users
-  import_tasks: add-users.yml
+  import_tasks: ext/add-users.yml
   tags: add, create, install
   when: (( users is defined and users == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Disable Cassandra Users
-  import_tasks: disable-cassandra-user.yml
+  import_tasks: ext/disable-cassandra-user.yml
   tags: disable, install
   when: (( admin is defined and admin == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Delete Cassandra Users
-  import_tasks: delete-users.yml
+  import_tasks: ext/delete-users.yml
   tags: remove, delete, uninstall
   when: (( users is defined and users == true ) or ( cassandra_all is defined and cassandra_all == true )) and inventory_hostname in groups['master']
 

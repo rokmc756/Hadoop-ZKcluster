@@ -1,0 +1,150 @@
+cassandra:
+	@if [ "${r}" = "init" ] || [ "${r}" = "uninit" ] || [ "${r}" = "reinit" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to init/uninit/reinit cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to init/uninit/reinit cassandra";\
+			fi\
+		else\
+			echo "No actions to init/uninit/reinit cassandra";\
+		fi;\
+	elif [ "${r}" = "prepare" ] || [ "${r}" = "format" ] || [ "${r}" = "clean" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to prepare/format/clean cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to prepare/format/clean cassandra";\
+			fi\
+		else\
+			echo "No actions to prepare/format/clean cassandra";\
+		fi;\
+	elif [ "${r}" = "create" ] || [ "${r}" = "recreate" ] || [ "${r}" = "copy" ] || [ "${r}" = "delete" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to create/copy/delete cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to create/copy/delete cassandra";\
+			fi\
+		else\
+			echo "No actions to create/copy/delete cassandra";\
+		fi;\
+	elif [ "${r}" = "bootstrap" ] || [ "${r}" = "start" ] || [ "${r}" = "stop" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to bootstrap/start/stop cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to bootstrap/start/stop cassandra";\
+			fi\
+		else\
+			echo "No actions to bootstrap/start/stop cassandra";\
+		fi;\
+	elif [ "${r}" = "enable" ] || [ "${r}" = "disable" ] || [ "${r}" = "config" ] || [ "${r}" = "change" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to enable/disable/config/change cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to enable/disable/config/change cassandra";\
+			fi\
+		else\
+			echo "No actions to enable/disable/config/change cassandra";\
+		fi;\
+	elif [ "${r}" = "install" ] || [ "${r}" = "uninstall" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to install/uninstall cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to install/uninstall cassandra";\
+			fi\
+		else\
+			echo "No actions to install/uninstall cassandra";\
+		fi;\
+	elif [ "${r}" = "setup" ] || [ "${r}" = "add" ] || [ "${r}" = "remove" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to add/setup/remove cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to add/setup/remove cassandra";\
+			fi\
+		else\
+			echo "No actions to add/setup/remove cassandra";\
+		fi;\
+	elif [ "${r}" = "fetch" ] || [ "${r}" = "disfetch" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to fetch/disfetch cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to fetch/disfetch cassandra";\
+			fi\
+		else\
+			echo "No actions to fetch/disfetch cassandra";\
+		fi;\
+	elif [ "${r}" = "upgrade" ] || [ "${r}" = "downgrade" ]; then\
+		if [ ! -z ${r} ] && [ "${s}" != "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{"${s}": True}' --tags='${r}';\
+			else\
+				echo "No actions to upgrade/downgrade cassandra";\
+			fi\
+		elif [ ! -z ${r} ] && [ "${s}" = "all" ]; then\
+			if [ -z ${c} ];  then\
+				ansible-playbook --ssh-common-args='-o UserKnownHostsFile=./known_hosts' -u ${USERNAME} setup-cassandra.yml -e '{cassandra_all: True}' --tags='${r}';\
+			else\
+				echo "No actions to upgrade/downgrade cassandra";\
+			fi\
+		else\
+			echo "No actions to upgrade/downgrade cassandra";\
+		fi;\
+	else\
+		echo "No actions to cassandra role";\
+		exit;\
+	fi
+

@@ -19,19 +19,19 @@
   when: (( firewall is defined and firewall == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Install User on All Nodes
+- name: Install Public User Key
   import_tasks: 02-create-public-ssh-key.yml
-  tags: create, add, install
-  when: (( user is defined and user == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
+  tags: create, install
+  when: (( key is defined and key == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Fetch Public Key on All Nodes
+- name: Fetch Public User Key
   import_tasks: 03-fetch-public-key.yml
   tags: fetch, install
   when: (( key is defined and key == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
 
 
-- name: Authorize User with Public Key on All Nodes
+- name: Authorize Public User Key
   import_tasks: 04-add-public-key.yml
   tags: add, install
   when: (( key is defined and key == true ) or ( hadoop_all is defined and hadoop_all == true )) and inventory_hostname not in groups['database']
