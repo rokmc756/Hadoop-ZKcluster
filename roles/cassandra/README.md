@@ -72,3 +72,7 @@ $ make cassandra r=remove s=sysuser
 or
 $ make cassandra r=uninstall s=all
 ```
+
+## Planning
+- [] Configure and Enable/Disable SSL
+
