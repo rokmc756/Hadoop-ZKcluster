@@ -63,6 +63,5 @@
   shell: |
     yum-config-manager --disable {{ item }}
   with_items:
-    - "devel"
-  when: ansible_distribution == "RedHat" or ansible_distribution == "CentOS" or ansible_distribution == "Rocky"
+    - "{{ ext_repo }}"
 

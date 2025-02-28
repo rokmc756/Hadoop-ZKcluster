@@ -6,15 +6,17 @@
 
 - name: Set Facts for Network and Packages Informations
   import_tasks: set-facts.yml
-  tags: install, uninstall, setup, remove
+  tags: setup, remove, install, uninstall
 
 
 - name: Install ZooKeeper
   import_tasks: install.yml
   tags: setup, install
+  when: inventory_hostname not in groups['database']
 
 
 - name: Uninstall Zookeeper
   import_tasks: uninstall.yml
   tags: remove, uninstall
+  when: inventory_hostname not in groups['database']
 
