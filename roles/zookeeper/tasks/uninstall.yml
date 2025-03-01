@@ -36,7 +36,7 @@
 
 
 - name: Remove Zookeeper Group
-  group: name=zookeeper state=present
+  group: name=zookeeper state=absent
   ignore_errors: true
 
 

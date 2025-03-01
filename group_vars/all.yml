@@ -51,6 +51,7 @@ _zookeeper:
   download: false
   download_url: http://apache.rediris.es/zookeeper
   download_path: /tmp
+  bin_type: tar.gz
   config:
     port: 2181
     log_path: /usr/local/apache-zookeeper/log

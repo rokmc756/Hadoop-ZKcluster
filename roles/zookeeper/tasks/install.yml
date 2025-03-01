@@ -1,3 +1,4 @@
+---
 - name: Create Zookeeper Group
   group: name=zookeeper state=present
 
@@ -13,7 +14,13 @@
 
 - name: Download Zookeeper Tar file if Not Downloaded
   get_url: url={{ _zookeeper.download_url }}/zookeeper-{{ zookeeper_version }}/{{ zk_package_name }} dest={{ _zookeeper.download_path }}
-  when: not zk_package_exists.stat.exists
+  when: zk_package_exists.stat.exists == false and _zookeeper.download == true
+
+
+- name: Copy Zookeeper Tarball from Local Directory, roles/zookeeper/files
+  copy: src={{ zk_package_name }} dest={{ _zookeeper.download_path }}/{{ zookeeper_file_name }}.{{ _zookeeper.bin_type }} mode=0644 owner={{ _zookeeper.user }} group={{ _zookeeper.group }}
+  register: local_copy_zookeeper_tarball
+  when: zk_package_exists.stat.exists == false and _zookeeper.download == false
 
 
 - name: Unarchive Zookeeper Package
