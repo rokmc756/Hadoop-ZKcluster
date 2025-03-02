@@ -164,11 +164,11 @@
 - name: Start Hadoop
   import_tasks: ext/start-hadoop.yml
   tags: start
-  when: ( hdfs is defined and hdfs == true ) and inventory_hostname not in groups['database']
+  when: ( cluster is defined and cluster == true ) and inventory_hostname not in groups['database']
 
 
 - name: Stop Hadoop
   import_tasks: ext/stop-hadoop.yml
   tags: stop
-  when: ( hdfs is defined and hdfs == true ) and inventory_hostname not in groups['database']
+  when: ( cluster is defined and cluster == true ) and inventory_hostname not in groups['database']
 

@@ -19,19 +19,19 @@
 - name: Config Spark
   import_tasks: config-spark.yml
   tags: config, install
-  when: (( spark is defined and spark == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname not in groups['database']
+  when: (( cluster is defined and cluster == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Start Spark
   import_tasks: start-spark.yml
   tags: start, install
-  when: (( service is defined and service == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname in groups['master']
+  when: (( cluster is defined and cluster == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Stop Spark
   import_tasks: stop-spark.yml
   tags: stop, uninstall
-  when: (( service is defined and service == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname in groups['master']
+  when: (( cluster is defined and cluster == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Uninstall Spark

@@ -292,10 +292,10 @@ $ make hadoop r=uninstall s=all
 
 # How to Start and Stop Hadoop Service
 ```yaml
-$ make hadoop r=start s=hdfs
+$ make hadoop r=start s=cluster
 
 or
-$ make hadoop r=stop s=hdfs
+$ make hadoop r=stop s=cluster
 ```
 
 - roles/hive/README.md

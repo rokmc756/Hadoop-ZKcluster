@@ -60,3 +60,16 @@ $ export SPARK_LOCAL_IP="192.168.2.191"
 
 $ spark-submit --master local ./spark-session.py
 
+
+```
+$ pip install "numpy>=1.16.5,<1.23.0"
+
+
+$ pip3 install "numpy>=1.26.4,<1.27.0"
+
+```
+
+
+$ sudo dnf install -y python3-distutils-extra
+
+

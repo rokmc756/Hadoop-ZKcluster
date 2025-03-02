@@ -33,8 +33,8 @@ _spark:
 ### Install or Deploy Spark
 ```yaml
 $ make spark r=setup   s=bin
-$ make spark r=config  s=spark
-$ make spark r=start   s=service
+$ make spark r=config  s=cluster
+$ make spark r=start   s=cluster
 
 or
 $ make spark r=install s=all
@@ -42,7 +42,7 @@ $ make spark r=install s=all
 
 ### Uninstall or Destroy Spark
 ```yaml
-$ make spark r=stop   s=service
+$ make spark r=stop   s=cluster
 $ make spark r=delete s=bin
 
 or
