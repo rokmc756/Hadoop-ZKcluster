@@ -32,10 +32,9 @@ _spark:
 
 ### Install or Deploy Spark
 ```yaml
-$ make spark r=disable s=firewall
-$ make spark r=setup s=spark
-$ make spark r=config s=spark
-$ make spark r=start s=spark
+$ make spark r=setup   s=bin
+$ make spark r=config  s=spark
+$ make spark r=start   s=service
 
 or
 $ make spark r=install s=all
@@ -43,11 +42,15 @@ $ make spark r=install s=all
 
 ### Uninstall or Destroy Spark
 ```yaml
-$ make spark r=stop s=spark
-$ make spark r=delete s=spark
-$ make spark r=enable s=firewall
+$ make spark r=stop   s=service
+$ make spark r=delete s=bin
 
 or
 $ make spark r=uninstall s=all
 ```
+
+
+## References
+https://sparkbyexamples.com/
+
 

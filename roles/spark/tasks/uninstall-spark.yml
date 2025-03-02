@@ -13,8 +13,6 @@
 - name: Remove Spark Configuration, Environment and Binary
   file:
     path: "{{ item }}"
-    owner: "{{ _spark.user }}"
-    group: "{{ _spark.group }}"
     state: absent
   with_items:
     - "{{ _spark.base_path }}/spark"
@@ -24,10 +22,7 @@
 - name: Remove Spark Path
   file:
     path: "{{ item }}"
-    owner: "{{ _spark.user }}"
-    group: "{{ _spark.group }}"
     state: absent
-    mode: 0755
   with_items:
     - "{{ _spark.base_path }}/{{ spark_file_name }}"
     - "/tmp/spark-hadoop-org.apache.spark.deploy.history.HistoryServer-1.pid"
@@ -36,4 +31,5 @@
     - "/mtp/spark-hadoop-org.apache.spark.deploy.worker.Worker-1.pid"
     - "/tmp/spark-hadoop-org.apache.spark.sql.connect.service.SparkConnectServer-1.pid"
     - "/etc/profile.d/spark-env.sh"
+    - "/tmp/spark-events"
 

@@ -10,6 +10,8 @@
   environment:
     PATH: "{{ spark_root_dir }}/sbin:{{ spark_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"
   with_items:
+    - "stop-connect-server.sh"
+    - "stop-history-server.sh"
     - "stop-thriftserver.sh"
     - "stop-mesos-shuffle-service.sh"
     - "stop-workers.sh"

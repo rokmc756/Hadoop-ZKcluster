@@ -54,6 +54,7 @@
 # - SPARK_PUBLIC_DNS, to set the public dns name of the master or workers
 
 
+export SPARK_LOCAL_IP="{{ _spark_local_ip }}"
 export SPARK_WORKER_CORES="{{ _spark.worker.core }}"
 export SPARK_WORKER_MEMORY="{{ _spark.worker.memory }}"
 export SPARK_MASTER_HOST="{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}"

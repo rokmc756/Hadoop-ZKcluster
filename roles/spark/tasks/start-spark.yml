@@ -14,6 +14,8 @@
     - "start-workers.sh"
     - "start-mesos-shuffle-service.sh"
     - "start-thriftserver.sh"
+    - "start-history-server.sh"
+    - "start-connect-server.sh --master spark://{{ _ipaddr }}:7077 --packages org.apache.spark:spark-connect_2.12:3.5.1,io.delta:delta-spark_2.12:3.2.0 --conf 'spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension' --conf 'spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog'"
 
 
 - name: Print the URL of HBase Web UI

@@ -1,8 +1,8 @@
 ---
-- name: Start YARN resource manager
+- name: Start YARN Resource Manager
   become_user: "{{ _hadoop.user }}"
   shell: |
-    nohup yarn-daemon.sh start resourcemanager
+    yarn-daemon.sh start resourcemanager
   register: start_yarn_rm
   args:
     executable: /bin/bash

@@ -27,3 +27,12 @@
     _netdev: "ansible_{{ netdev2 }}"
     _ipaddr: "{{ ipaddr2 }}"
 
+
+- name: Set Spark Local IP
+  set_fact:
+    _spark_local_ip: "{{ ipaddr2 }}"
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ groups['all'] }}"
+  when: inventory_hostname in groups['master']
+

@@ -10,16 +10,10 @@
   when: inventory_hostname not in groups['database']
 
 
-#- name: Disable Firewall
-#  import_tasks: disable-firewall.yml
-#  tags: disable, install
-#  when: (( firewall is defined and firewall == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname not in groups['database']
-
-
-- name: Install Spark
-  import_tasks: install-spark.yml
+- name: Setup Spark
+  import_tasks: setup-spark.yml
   tags: setup, install
-  when: (( spark is defined and spark == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname not in groups['database']
+  when: (( bin is defined and bin == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname not in groups['database']
 
 
 - name: Config Spark
@@ -31,23 +25,17 @@
 - name: Start Spark
   import_tasks: start-spark.yml
   tags: start, install
-  when: (( spark is defined and spark == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname in groups['master']
+  when: (( service is defined and service == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Stop Spark
   import_tasks: stop-spark.yml
   tags: stop, uninstall
-  when: (( spark is defined and spark == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname in groups['master']
+  when: (( service is defined and service == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname in groups['master']
 
 
 - name: Uninstall Spark
-  import_tasks: uninstall.yml
+  import_tasks: uninstall-spark.yml
   tags: delete, remove, uninstall
-  when: (( spark is defined and spark == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname not in groups['database']
-
-
-#- name: Enable Firewall
-#  import_tasks: enable-firewall.yml
-#  tags: enable, uninstall
-#  when: (( firewall is defined and firewall == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname not in groups['database']
+  when: (( bin is defined and bin == true ) or ( spark_all is defined and spark_all == true )) and inventory_hostname not in groups['database']
 

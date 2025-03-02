@@ -44,6 +44,15 @@
   shell: source /etc/profile.d/spark-env.sh
 
 
+- name: Create Spark Events Directory
+  file:
+    path: "/tmp/spark-events"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+
 #- name: Deploy the Customized Spark log4j Properties
 #  template:
 #    src: "{{ log4j_template_file }}.j2"

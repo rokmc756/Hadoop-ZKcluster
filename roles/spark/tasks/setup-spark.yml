@@ -1,3 +1,4 @@
+---
 #- name: Deploy hive-site.xml in spark's conf directory
 #  template:
 #    src: "templates/hive-site.xml.j2"
@@ -35,7 +36,7 @@
   register: check_spark_install_dir
 
 
-- name: Sanity check for existence of {{ spark_file_name }}.{{ _spark.bin_type }} file or {{ spark_file_name }} directory
+- name: Sanity Check for Existence of {{ spark_file_name }}.{{ _spark.bin_type }} file or {{ spark_file_name }} Directory
   debug: msg="Both {{ spark_file_name }}.{{ _spark.bin_type }} file and {{ spark_file_name }} Directory Already Exists"
   changed_when: check_spark_tarball.stat.exists == True and check_spark_install_dir.stat.exists == True
 
