@@ -73,3 +73,5 @@ $ pip3 install "numpy>=1.26.4,<1.27.0"
 $ sudo dnf install -y python3-distutils-extra
 
 
+# https://wikidocs.net/26134
+
