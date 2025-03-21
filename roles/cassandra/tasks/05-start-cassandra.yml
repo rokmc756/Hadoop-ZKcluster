@@ -27,7 +27,7 @@
   shell: |
     nc -zv 127.0.0.1 9042 2>&1 | grep Connected | awk '{print $2}'
   register: check_cassandra_service
-  until: check_cassandra_service.stdout.find(item.string) != -1
+  until: check_cassandra_service.stdout.find("Connected") != -1
   retries: 20
   delay: 10
   with_items:

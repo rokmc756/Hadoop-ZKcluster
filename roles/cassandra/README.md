@@ -76,3 +76,7 @@ $ make cassandra r=uninstall s=all
 ## Planning
 - [] Configure and Enable/Disable SSL
 
+## References
+- https://john-cho.medium.com/building-web-server-with-cassandra-database-6d4888a89ba6
+- https://github.com/orzhaha/cassandra-web
+

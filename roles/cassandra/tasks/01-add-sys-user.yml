@@ -1,5 +1,5 @@
 ---
-- name: Install Latest PassLib with Pip
+- name: Install Latest Pip PassLib
   pip: name=passlib state=present
 
 

@@ -13,13 +13,13 @@
     # ipaddr1: "{{ hostvars[inventory_hostname]['ansible_'~netdev1].ipv4.address }}"
 
 
-- name: Define Fact for Kafka/cassandra Version
+- name: Define Fact for Cassandra Version
   set_fact:
     hadoop_version: "{{ _hadoop.major_version }}.{{ _hadoop.minor_version }}.{{ _hadoop.patch_version }}"
     cassandra_version: "{{ _cassandra.major_version }}.{{ _cassandra.minor_version }}.{{ _cassandra.patch_version }}"
 
 
-- name: Set Kafka/cassandra Package Name and Application Path
+- name: Set Cassandra Package Name and Application Path
   set_fact:
     hadoop_file_name: "hadoop-{{ hadoop_version }}"
     hadoop_package_name: "hadoop-{{ hadoop_version }}.tar.gz"
