@@ -9,7 +9,7 @@
   when: cassandra_package_exists.stat.exists == false and _cassandra.download == true
 
 
-- name: Copy Apache Cassandra Tarball
+- name: Copy Apache Cassandra Tarball from local directory, roles/cassandra/files
   copy: src={{ cassandra_package_name }} dest={{ _cassandra.download_path }}/{{ cassandra_file_name }}.{{ _cassandra.bin_type }} mode=0644 owner={{ _cassandra.user }} group={{ _cassandra.group }}
   register: local_copy_cassandra_tarball
   when: cassandra_package_exists.stat.exists == false and _cassandra.download == false
@@ -27,6 +27,7 @@
 - name: Check if Any Version of cassandra is Already Linked
   stat: path={{ _cassandra.base_path }}/apache-cassandra
   register: create_cassandra_symlink
+- debug: msg={{ create_cassandra_symlink }}
 
 
 - name: Repoint Symlink to New Cassandra Version
@@ -48,5 +49,4 @@
   with_items:
     - { state: "directory", recurse: "yes", perm: "0755", dir: "{{ cassandra_root_dir }}", owner: "{{ _cassandra.user }}", group: "{{ _cassandra.group }}" }
   # mode: "{{ item.perm }}"
-
 
