@@ -22,10 +22,10 @@
   debug:
     msg: "Spark Web UI with http://{{ hostvars[groups['master'][0]][_netdev]['ipv4']['address'] }}:4040"
 
+
 # 8480 Journal Node
 #
 # Need to run the below service without any errors
-#
 # start-history-server.sh
 # start-connect-server.sh
 
