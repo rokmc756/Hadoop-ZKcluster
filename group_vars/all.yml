@@ -216,9 +216,9 @@ _cassandra:
   password: "changeme"
   users:
     - { name: "jomoon", password: "changeme", su: "true", login: "true" }
-    - { name: "romoon", password: "changeme", su: "false", login: "false" }
-    - { name: "komoon", password: "changeme", su: "true", login: "false" }
-    - { name: "somoon", password: "changeme", su: "false", login: "true" }
+    - { name: "romoon", password: "changeme", su: "true", login: "false" }
+    - { name: "komoon", password: "changeme", su: "false", login: "true" }
+    - { name: "somoon", password: "changeme", su: "false", login: "false" }
   user_home: "/home/cassandra"
   base_path: "/usr/local"
   major_version: 4

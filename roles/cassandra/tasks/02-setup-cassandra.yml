@@ -27,7 +27,6 @@
 - name: Check if Any Version of cassandra is Already Linked
   stat: path={{ _cassandra.base_path }}/apache-cassandra
   register: create_cassandra_symlink
-- debug: msg={{ create_cassandra_symlink }}
 
 
 - name: Repoint Symlink to New Cassandra Version

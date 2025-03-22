@@ -8,7 +8,7 @@
     cqlsh -u {{ _cassandra.user }} -p {{ _cassandra.password }} -e 'describe cluster'
   register: check_cassandra_cluster
   until: check_cassandra_cluster is succeeded
-  retries: 10
+  retries: 20
   delay: 10
   environment:
     PATH: "{{ cassandra_root_dir }}/bin:/usr/local/bin:{{ ansible_env.PATH }}"

@@ -10,7 +10,6 @@
   when: print_debug == true
 
 
-
 - name: Check if Cassandra Cluster Service is Ready
   shell: |
     cqlsh -u {{ _cassandra.user }} -p {{ _cassandra.password }} -e 'describe cluster'
