@@ -1,6 +1,8 @@
 ---
 - name: Install Latest Pip PassLib
-  pip: name=passlib state=present
+  pip:
+    name: passlib
+    state: present
 
 
 - name: Create Cassandra Group

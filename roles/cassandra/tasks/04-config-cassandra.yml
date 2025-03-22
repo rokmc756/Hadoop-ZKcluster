@@ -1,22 +1,22 @@
 ---
-- name: Copy Cassandra Configuration
-  template: src=cassandra.yaml.j2 dest={{ cassandra_application_path }}/conf/cassandra.yaml mode=0644 owner={{ _cassandra.user }} group={{ _cassandra.group }} force=yes
-
-
-- name: Copy Cassandra Env
-  template: src=cassandra-env.sh.j2 dest={{ cassandra_application_path }}/conf/cassandra-env.sh mode=0755 owner={{ _cassandra.user }} group={{ _cassandra.group }} force=yes
-
-
-- name: Copy Cqlsh Configuration
-  template: src=cqlsh.j2 dest=/home/cassandra/.cassandra/cqlsh mode=0644 owner={{ _cassandra.user }} group={{ _cassandra.group }} force=yes
-
-
-- name: Copy Cassandra Systemd
-  template: src=cassandra.systemd.j2 dest=/etc/systemd/system/cassandra.service owner=root group=root mode=644 force=yes
+- name: Copy Cassandra Configurations
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    force: "{{ item.force }}"
+  with_items:
+    - { src: "cassandra.yaml.j2", dest: "{{ cassandra_application_path }}/conf/cassandra.yaml", mode: "0644", owner: "{{ _cassandra.user }}", group: "{{ _cassandra.group }}", force: "yes" }
+    - { src: "cassandra-env.sh.j2", dest: "{{ cassandra_application_path }}/conf/cassandra-env.sh", mode: "0755", owner: "{{ _cassandra.user }}", group: "{{ _cassandra.group }}", force: "yes" }
+    - { src: "cqlsh.j2", dest: "/home/cassandra/.cassandra/cqlsh", mode: "0644", owner: "{{ _cassandra.user }}", group: "{{ _cassandra.group }}", force: "yes" }
+    - { src: "cassandra.systemd.j2", dest: "/etc/systemd/system/cassandra.service", mode: "0644", owner: "{{ _cassandra.user }}", group: "{{ _cassandra.group }}", force: "yes" }
 
 
 - name: Reload Systemd Daemon
-  shell: "systemctl daemon-reload"
+  systemd:
+    daemon_reload: yes
 
 
 - name: Insert Executable Binary Path into .bashrc

@@ -14,17 +14,23 @@
 
 
 - name: Remove Cassandra User
-  user: name={{ _cassandra.user }} state=absent remove=yes
+  user:
+    name: "{{ _cassandra.user }}"
+    state: absent
+    remove: yes
   ignore_errors: true
 
 
 - name: Remove Cassandra Group
-  group: name={{ _cassandra.group }} state=absent
+  group:
+    name: "{{ _cassandra.group }}"
+    state: absent
   ignore_errors: true
 
 
 - name: Remove Cassandra Home Directory
-  file: path={{ _cassandra.user_home }} state=absent
+  file:
+    path: "{{ _cassandra.user_home }}"
+    state: absent
   ignore_errors: true
-
 
