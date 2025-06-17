@@ -99,7 +99,6 @@ The daemons in DataNode are:
 The hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
 The ansible role for zookeepr is added, variables of many roles is integrated into role/hadoop/var/main.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
 
-
 ### Supported versions of Platform and OS
 These are only confirmed as the latest version currently and other version will be done or added soon or later
 * CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
@@ -111,11 +110,9 @@ These are only confirmed as the latest version currently and other version will 
 * Ganglia
 * Zookeeper 3.9.3
 
-
 ### Prerequiste
 Use DNS Server or update /etc/hosts for all servers.
 Passworless SSH for hadoop, root for ansible hosts may help to control.
-
 
 ### How to configure ansible-hosts, role/hadoop/var/main.yml to deploy hadoop-zkcluster?
 ##### 1) Configure hostname / ip addresses and username to run for ansible-hosts
@@ -126,20 +123,16 @@ ssh_key_filename="id_rsa"
 remote_machine_username="jomoon"
 remote_machine_password="changeme"
 
-
 [master]
 rk9-node01 ansible_ssh_host=192.168.2.191 zk_id=1
 
-
 [standby]
 rk9-node02 ansible_ssh_host=192.168.2.192 zk_id=2
-
 
 [workers]
 rk9-node03 ansible_ssh_host=192.168.2.193 zk_id=3 rm_ids=rm1
 rk9-node04 ansible_ssh_host=192.168.2.194 zk_id=4 rm_ids=rm2
 rk9-node05 ansible_ssh_host=192.168.2.195 zk_id=5 rm_ids=rm3
-
 
 # These are your zookeeper cluster nodes
 [zk_servers]
@@ -149,10 +142,8 @@ rk9-node03 ansible_ssh_host=192.168.2.193 zk_id=3 rm_ids=rm1
 rk9-node04 ansible_ssh_host=192.168.2.194 zk_id=4 rm_ids=rm2
 rk9-node05 ansible_ssh_host=192.168.2.195 zk_id=5 rm_ids=rm3
 
-
 [database]
 rk9-node06 ansible_ssh_host=192.168.2.196 zk_id=6
-
 
 [hive]
 rk9-node01 ansible_ssh_host=192.168.2.191 zk_id=1 rm_ids=rm1
@@ -273,7 +264,6 @@ $ make hadoop r=start s=yarn
 $ make hadoop r=start s=yrm
 
 or
-
 # For at once
 $ make hadoop r=install s=all
 ```
@@ -307,16 +297,13 @@ $ make hadoop r=stop s=cluster
 * [Cassandra](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/cassandra/README.md)
 * [Ganglia](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/ganglia/README.md)
 
-
 ### Planning
 - [ ] A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
 - [ ] hdfs getconf -secondaryNameNodes : Incorrect configuration: secondary namenode address dfs.namenode.secondary.http-address is not configured.
 - [ ] Need to fix issue that starting gmond got network(eth2) failed
 
-
 ### License
 GNU General Public License v3.0
-
 
 ### References
 - https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html

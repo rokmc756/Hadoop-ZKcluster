@@ -6,8 +6,6 @@
 - https://medium.com/@brunocrt/the-distributed-architecture-behind-cassandra-database-fba8b5cc4785
 - https://www.learnovita.com/cassandra-architecture-tutorial
 
-
-
 ### Configure Varialbes such as Download Location, Versions, Install/Config Path, Informations
 ```yaml
 $ vi group_vars/all.yml
@@ -46,6 +44,7 @@ _cassandra:
     ipaddr2: "192.168.2.19"
 ~~ snip
 ```
+
 ### How to Install/Deploy Cassandra
 ```yaml
 $ make cassandra r=add s=sysuser
@@ -77,9 +76,8 @@ $ make cassandra r=uninstall s=all
 - java-1.8.0
 - java-11
 
-
 ## Planning
-- [] Configure and Enable/Disable SSL
+- [ ] Configure and Enable/Disable SSL
 
 ## References
 - https://john-cho.medium.com/building-web-server-with-cassandra-database-6d4888a89ba6
