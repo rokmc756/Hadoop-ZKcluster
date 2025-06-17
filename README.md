@@ -298,7 +298,7 @@ or
 $ make hadoop r=stop s=cluster
 ```
 
-[![YouTube](https://github.com/rokmc756/Hadoop-ZKcluster//blob/main/roles/hive/README.md)](test)
+[Hive](https://github.com/rokmc756/Hadoop-ZKcluster//blob/main/roles/hive/README.md)
 
 
 - roles/hive/README.md
