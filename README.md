@@ -303,7 +303,7 @@ $ make hadoop r=stop s=cluster
 * [Hive](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hive/README.md)
 * [HBase](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hbase/README.md)
 * [Spark](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/spark/README.md)
-* [Cassandra](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/cassandra/hive/README.md)
+* [Cassandra](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/cassandra/README.md)
 * [Ganglia](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/ganglia/README.md)
 
 
