@@ -1,12 +1,12 @@
-## WHat is Hadoop-ZKcluster
+### WHat is Hadoop-ZKcluster
 The Hadoop-ZKcluster is Ansible Playbook to Deploy Hadoop and Zookeeper Cluster and Hbase/Hive/Spark/Ganglia on Baremetal, Virtual Machines and Cloud Infrastructure.
 The intention of this playbook is to deploy Hadoop Cluster quickly in order to reproduce or simulate issues which occurs between Greenplum Database and PXF.
 
-## Hadoop-ZKcluster Architecture
+### Hadoop-ZKcluster Architecture
 It implements HDFS HA architecture described at the below link and Hadoop-ZKcluster Architecture and you could see details about how it works.
 * https://www.edureka.co/blog/how-to-set-up-hadoop-cluster-with-hdfs-high-availability/
 
-### HDFS HA Architecture
+#### HDFS HA Architecture
 The HDFS HA Architecture solve critical problem of NameNode availability by allowing us to have two NameNodes in an active/passive configuration.
 So, there are two running NameNodes at the same time in a High Availability cluster:
 - Active NameNode
@@ -24,12 +24,12 @@ There should be only one active NameNode at a time because two active NameNode w
 <br>
 To avoid such scenarios fencing is done. Fencing is a process of ensuring that only one NameNode remains active at a particular time.<br>
 
-### Implementation of HA Architecture
+#### Implementation of HA Architecture
 Now, you know that in HDFS HA Architecture, we have two NameNodes running at the same time. So, we can implement the Active and Standby NameNode configuration in following two ways:
 * Using Quorum Journal Nodes
 * Shared Storage using NFS
 Let us understand these two ways of implementation taking one at a time
-#### Using Quorum Journal Nodes
+##### Using Quorum Journal Nodes
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/JournalNode-HDFS-HA-Architecture-Edureka-768x440.png" width="80%" height="80%">
 </p>
@@ -43,14 +43,14 @@ This makes the current namespace state synchronized with the state before failov
 The IP Addresses of both the NameNodes are available to all the DataNodes and they send their heartbeats and block location information to both the NameNode.
 This provides a fast failover (less down time) as the StandbyNode has an updated information about the block location in the cluster.
 
-### Fencing of NameNode
+#### Fencing of NameNode
 Now, as discussed earlier, it is very important to ensure that there is only one Active NameNode at a time. So, fencing is a process to ensure this very property in a cluster. 
 
 The JournalNodes performs this fencing by allowing only one NameNode to be the writer at a time.
 The Standby NameNode takes over the responsibility of writing to the JournalNodes and forbid any other NameNode to remain active.
 Finally, the new Active NameNode can perform its activities safely.
 
-#### Using Shared Storage
+##### Using Shared Storage
 <p align="center">
 <img src="https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/hadoop/images/Shared-Storage-HDFS-HA-Architecture-Edureka-768x344.png" width="80%" height="80%">
 </p>
@@ -64,7 +64,7 @@ The system may employ a range of fencing mechanisms. It may include killing of t
 As a last resort, we can fence the previously active NameNode with a technique known as STONITH, or “shoot the other node in the head”.
 STONITH uses a specialized power distribution unit to forcibly power down the NameNode machine.
 
-### Automatic Failover
+#### Automatic Failover
 Failover is a procedure by which a system automatically transfers control to secondary system when it detects a fault or failure. There are two types of failover:
 1) Graceful Failover: In this case, we manually initiate the failover for routine maintenance.
 2) Automatic Failover: In this case, the failover is initiated automatically in case of NameNode failure (unplanned event).
@@ -95,12 +95,12 @@ The daemons in DataNode are:
 * JournalNode
 * DataNode
 
-## Where is Haddop Zookeeper from and what / how is it changed?
+### Where is Haddop Zookeeper from and what / how is it changed?
 The hadoop-zkcluster has been developing based on hadoop-ansible project - https://github.com/pippozq/hadoop-ansible. pippozq! Thanks for sharing it.
 The ansible role for zookeepr is added, variables of many roles is integrated into role/hadoop/var/main.yml and hosts/host is removed and ansible-host is added instead for efficiency and convenience.
 
 
-## Supported versions of Platform and OS
+### Supported versions of Platform and OS
 These are only confirmed as the latest version currently and other version will be done or added soon or later
 * CentOS 7.x, Rocky Linux 7.x, 8.x, 9.x
 * openjdk-1.8 and 1.11 and 1.17
@@ -111,12 +111,14 @@ These are only confirmed as the latest version currently and other version will 
 * Ganglia
 * Zookeeper 3.9.3
 
-## Prerequiste
+
+### Prerequiste
 Use DNS Server or update /etc/hosts for all servers.
 Passworless SSH for hadoop, root for ansible hosts may help to control.
 
-## How to configure ansible-hosts, role/hadoop/var/main.yml to deploy hadoop-zkcluster?
-#### 1) Configure hostname / ip addresses and username to run for ansible-hosts
+
+### How to configure ansible-hosts, role/hadoop/var/main.yml to deploy hadoop-zkcluster?
+##### 1) Configure hostname / ip addresses and username to run for ansible-hosts
 ```yaml
 $ vi ansible-hosts-rk9
 [all:vars]
@@ -156,7 +158,7 @@ rk9-node06 ansible_ssh_host=192.168.2.196 zk_id=6
 rk9-node01 ansible_ssh_host=192.168.2.191 zk_id=1 rm_ids=rm1
 ```
 
-#### 2) Configure user/group, hadoop version and location to download in group_vars/all.yml
+##### 2) Configure user/group, hadoop version and location to download in group_vars/all.yml
 ```yaml
 $ vi group_vars/all.yml
 ~~snip
@@ -195,7 +197,7 @@ _hadoop:
 ~~ snip
 ```
 
-#### 3) Configure version / location to download & install / log_path / data_path of Zookeeper
+##### 3) Configure version / location to download & install / log_path / data_path of Zookeeper
 ```yaml
 $ vi group_vars/all.yml
 ~~ snip
@@ -246,12 +248,12 @@ _jdk:
 ~~ snip
 ```
 
-## Download All Software Binaries
+### Download All Software Binaries
 ```yaml
 $ make download
 ```
 
-## How to Install and Deploy Hadoop Zookeeper Cluster
+### How to Install and Deploy Hadoop Zookeeper Cluster
 ```yaml
 $ make hadoop r=disable s=firewall
 $ make hadoop r=create s=user
@@ -276,7 +278,7 @@ or
 $ make hadoop r=install s=all
 ```
 
-## How to Uninstall Hadoop
+### How to Uninstall Hadoop
 ```yaml
 $ make hadoop r=stop s=service
 $ make hadoop r=remove s=config
@@ -290,7 +292,7 @@ For at once
 $ make hadoop r=uninstall s=all
 ```
 
-# How to Start and Stop Hadoop Service
+### How to Start and Stop Hadoop Service
 ```yaml
 $ make hadoop r=start s=cluster
 
@@ -306,17 +308,17 @@ $ make hadoop r=stop s=cluster
 * [Ganglia](https://github.com/rokmc756/Hadoop-ZKcluster/blob/main/roles/ganglia/README.md)
 
 
-## Planning
+### Planning
 - [ ] A few variables for yarn-resource-manager, etc in group_vars/all.yml need to modify to arrange at once.
 - [ ] hdfs getconf -secondaryNameNodes : Incorrect configuration: secondary namenode address dfs.namenode.secondary.http-address is not configured.
 - [ ] Need to fix issue that starting gmond got network(eth2) failed
 
 
-## License
+### License
 GNU General Public License v3.0
 
 
-## References
+### References
 - https://hadoop.apache.org/docs/r2.7.1/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html
 - https://github.com/locp/ansible-role-cassandra
 - https://github.com/wireapp/ansible-cassandra
