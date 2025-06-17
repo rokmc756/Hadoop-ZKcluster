@@ -1,0 +1,42 @@
+---
+- name: Create Directory for Cassandra Example Queries
+  file:
+    path: "{{ _cassandra.user_home }}/cqlsh"
+    state: directory
+    owner: "{{ _cassandra.user }}"
+    group: "{{ _cassandra.user }}"
+    mode: 0755
+
+
+#- name: Synchronize Cassandra Example Queries
+#  synchronize:
+#    dest: "{{ _cassandra.user_home }}"
+#    src: "{{ role_path }}/templates/cqlsh"
+#    set_remote_user: true
+#    recursive: true
+#    rsync_opts:
+#      - "-e ssh"          # "-e ssh -i ~/.ssh/id_rsa.pub"
+#    ssh_args:
+#      - "-p {{ _cassandra.password }} -o StrictHostKeyChecking=no"
+#  register: copy_example_queries
+#  delegate_to: localhost
+#- debug: msg={{ copy_example_queries }}
+#  when: print_debug == true
+
+
+- name: Synchronize Cassandra Example Queries
+  shell: |
+    rsync -a --rsh='/usr/bin/sshpass -p {{ _cassandra.password }} ssh -o StrictHostKeyChecking=no' \
+    {{ role_path }}/templates/cqlsh {{ _cassandra.user }}@{{ hostvars[inventory_hostname][_netdev]['ipv4']['address'] }}:{{ _cassandra.user_home }}
+  register: copy_example_queries
+  delegate_to: localhost
+  failed_when: copy_example_queries.rc != 0
+
+
+- name: Change Directory Permission for Cassandra Example Queries
+  file:
+    path: "{{ _cassandra.user_home }}/cqlsh"
+    owner: "{{ _cassandra.user }}"
+    group: "{{ _cassandra.user }}"
+    recurse: yes
+

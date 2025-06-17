@@ -1,0 +1,33 @@
+---
+- name: Start Cassandra
+  service:
+    name: cassandra
+    state: started
+    enabled: yes
+  register: start_cassandra
+  until: start_cassandra is succeeded
+  retries: 20
+  delay: 10
+
+
+- name: Stop Cassandra
+  service:
+    name: cassandra
+    state: stopped
+    enabled: yes
+  register: stop_cassandra
+  until: stop_cassandra is succeeded
+  retries: 20
+  delay: 10
+
+
+- name: Restart Cassandra
+  service:
+    name: cassandra
+    state: restarted
+    enabled: yes
+  register: restart_cassandra
+  until: restart_cassandra is succeeded
+  retries: 20
+  delay: 10
+

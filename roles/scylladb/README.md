@@ -82,6 +82,9 @@ $ make cassandra r=uninstall s=all
 - [] Configure and Enable/Disable SSL
 
 ## References
-- https://john-cho.medium.com/building-web-server-with-cassandra-database-6d4888a89ba6
-- https://github.com/orzhaha/cassandra-web
+- https://opensource.docs.scylladb.com/stable/getting-started/install-scylla/install-on-linux.html
+- https://opensource.docs.scylladb.com/stable/getting-started/installation-common/scylla-web-installer.html
+- https://vald.vdaas.org/docs/v1.1/tutorial/using-backup-with-scylladb/
+- https://www.scylladb.com/2024/10/21/why-scylladbs-shard-per-core-architecture-matters/
+
 

@@ -1,0 +1,64 @@
+---
+- name: Check Cassandra Package
+  stat:
+    path: "{{ _cassandra.download_path }}/{{ cassandra_package_name }}"
+  register: cassandra_package_exists
+
+
+- name: Download Cassandra Tar file if Not Downloaded
+  get_url:
+    url: "{{ _cassandra.download_url }}/{{ cassandra_download_version }}/{{ cassandra_package_name }}"
+    dest: "{{ _cassandra.download_path }}"
+  when: cassandra_package_exists.stat.exists == false and _cassandra.download == true
+
+
+- name: Copy Apache Cassandra Tarball from local directory, roles/cassandra/files
+  copy:
+    src: "{{ cassandra_package_name }}"
+    dest: "{{ _cassandra.download_path }}/{{ cassandra_file_name }}.{{ _cassandra.bin_type }}"
+    mode: "0644"
+    owner: "{{ _cassandra.user }}"
+    group: "{{ _cassandra.group }}"
+  register: local_copy_cassandra_tarball
+  when: cassandra_package_exists.stat.exists == false and _cassandra.download == false
+
+
+- name: Unarchive Cassandra Package
+  unarchive:
+    src: "{{ _cassandra.download_path }}/{{ cassandra_package_name }}"
+    dest: "{{ _cassandra.base_path }}"
+    copy: no
+
+
+- name: Delete Package Downloaded if Needed
+  file:
+    path: "{{ _cassandra.download_path }}/{{ cassandra_package_name }}"
+    state: "absent"
+  when: _cassandra.force_clean is defined and _cassandra.force_clean == "True"
+
+
+- name: Check if Any Version of cassandra is Already Linked
+  stat:
+    path: "{{ _cassandra.base_path }}/apache-cassandra"
+  register: create_cassandra_symlink
+
+
+- name: Repoint Symlink to New Cassandra Version
+  become_user: root
+  file:
+    dest: "{{ _cassandra.base_path }}/apache-cassandra"
+    src: "{{ _cassandra.base_path }}/apache-cassandra-{{ cassandra_version }}"
+    state: link
+  when: not create_cassandra_symlink.stat.exists
+
+
+- name: Change Permission of Apache Cassandra Directory
+  file:
+    path: "{{ item.dir }}"
+    state: "{{ item.state }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    recurse: "{{ item.recurse }}"
+  with_items:
+    - { state: "directory", recurse: "yes", perm: "0755", dir: "{{ cassandra_root_dir }}", owner: "{{ _cassandra.user }}", group: "{{ _cassandra.group }}" }
+

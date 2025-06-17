@@ -1,0 +1,27 @@
+---
+- name: Install EPEL Package Repository
+  package:
+    name: epel-release
+    state: present
+  register: install_epel_pkg_repo
+- debug: msg={{ install_epel_pkg_repo }}
+  when: print_debug == true
+
+
+- name: Add the ScyllaDB RPM repository
+  yum_repository:
+    name: "scylla-6.2"
+    description: ScyllaDB Repository
+    baseurl: "{{ postgres_repo }}"
+    baseurl: "http://downloads.scylladb.com/rpm/centos/scylla-6.2.repo"
+    state: present
+
+
+- name: Update Caches for DNF Packages
+  shell: |
+    dnf makecache -y
+  register: update_dnf_cache
+- debug: msg={{ update_dnf_cache }}
+  when: print_debug == true
+
+

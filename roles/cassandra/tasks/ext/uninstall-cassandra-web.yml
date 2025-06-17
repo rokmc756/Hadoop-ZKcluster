@@ -1,0 +1,40 @@
+# https://github.com/dogukancagatay/docker-cassandra-web
+- name: Stop Cassndra Web Docker Image
+  shell: |
+    docker stop $(docker ps | grep cassandra-web | awk '{print $1}')
+  register: stop_docker_image
+
+
+- name: Remove Cassndra Web Docker Image
+  shell: |
+    docker image rm -f $(docker images | awk '{print $3}' | sed 1d)
+  register: remove_docker_image
+
+
+- name: List Docker Processes
+  shell: |
+    docker ps
+  register: list_docker_ps
+
+
+# From Sources - Not OK Yet
+# git clone https://github.com/avalanche123/cassandra-web
+# cd cassandra-web/
+# gem install cassandra-web
+# bundle exec rake rails:update:bin
+# rails app:update:bin
+# gem install bundler -v 1.0.10
+# cassandra-web
+
+# https://github.com/avalanche123/cassandra-web
+
+# From Sources - Not OK Yet
+# mkdir cassandra-web
+# cd cassandra-web
+# wget https://github.com/orzhaha/cassandra-web/archive/tags/v1.1.5.tar.gz
+# tar xvzf v1.1.5.tar.gz
+# cd client
+# npm install --force
+# npm run build
+
+

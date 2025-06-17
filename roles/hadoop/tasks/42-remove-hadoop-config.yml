@@ -16,3 +16,5 @@
   - "/tmp/hadoop-hadoop-journalnode.pid"
   - "/tmp/hadoop-hadoop-namenode.pid"
   - "/tmp/hadoop-hadoop-datanode.pid"
+  - "/tmp/hadoop-hadoop-resourcemanager.pid"
+
