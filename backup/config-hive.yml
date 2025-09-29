@@ -1,8 +1,0 @@
-- hosts: hive
-  remote_user: root
-  vars:
-     install_hive: true
-     config_hive: true
-     init_hive: true
-  roles:
-    - hive

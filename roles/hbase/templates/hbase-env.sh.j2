@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-export JAVA_HOME="$(dirname $(dirname $(readlink $(readlink $(which javac)))))"
-export HBASE_CLASSPATH=${HADOOP_CONF_DIR}
-export HBASE_PID_DIR=/tmp
-export HBASE_MANAGES_ZK=false
-
-# var/hadoop/pids
-

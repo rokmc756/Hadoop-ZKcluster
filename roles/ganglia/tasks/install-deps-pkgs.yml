@@ -1,6 +1,0 @@
----
-- name: Install Common Prerequisties Packages
-  package:
-    name: "{{ rh_install_pkgs }}"
-    state: present
-

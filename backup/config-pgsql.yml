@@ -1,6 +1,0 @@
-- hosts: database
-  become: true
-  vars:
-    print_debug: true
-  roles:
-    - postgres

@@ -1,6 +1,0 @@
----
-- name: Delete Hadoop Public Key
-  file:
-    path: "/tmp/id_{{ netinfo.ipaddr.master }}_{{ _hadoop.user }}.pub') }}"
-    state: absent
-
